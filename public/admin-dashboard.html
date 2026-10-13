@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard & CMS - NAT-TEST UKK CSGS UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-8 w-auto bg-white p-1 rounded-md" />
+          <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-8 w-auto bg-white p-1 rounded-md hidden sm:block" />
+        </a>
+        <div class="h-5 w-[1px] bg-slate-800 hidden sm:block"></div>
+        <span class="text-xs font-bold text-red-400 uppercase tracking-widest hidden sm:block">PORTAL PENGELOLA & CMS NAT-TEST UI</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <div id="admin-header-name" class="font-extrabold text-sm text-white">Administrator</div>
+          <div class="flex items-center justify-end gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+            <span id="admin-header-role" class="text-[10px] font-mono font-bold text-slate-400">ADMIN</span>
+          </div>
+        </div>
+        <a href="/" target="_blank" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-slate-300 transition-colors hidden sm:block">
+          Lihat Landing Page ↗
+        </a>
+        <button onclick="Auth.logout()" class="px-3 py-1.5 rounded-lg bg-red-950 hover:bg-red-900 border border-red-800 text-xs font-bold text-red-200 transition-colors">
+          Keluar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="bg-white border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-2 overflow-x-auto py-2.5">
+      <button data-tab="overview" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white transition-colors shrink-0">
+        📊 Ringkasan & Statistik
+      </button>
+      <button data-tab="registrations" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors shrink-0">
+        📝 Data Peserta & Verifikasi
+      </button>
+      <button data-tab="users" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors shrink-0">
+        👥 Manajemen Role User
+      </button>
+      <button data-tab="cms" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors shrink-0">
+        🎨 CMS Landing Page (Ubah/Tambah Konten)
+      </button>
+      <button data-tab="pages" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors shrink-0">
+        📄 Manajemen Halaman Statik
+      </button>
+      <button data-tab="password" class="admin-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors shrink-0">
+        🔒 Ubah Password Admin
+      </button>
+      <a href="/cetak-kartu.html" target="_blank" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors shrink-0 flex items-center gap-1.5 shadow-xs">
+        🖨️ Studio Cetak & Layout Kartu ↗
+      </a>
+      <a href="/laporan-transaksi.html" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 transition-colors shrink-0 flex items-center gap-1.5 shadow-xs">
+        📊 Laporan Transaksi ↗
+      </a>
+      <a href="/pengaturan-backup.html" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 text-white hover:bg-slate-700 transition-colors shrink-0 flex items-center gap-1.5 shadow-xs">
+        ⚙️ Pengaturan & Backup ↗
+      </a>
+    </div>
+  </div>
+
+  <!-- Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-8">
+    
+    <!-- ========================================================== -->
+    <!-- TAB 1: OVERVIEW & STATS                                     -->
+    <!-- ========================================================== -->
+    <div id="tab-overview" class="admin-tab-content space-y-6">
+      <div class="border-b border-slate-200 pb-3">
+        <h2 class="text-2xl font-black text-slate-900 tracking-tight">Statistik Pelaksanaan Ujian</h2>
+        <p class="text-xs text-slate-500">Ringkasan pendaftaran peserta NAT-TEST bekerjasama dengan UKK CSGS UI.</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-500">Total Akun Peserta</span>
+          <div id="stat-total-users" class="text-2xl font-black text-slate-900 mt-1">0</div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-500">Total Pendaftaran</span>
+          <div id="stat-total-regs" class="text-2xl font-black text-blue-600 mt-1">0</div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-500">Peserta Terverifikasi</span>
+          <div id="stat-verified-regs" class="text-2xl font-black text-emerald-600 mt-1">0</div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-500">Menunggu Verifikasi</span>
+          <div id="stat-pending-regs" class="text-2xl font-black text-amber-600 mt-1">0</div>
+        </div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs col-span-2 md:col-span-1">
+          <span class="text-xs font-semibold text-slate-500">Estimasi Penerimaan Kas</span>
+          <div id="stat-revenue" class="text-xl font-black text-red-600 mt-1">Rp 0</div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 space-y-4">
+        <h3 class="font-bold text-base text-slate-900">Aksi Cepat Pengelola:</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <button onclick="document.querySelector('[data-tab=registrations]').click()" class="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition-colors">
+            <div class="font-bold text-sm text-slate-900 flex items-center gap-1.5"><span>📝</span> Verifikasi Berkas & Pembayaran</div>
+            <div class="text-xs text-slate-500 mt-1">Periksa KTP, pasfoto, dan terbitkan kartu tanda peserta ujian.</div>
+          </button>
+          <a href="/cetak-kartu.html" target="_blank" class="p-4 rounded-2xl bg-red-50 hover:bg-red-100 border border-red-200 text-left transition-colors block">
+            <div class="font-bold text-sm text-red-950 flex items-center gap-1.5"><span>🖨️</span> Studio Cetak & Layout Kartu</div>
+            <div class="text-xs text-red-700 mt-1">Kustomisasi tata letak, posisi pasfoto, logo, tanda tangan, dan cetak massal.</div>
+          </a>
+          <a href="/laporan-transaksi.html" class="p-4 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-left transition-colors block">
+            <div class="font-bold text-sm text-emerald-950 flex items-center gap-1.5"><span>📊</span> Laporan Transaksi Pendaftaran</div>
+            <div class="text-xs text-emerald-700 mt-1">Rekapitulasi harian & bulanan, penerimaan kas, breakdown level, dan ekspor CSV.</div>
+          </a>
+          <button onclick="document.querySelector('[data-tab=cms]').click()" class="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition-colors">
+            <div class="font-bold text-sm text-slate-900 flex items-center gap-1.5"><span>🎨</span> Edit Konten Landing Page</div>
+            <div class="text-xs text-slate-500 mt-1">Ubah jadwal gelombang, info lokasi, aturan pakaian, atau pengumuman.</div>
+          </button>
+          <a href="/pengaturan-backup.html" class="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition-colors block">
+            <div class="font-bold text-sm text-slate-900 flex items-center gap-1.5"><span>⚙️</span> Pengaturan Sistem & Backup</div>
+            <div class="text-xs text-slate-500 mt-1">Unduh snapshot SQLite .db, ekspor JSON, restore data, dan atur rekening/kuota.</div>
+          </a>
+          <button onclick="document.querySelector('[data-tab=users]').click()" class="p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-left transition-colors">
+            <div class="font-bold text-sm text-slate-900 flex items-center gap-1.5"><span>👥</span> Kelola Role & Pengguna</div>
+            <div class="text-xs text-slate-500 mt-1">Tambah admin baru, verifikator panitia, atau kelola status akun peserta.</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 2: DATA PESERTA & VERIFIKASI PENDAFTARAN               -->
+    <!-- ========================================================== -->
+    <div id="tab-registrations" class="admin-tab-content hidden space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-3">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Data Pendaftaran Peserta</h2>
+          <p class="text-xs text-slate-500">Daftar calon peserta ujian, status pembayaran, dan penerbitan kartu ujian.</p>
+        </div>
+
+        <!-- Filter & Search Tools -->
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="relative">
+            <input type="text" id="filter-reg-search" oninput="handleRegSearch(event)" placeholder="🔍 Cari nama / No. Reg / NIK / Institusi..." class="px-3.5 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white outline-none focus:ring-2 focus:ring-red-500 w-48 sm:w-64" />
+            <button type="button" id="btn-clear-reg-search" onclick="clearRegSearch()" class="hidden absolute right-2.5 top-1.5 text-slate-400 hover:text-slate-600 text-xs">✕</button>
+          </div>
+          <select id="filter-reg-status" onchange="loadRegistrations()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white">
+            <option value="ALL">Semua Status</option>
+            <option value="PENDING">Menunggu Verifikasi</option>
+            <option value="VERIFIED">Terverifikasi</option>
+            <option value="REJECTED">Ditolak</option>
+          </select>
+          <select id="filter-reg-level" onchange="loadRegistrations()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white">
+            <option value="ALL">Semua Level</option>
+            <option value="5Q">5Q</option>
+            <option value="4Q">4Q</option>
+            <option value="3Q">3Q</option>
+            <option value="2Q">2Q</option>
+            <option value="1Q">1Q</option>
+          </select>
+          <div class="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+            <span>Tampilkan:</span>
+            <select id="filter-reg-pagesize" onchange="changeRegPageSize(event)" class="px-2.5 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white outline-none focus:ring-2 focus:ring-red-500">
+              <option value="5">5 baris</option>
+              <option value="10" selected>10 baris</option>
+              <option value="25">25 baris</option>
+              <option value="50">50 baris</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registrations Table -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 border-b border-slate-200 font-bold text-slate-700">
+              <tr>
+                <th class="py-3 px-4">No. Registrasi</th>
+                <th class="py-3 px-4">Nama & Email Peserta</th>
+                <th class="py-3 px-4">Level / Gelombang</th>
+                <th class="py-3 px-4">Tgl Lahir</th>
+                <th class="py-3 px-4">Status Bayar</th>
+                <th class="py-3 px-4">Kartu Ujian</th>
+                <th class="py-3 px-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="registrations-tbody">
+              <!-- Rendered by admin.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls Footer -->
+        <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="text-slate-500 font-medium">
+            Menampilkan <span id="reg-paging-start" class="font-bold text-slate-800">1</span>-<span id="reg-paging-end" class="font-bold text-slate-800">10</span> dari <span id="reg-paging-total" class="font-bold text-slate-800">0</span> peserta terdata
+          </div>
+          <div class="flex items-center gap-1.5" id="reg-pagination-controls">
+            <button id="reg-btn-first" onclick="goToRegPage(1)" class="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold" title="Halaman Pertama">«</button>
+            <button id="reg-btn-prev" onclick="goToRegPage(regCurrentPage - 1)" class="px-3 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold" title="Halaman Sebelumnya">‹ Prev</button>
+            <div id="reg-page-numbers" class="flex items-center gap-1">
+              <!-- Dynamically populated page buttons -->
+            </div>
+            <button id="reg-btn-next" onclick="goToRegPage(regCurrentPage + 1)" class="px-3 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold" title="Halaman Selanjutnya">Next ›</button>
+            <button id="reg-btn-last" onclick="goToRegPage(regTotalPages)" class="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold" title="Halaman Terakhir">»</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 3: MANAJEMEN ROLE USER (USER MANAGEMENT)               -->
+    <!-- ========================================================== -->
+    <div id="tab-users" class="admin-tab-content hidden space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-3">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Role & Pengguna</h2>
+          <p class="text-xs text-slate-500">Kelola akun, penugasan role hak akses (Peserta, Verifikator, Admin), dan reset sandi.</p>
+        </div>
+
+        <!-- Filter & Search Tools -->
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="relative">
+            <input type="text" id="filter-user-search" oninput="handleUserSearch(event)" placeholder="🔍 Cari nama / email / HP..." class="px-3.5 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white outline-none focus:ring-2 focus:ring-red-500 w-48 sm:w-60" />
+            <button type="button" id="btn-clear-user-search" onclick="clearUserSearch()" class="hidden absolute right-2.5 top-1.5 text-slate-400 hover:text-slate-600 text-xs">✕</button>
+          </div>
+          <select id="filter-user-role" onchange="filterUserTable()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white">
+            <option value="ALL">Semua Role</option>
+            <option value="ADMIN">ADMIN</option>
+            <option value="VERIFIKATOR">VERIFIKATOR</option>
+            <option value="PESERTA">PESERTA</option>
+          </select>
+          <div class="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+            <span>Tampilkan:</span>
+            <select id="filter-user-pagesize" onchange="changeUserPageSize(event)" class="px-2.5 py-1.5 rounded-xl border border-slate-300 text-xs font-semibold bg-white outline-none focus:ring-2 focus:ring-red-500">
+              <option value="5">5 baris</option>
+              <option value="10" selected>10 baris</option>
+              <option value="25">25 baris</option>
+              <option value="50">50 baris</option>
+            </select>
+          </div>
+          <button onclick="openAddUserModal()" class="px-4 py-1.5 rounded-xl btn-japan font-bold text-xs flex items-center gap-1.5 shadow-sm">
+            <span>+ Tambah Pengguna / Admin</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Users Table -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 border-b border-slate-200 font-bold text-slate-700">
+              <tr>
+                <th class="py-3 px-4">ID</th>
+                <th class="py-3 px-4">Nama Lengkap & Email</th>
+                <th class="py-3 px-4">Role Akses</th>
+                <th class="py-3 px-4">No. HP</th>
+                <th class="py-3 px-4">Status Akun</th>
+                <th class="py-3 px-4">Riwayat Ujian</th>
+                <th class="py-3 px-4 text-right">Pengaturan</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <!-- Rendered by admin.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination Controls Footer -->
+        <div class="px-5 py-3.5 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="text-slate-500 font-medium">
+            Menampilkan <span id="user-paging-start" class="font-bold text-slate-800">1</span>-<span id="user-paging-end" class="font-bold text-slate-800">10</span> dari <span id="user-paging-total" class="font-bold text-slate-800">0</span> akun terdaftar
+          </div>
+          <div class="flex items-center gap-1.5" id="user-pagination-controls">
+            <button id="user-btn-first" onclick="goToUserPage(1)" class="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold" title="Halaman Pertama">«</button>
+            <button id="user-btn-prev" onclick="goToUserPage(userCurrentPage - 1)" class="px-3 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold" title="Halaman Sebelumnya">‹ Prev</button>
+            <div id="user-page-numbers" class="flex items-center gap-1">
+              <!-- Dynamically populated page buttons -->
+            </div>
+            <button id="user-btn-next" onclick="goToUserPage(userCurrentPage + 1)" class="px-3 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold" title="Halaman Selanjutnya">Next ›</button>
+            <button id="user-btn-last" onclick="goToUserPage(userTotalPages)" class="px-2.5 py-1 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed font-bold" title="Halaman Terakhir">»</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 4: CMS LANDING PAGE (UBAH/TAMBAH KONTEN)               -->
+    <!-- ========================================================== -->
+    <div id="tab-cms" class="admin-tab-content hidden space-y-8">
+      <div class="border-b border-slate-200 pb-3 flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Konten Halaman Depan (CMS)</h2>
+          <p class="text-xs text-slate-500">Perubahan konten di bawah ini langsung tersimpan ke database dan tampil live di landing page.</p>
+        </div>
+        <a href="/" target="_blank" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors">
+          Cek Landing Page Live ↗
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        
+        <!-- CMS 0: Manajemen Main Menu Header & Pengurutan Posisi -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs lg:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-red-100 text-red-700 text-xs font-black">NAVIGASI & PENGURUTAN</span>
+                <h3 class="font-extrabold text-base text-slate-900">Manajemen & Pengurutan Main Menu Header</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Atur urutan dan susunan menu header secara fleksibel: tarik-geser (drag & drop), pilih nomor urut langsung, tombol pindah posisi, sortir A-Z, atau urutan standar.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="sortNavMenusAlphabetical('asc')" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors" title="Urutkan menu secara alfabetis A sampai Z">
+                <span>🔤 Urut A-Z</span>
+              </button>
+              <button onclick="sortNavMenusAlphabetical('desc')" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors" title="Urutkan menu secara alfabetis Z sampai A">
+                <span>🔤 Urut Z-A</span>
+              </button>
+              <button onclick="resetNavMenusDefaultOrder()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors" title="Pulihkan urutan menu ke susunan standar">
+                <span>🔄 Urutan Standar</span>
+              </button>
+              <button onclick="openAddMenuModal()" class="px-3.5 py-1.5 rounded-xl btn-japan font-bold text-xs flex items-center gap-1 shadow-sm">
+                <span>+ Tambah Menu Baru</span>
+              </button>
+              <button onclick="saveCmsNavigation(true)" class="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-colors shadow-sm flex items-center gap-1">
+                <span>💾 Simpan Perubahan Menu</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pratinjau Urutan Tampilan Header Live -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2.5">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-extrabold text-slate-800 flex items-center gap-1.5">
+                <span>👁️</span> Pratinjau Susunan Header Website (Kiri ke Kanan):
+              </span>
+              <span class="text-[11px] text-slate-500 font-medium">Tampilan real-time sesuai urutan nomor</span>
+            </div>
+            <div id="cms-nav-preview-strip" class="flex flex-wrap items-center gap-2 pt-0.5">
+              <!-- Rendered dynamically by admin.js -->
+            </div>
+          </div>
+
+          <!-- Table of Nav Menus with Drag & Drop & Direct Order Picking -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold">
+                <tr>
+                  <th class="py-2.5 px-3 w-12 text-center" title="Tarik ikon ⠿ untuk menggeser posisi baris secara visual">Tarik</th>
+                  <th class="py-2.5 px-3 w-28 text-center" title="Pilih nomor posisi langsung">Posisi Urut</th>
+                  <th class="py-2.5 px-3">Nama Menu (Label)</th>
+                  <th class="py-2.5 px-3">Link Tujuan (URL / Anchor)</th>
+                  <th class="py-2.5 px-3 w-28">Target Window</th>
+                  <th class="py-2.5 px-3 w-24 text-center">Status</th>
+                  <th class="py-2.5 px-3 w-64 text-right">Aksi & Pindah Urutan</th>
+                </tr>
+              </thead>
+              <tbody id="cms-nav-menus-tbody">
+                <!-- Dynamically populated by admin.js -->
+              </tbody>
+            </table>
+          </div>
+          <p class="text-[11px] text-slate-500 italic flex items-center gap-1">
+            <span>💡 Tips Pengurutan:</span> Anda bisa menggeser baris dengan menarik ikon <b class="font-bold">⠿</b> (drag & drop), mengganti nomor langsung di kolom <b class="font-bold">Posisi Urut</b>, atau menekan tombol <b class="font-bold">⤒</b> (paling atas), <b class="font-bold">▲</b> (naik 1 tingkat), <b class="font-bold">▼</b> (turun 1 tingkat), dan <b class="font-bold">⤓</b> (paling bawah).
+          </p>
+        </div>
+
+        <!-- CMS: Manajemen Logo Header (Ubah & Kurangi Logo) -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs lg:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-xs font-black">HEADER BRANDING</span>
+                <h3 class="font-extrabold text-base text-slate-900">Manajemen Logo Header (Ubah & Kurangi Logo)</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola logo yang tampil di header website: unggah logo baru, ganti gambar, atau kurangi jumlah logo (misal hanya tampilkan 1 logo).</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="resetDefaultHeaderLogos()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors">
+                <span>🔄 Pulihkan Standar</span>
+              </button>
+              <button onclick="saveCmsHeaderLogo()" class="px-4 py-1.5 rounded-xl btn-japan font-bold text-xs shadow-sm flex items-center gap-1">
+                <span>💾 Simpan Logo Header</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Preview Header Logo Strip -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <span class="font-extrabold text-xs text-slate-700 flex items-center gap-1.5">
+              <span>👁️</span> Pratinjau Tampilan Header Live:
+            </span>
+            <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-4 shadow-xs w-fit">
+              <img id="admin_preview_logo1" src="/images/logo-nat-test.svg" alt="Preview Logo 1" class="h-10 w-auto object-contain" />
+              <div id="admin_preview_logo_divider" class="h-6 w-[1px] bg-slate-300"></div>
+              <img id="admin_preview_logo2" src="/images/logo-csgs-ui.svg" alt="Preview Logo 2" class="h-10 w-auto object-contain" />
+            </div>
+            <span class="text-[11px] text-slate-400">Garis pemisah otomatis hilang jika salah satu logo dimatikan (fasilitas mengurangi logo).</span>
+          </div>
+
+          <!-- Configuration Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+            <!-- Logo 1 Config -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="font-extrabold text-slate-900 text-sm">Logo 1 (Utama - NAT-TEST)</h4>
+                <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" id="cms_logo1_enabled" onchange="updateHeaderLogoPreview()" class="rounded text-red-600 focus:ring-red-500 w-4 h-4" checked />
+                  <span class="font-bold text-slate-700">Tampilkan</span>
+                </label>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Path / URL Gambar Logo 1:</label>
+                <div class="flex gap-2">
+                  <input type="text" id="cms_logo1_url" oninput="updateHeaderLogoPreview()" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs" value="/images/logo-nat-test.svg" />
+                  <label class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer shrink-0 transition-colors">
+                    <span>📁 Upload</span>
+                    <input type="file" accept="image/*" onchange="handleUploadHeaderLogo(event, 1)" class="hidden" />
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Alt Teks / Deskripsi Logo 1:</label>
+                <input type="text" id="cms_logo1_alt" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" value="NAT-TEST Official Logo" />
+              </div>
+            </div>
+
+            <!-- Logo 2 Config -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-1.5">
+                  <h4 class="font-extrabold text-slate-900 text-sm">Logo 2 (Sekunder - CSGS UI)</h4>
+                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Opsi Kurangi</span>
+                </div>
+                <label class="inline-flex items-center gap-1.5 cursor-pointer">
+                  <input type="checkbox" id="cms_logo2_enabled" onchange="updateHeaderLogoPreview()" class="rounded text-red-600 focus:ring-red-500 w-4 h-4" checked />
+                  <span class="font-bold text-slate-700">Tampilkan</span>
+                </label>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Path / URL Gambar Logo 2:</label>
+                <div class="flex gap-2">
+                  <input type="text" id="cms_logo2_url" oninput="updateHeaderLogoPreview()" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs" value="/images/logo-csgs-ui.svg" />
+                  <label class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer shrink-0 transition-colors">
+                    <span>📁 Upload</span>
+                    <input type="file" accept="image/*" onchange="handleUploadHeaderLogo(event, 2)" class="hidden" />
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Alt Teks / Deskripsi Logo 2:</label>
+                <input type="text" id="cms_logo2_alt" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" value="UKK CSGS UI Logo" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CMS: Manajemen Image Slider Halaman Depan (Maksimal 3 Gambar) -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs lg:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-red-100 text-red-700 text-xs font-black">IMAGE SLIDER</span>
+                <h3 class="font-extrabold text-base text-slate-900">Manajemen Image Slider Halaman Depan (Maksimal 3 Gambar)</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola banner visual promosi dan pengumuman interaktif di bagian teratas website (dibatasi maksimal 3 gambar, ukuran upload hingga 5MB per banner).</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button id="btn-add-slider-item" onclick="addNewSlideItem()" class="px-3.5 py-1.5 rounded-xl btn-japan font-bold text-xs flex items-center gap-1 shadow-sm">
+                <span>+ Tambah Gambar Slide</span>
+              </button>
+              <button onclick="saveCmsSlider()" class="px-4 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-colors shadow-sm flex items-center gap-1">
+                <span>💾 Simpan Pengaturan Slider</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- General Slider Settings -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Status Slider Halaman Depan:</label>
+              <select id="cms_slider_enabled" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-bold">
+                <option value="true">Aktif (Tampilkan Slider)</option>
+                <option value="false">Nonaktif (Sembunyikan Slider)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Putar Otomatis (Autoplay):</label>
+              <select id="cms_slider_autoplay" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold">
+                <option value="true">Aktif</option>
+                <option value="false">Nonaktif (Manual Saja)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Interval Pergantian (Detik):</label>
+              <input type="number" id="cms_slider_interval" min="2" max="15" value="5" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold bg-white" />
+            </div>
+          </div>
+
+          <!-- Slide Count Status Badge -->
+          <div class="flex items-center justify-between text-xs px-1">
+            <span class="font-extrabold text-slate-800">Daftar Slide Aktif (<span id="cms-slider-count-badge" class="font-mono text-red-600">3 / 3</span>):</span>
+            <span class="text-[11px] text-slate-500 font-semibold" id="cms-slider-limit-msg">Maksimal 3 gambar telah terisi.</span>
+          </div>
+
+          <!-- Dynamic Slides Container (Max 3) -->
+          <div id="cms-slides-editor-container" class="space-y-4">
+            <!-- Populated dynamically by admin.js -->
+          </div>
+        </div>
+
+        <!-- CMS 1: Hero & Announcement -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 class="font-extrabold text-base text-slate-900">1. Hero & Banner Pengumuman</h3>
+            <span class="text-[10px] font-mono text-red-600 font-bold">SECTION: hero</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Teks Banner Pengumuman (Bar Paling Atas):</label>
+              <textarea id="cms_hero_announcement" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-sans"></textarea>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Badge Teks Hero:</label>
+              <input type="text" id="cms_hero_badge" class="w-full px-3 py-2 rounded-xl border border-slate-300" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Judul Utama (H1 Hero):</label>
+              <input type="text" id="cms_hero_title" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-sm" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Subjudul Hero:</label>
+              <textarea id="cms_hero_subtitle" rows="3" class="w-full p-2.5 rounded-xl border border-slate-300"></textarea>
+            </div>
+
+            <button onclick="saveCmsHero()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm">
+              Simpan Perubahan Hero & Banner
+            </button>
+          </div>
+        </div>
+
+        <!-- CMS 2: Akses & Lokasi Ujian -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 class="font-extrabold text-base text-slate-900">2. Info Akses & Lokasi Ujian</h3>
+            <span class="text-[10px] font-mono text-red-600 font-bold">SECTION: location</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Nama Gedung / Venue:</label>
+              <input type="text" id="cms_loc_venue" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Alamat Lengkap:</label>
+              <textarea id="cms_loc_address" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300"></textarea>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">URL Google Maps Iframe Embed:</label>
+              <input type="text" id="cms_loc_map_embed" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-[11px]" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Link Langsung Google Maps App:</label>
+              <input type="text" id="cms_loc_map_link" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono text-[11px]" />
+            </div>
+
+            <button onclick="saveCmsLocation()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm">
+              Simpan Perubahan Lokasi Ujian
+            </button>
+          </div>
+        </div>
+
+        <!-- CMS 3: Jadwal Ujian Gelombang -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs lg:col-span-2">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <div>
+              <h3 class="font-extrabold text-base text-slate-900">3. Jadwal Gelombang Ujian (Tambah / Ubah / Hapus)</h3>
+              <p class="text-xs text-slate-500">Atur periode ujian, tanggal pelaksanaan, dan status buka pendaftaran</p>
+            </div>
+            <button onclick="addNewSchedulePrompt()" class="px-3.5 py-1.5 rounded-xl btn-japan font-bold text-xs">
+              + Tambah Gelombang Baru
+            </button>
+          </div>
+
+          <div id="cms-schedules-list" class="space-y-3">
+            <!-- Rendered by admin.js -->
+          </div>
+        </div>
+
+        <!-- CMS 4: Aturan Pakaian (Dress Code) -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 class="font-extrabold text-base text-slate-900">4. Aturan Pakaian (Dress Code)</h3>
+            <span class="text-[10px] font-mono text-red-600 font-bold">SECTION: dresscode</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Ringkasan Ketentuan:</label>
+              <textarea id="cms_dresscode_summary" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300"></textarea>
+            </div>
+            <div>
+              <label class="block font-bold text-emerald-800 mb-1">Daftar Pakaian yang Diperbolehkan / Wajib (1 baris per item):</label>
+              <textarea id="cms_dresscode_allowed" rows="4" class="w-full p-2.5 rounded-xl border border-emerald-300 bg-emerald-50/30"></textarea>
+            </div>
+            <div>
+              <label class="block font-bold text-red-800 mb-1">Daftar Pakaian yang DILARANG (1 baris per item):</label>
+              <textarea id="cms_dresscode_prohibited" rows="4" class="w-full p-2.5 rounded-xl border border-red-300 bg-red-50/30"></textarea>
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Teks Sanksi Pelanggaran:</label>
+              <input type="text" id="cms_dresscode_special" class="w-full px-3 py-2 rounded-xl border border-slate-300" />
+            </div>
+
+            <button onclick="saveCmsDresscode()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm">
+              Simpan Perubahan Aturan Pakaian
+            </button>
+          </div>
+        </div>
+
+        <!-- CMS 5: ATK Wajib & Barang Terlarang -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 class="font-extrabold text-base text-slate-900">5. ATK Wajib & Barang Terlarang</h3>
+            <span class="text-[10px] font-mono text-red-600 font-bold">SECTION: stationery</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Ringkasan Spesifikasi Pensil 2B & LJK:</label>
+              <textarea id="cms_stationery_summary" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300"></textarea>
+            </div>
+            <div>
+              <label class="block font-bold text-red-800 mb-1">Daftar Barang Terlarang di Atas Meja Ujian (1 baris per item):</label>
+              <textarea id="cms_stationery_prohibited" rows="5" class="w-full p-2.5 rounded-xl border border-red-300 bg-red-50/30"></textarea>
+            </div>
+
+            <button onclick="saveCmsStationery()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm">
+              Simpan Perubahan ATK & Ketentuan
+            </button>
+          </div>
+        </div>
+
+        <!-- CMS 6: Info Pembayaran -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs lg:col-span-2">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <h3 class="font-extrabold text-base text-slate-900">6. Kebijakan & Info Pembayaran Bank UI</h3>
+            <span class="text-[10px] font-mono text-red-600 font-bold">SECTION: payment</span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Kebijakan Pengembalian Dana (Non-Refundable Policy):</label>
+              <textarea id="cms_payment_policy" rows="2" class="w-full p-2.5 rounded-xl border border-slate-300"></textarea>
+            </div>
+
+            <button onclick="saveCmsPayment()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm">
+              Simpan Perubahan Kebijakan Pembayaran
+            </button>
+          </div>
+        </div>
+
+        <!-- CMS 7: Pertanyaan yang Sering Diajukan (FAQ) -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs lg:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 text-xs font-black">TANYA JAWAB</span>
+                <h3 class="font-extrabold text-base text-slate-900">7. Pertanyaan yang Sering Diajukan (FAQ)</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola daftar tanya-jawab resmi seputar ujian NAT-TEST, ketentuan imigrasi Jepang, dan informasi sekretariat.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="openAddFaqModal()" class="px-3.5 py-1.5 rounded-xl btn-japan font-bold text-xs flex items-center gap-1 shadow-sm">
+                <span>+ Tambah Pertanyaan Baru</span>
+              </button>
+              <button onclick="saveCmsFaqAll(true)" class="px-4 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-colors shadow-sm flex items-center gap-1">
+                <span>💾 Simpan Seluruh FAQ</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section Title & Subtitle Edit -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Judul Bagian FAQ:</label>
+              <input type="text" id="cms_faq_title" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold bg-white" placeholder="Pertanyaan yang Sering Diajukan (FAQ)" />
+            </div>
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Subjudul / Deskripsi Bagian:</label>
+              <input type="text" id="cms_faq_subtitle" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white" placeholder="Informasi penting seputar sertifikasi NAT-TEST..." />
+            </div>
+          </div>
+
+          <!-- FAQ Items List Container -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between text-xs px-1">
+              <span class="font-extrabold text-slate-800">Daftar Pertanyaan & Jawaban (<span id="cms-faq-count-badge" class="font-mono text-red-600">0</span> Pertanyaan):</span>
+              <span class="text-[11px] text-slate-500 font-semibold">Gunakan tombol ▲ / ▼ untuk memindahkan urutan.</span>
+            </div>
+            <div id="cms-faqs-list" class="space-y-3">
+              <!-- Rendered dynamically by admin.js -->
+            </div>
+          </div>
+
+          <!-- Kontak Sekretariat Pelaksana (Footer/FAQ) -->
+          <div class="pt-4 border-t border-slate-100 space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="font-extrabold text-xs text-slate-900 flex items-center gap-1.5">
+                <span>🏢</span> Informasi Kontak Sekretariat Pelaksana (Tampil di Footer):
+              </h4>
+              <span class="text-[11px] text-slate-400">Otomatis memperbarui footer halaman depan</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Alamat Kantor / Sekretariat:</label>
+                <input type="text" id="cms_faq_contact_office" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Nomor WhatsApp Resmi:</label>
+                <input type="text" id="cms_faq_contact_wa" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Email Resmi:</label>
+                <input type="email" id="cms_faq_contact_email" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Jam Operasional Pelayanan:</label>
+                <input type="text" id="cms_faq_contact_hours" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" />
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-2">
+            <button onclick="saveCmsFaqAll(true)" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm flex items-center justify-center gap-1.5">
+              <span>💾 Simpan Seluruh Pengaturan FAQ & Kontak Sekretariat</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- CMS 8: Pengaturan & Teks Footer Website -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs lg:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 text-xs font-black">BAGIAN BAWAH</span>
+                <h3 class="font-extrabold text-base text-slate-900">8. Pengaturan & Teks Footer Website</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola ringkasan profil lembaga, akreditasi, judul kolom, kontak sekretariat pelaksana, dan teks hak cipta pada footer.</p>
+            </div>
+            <button onclick="saveCmsFooter()" class="px-5 py-2 rounded-xl btn-japan font-bold text-xs flex items-center gap-1.5 shadow-sm">
+              <span>💾 Simpan Pengaturan Footer</span>
+            </button>
+          </div>
+
+          <div class="space-y-4 text-xs">
+            <!-- Kolom 1: Profil Lembaga & Akreditasi -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                <span>📝</span> Kolom 1: Profil Lembaga & Akreditasi MOJ
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Teks Ringkasan Profil Lembaga:</label>
+                  <textarea id="cms_footer_about" rows="3" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs bg-white outline-none focus:ring-2 focus:ring-red-500" placeholder="Penyelenggaraan resmi Ujian Standar Kemampuan Bahasa Jepang..."></textarea>
+                  <p class="text-[10px] text-slate-400 mt-1">Tampil di kolom pertama footer di bawah logo resmi.</p>
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Teks Pengakuan / Akreditasi MOJ:</label>
+                  <textarea id="cms_footer_accreditation" rows="3" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs bg-white outline-none focus:ring-2 focus:ring-red-500" placeholder="Terakreditasi resmi untuk COE & Visa Studi ke Jepang oleh MOJ..."></textarea>
+                  <p class="text-[10px] text-slate-400 mt-1">Teks keterangan akreditasi resmi visa dan kementerian kehakiman Jepang.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Judul Kolom Footer -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                <span>📑</span> Judul Masing-Masing Kolom Footer
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Judul Kolom 2 (Navigasi):</label>
+                  <input type="text" id="cms_footer_col2_title" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold outline-none focus:ring-2 focus:ring-red-500" placeholder="Halaman Utama" />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Judul Kolom 3 (Informasi Resmi):</label>
+                  <input type="text" id="cms_footer_col3_title" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold outline-none focus:ring-2 focus:ring-red-500" placeholder="Informasi Resmi" />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Judul Kolom 4 (Sekretariat):</label>
+                  <input type="text" id="cms_footer_col4_title" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white font-semibold outline-none focus:ring-2 focus:ring-red-500" placeholder="Sekretariat Pelaksana" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Informasi Kontak Sekretariat -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                <span>🏢</span> Informasi Kontak Sekretariat Pelaksana (Kolom 4)
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Alamat Gedung / Kantor:</label>
+                  <input type="text" id="cms_footer_contact_office" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white outline-none focus:ring-2 focus:ring-red-500" placeholder="Gedung Pusat Studi Jepang (PSJ UI) Lt. 1..." />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Nomor WhatsApp Resmi:</label>
+                  <input type="text" id="cms_footer_contact_wa" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono bg-white outline-none focus:ring-2 focus:ring-red-500" placeholder="+62 812-8888-9999" />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Alamat Email Resmi:</label>
+                  <input type="email" id="cms_footer_contact_email" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-mono bg-white outline-none focus:ring-2 focus:ring-red-500" placeholder="nattest@csgs-ui.ac.id" />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Jam Operasional Pelayanan:</label>
+                  <input type="text" id="cms_footer_contact_hours" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white outline-none focus:ring-2 focus:ring-red-500" placeholder="Senin - Jumat (08.30 - 16.00 WIB)" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Hak Cipta (Copyright) -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                <span>©️</span> Teks Hak Cipta (Copyright Bottom Bar)
+              </h4>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Teks Hak Cipta (Bar Bawah):</label>
+                <input type="text" id="cms_footer_copyright" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white outline-none focus:ring-2 focus:ring-red-500" placeholder="© 2026 NAT-TEST Committee Japan & UKK CSGS Universitas Indonesia. All rights reserved." />
+              </div>
+              <p class="text-[10px] text-slate-400">Pintu masuk rahasia login pengawas/admin di sebelah kanan bar bawah akan tetap terjaga secara aman.</p>
+            </div>
+
+            <div class="pt-2">
+              <button onclick="saveCmsFooter()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm flex items-center justify-center gap-1.5">
+                <span>💾 Simpan Seluruh Pengaturan Footer</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB: MANAJEMEN HALAMAN STATIK (OFFICIAL PAGES)             -->
+    <!-- ========================================================== -->
+    <div id="tab-pages" class="admin-tab-content hidden space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded-md bg-red-100 text-red-700 text-xs font-black">HALAMAN RESMI</span>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Manajemen Halaman Statik</h2>
+          </div>
+          <p class="text-xs text-slate-500 mt-1">Kelola halaman statik publik (Tentang Kami, Panduan Pendaftaran, Syarat & Ketentuan, Kebijakan Privasi, dan halaman baru).</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="loadAdminStaticPages()" class="px-3.5 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors">
+            <span>🔄 Segarkan</span>
+          </button>
+          <button onclick="openCreateStaticPageModal()" class="px-4 py-2 rounded-xl btn-japan font-bold text-xs flex items-center gap-1 shadow-sm">
+            <span>+ Buat Halaman Statik Baru</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick stat pills -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-slate-500 font-medium">Total Halaman Statik:</span>
+          <div id="stat-total-pages" class="text-xl font-black text-slate-900 mt-1">0</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-slate-500 font-medium">Halaman Diterbitkan (Live):</span>
+          <div id="stat-published-pages" class="text-xl font-black text-emerald-600 mt-1">0</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
+          <span class="text-slate-500 font-medium">Halaman Draf / Nonaktif:</span>
+          <div id="stat-draft-pages" class="text-xl font-black text-amber-600 mt-1">0</div>
+        </div>
+      </div>
+
+      <!-- Static Pages Table -->
+      <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs">
+        <div class="p-4 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-xs text-slate-800">Daftar Seluruh Halaman Statik</span>
+            <span id="pages-count-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">0 Halaman</span>
+          </div>
+          <div class="text-xs text-slate-400">
+            Tiap halaman memiliki URL publik tersendiri dengan desain bernuansa Jepang.
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+              <tr>
+                <th class="py-3 px-4 w-12 text-center">No</th>
+                <th class="py-3 px-4">Judul & Ringkasan</th>
+                <th class="py-3 px-4 w-44">Slug URL</th>
+                <th class="py-3 px-4 w-28 text-center">Status</th>
+                <th class="py-3 px-4 w-24 text-center">Pembaca</th>
+                <th class="py-3 px-4 w-36">Pembaruan</th>
+                <th class="py-3 px-4 w-48 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="admin-pages-tbody">
+              <!-- Dynamically populated by admin.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 5: FASILITAS UBAH PASSWORD ADMIN                       -->
+    <!-- ========================================================== -->
+    <div id="tab-password" class="admin-tab-content hidden max-w-lg mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+      <div class="border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-extrabold text-slate-900">Ubah Kata Sandi Administrator</h2>
+        <p class="text-xs text-slate-500">Demi keamanan, pastikan Anda mengganti kata sandi secara berkala.</p>
+      </div>
+
+      <form id="form-admin-change-password" onsubmit="handleAdminChangePassword(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Kata Sandi Admin Saat Ini: *</label>
+          <input type="password" id="admin_old_pass" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Kata Sandi Baru: *</label>
+          <input type="password" id="admin_new_pass" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Konfirmasi Kata Sandi Baru: *</label>
+          <input type="password" id="admin_confirm_pass" required minlength="6" placeholder="Ulangi kata sandi baru" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl btn-japan font-bold text-sm shadow-md mt-2">
+          Perbarui Kata Sandi Admin
+        </button>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- ========================================================== -->
+  <!-- MODAL: VERIFIKASI DOKUMEN & PEMBAYARAN PESERTA             -->
+  <!-- ========================================================== -->
+  <div id="verification-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200 my-8 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeVerificationModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-6 space-y-1">
+        <span class="text-xs font-mono font-bold text-red-600">VERIFIKASI ADMINISTRATOR</span>
+        <h3 class="text-xl font-extrabold text-slate-900">Detail & Verifikasi Berkas Peserta</h3>
+        <p class="text-xs text-slate-500">Nomor Registrasi: <strong id="modal-reg-num" class="text-slate-800 font-mono">-</strong></p>
+      </div>
+
+      <!-- Participant Data Summary -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs mb-6">
+        <div>
+          <span class="text-slate-500">Nama:</span>
+          <div id="modal-reg-name" class="font-bold text-slate-900 mt-0.5">-</div>
+        </div>
+        <div>
+          <span class="text-slate-500">NIK KTP:</span>
+          <div id="modal-reg-nik" class="font-bold font-mono text-slate-900 mt-0.5">-</div>
+        </div>
+        <div>
+          <span class="text-slate-500">Tempat, Tgl Lahir:</span>
+          <div id="modal-reg-birth" class="font-bold text-slate-900 mt-0.5">-</div>
+        </div>
+        <div>
+          <span class="text-slate-500">Nomor WhatsApp:</span>
+          <div id="modal-reg-phone" class="font-bold text-slate-900 mt-0.5">-</div>
+        </div>
+        <div>
+          <span class="text-slate-500">Asal Institusi:</span>
+          <div id="modal-reg-institution" class="font-bold text-slate-900 mt-0.5">-</div>
+        </div>
+        <div>
+          <span class="text-slate-500">Level & Gelombang:</span>
+          <div id="modal-reg-level" class="font-bold text-red-600 mt-0.5">-</div>
+        </div>
+        <div class="sm:col-span-2">
+          <span class="text-slate-500">Alamat Domisili (Kode Pos):</span>
+          <div id="modal-reg-address" class="font-medium text-slate-800 mt-0.5">-</div>
+        </div>
+        <div>
+          <span class="text-slate-500">Biaya / Kanal:</span>
+          <div class="font-bold text-slate-900 mt-0.5">
+            <span id="modal-reg-amount">-</span> (<span id="modal-reg-method">-</span>)
+          </div>
+        </div>
+        <div class="sm:col-span-3 p-2.5 rounded-xl bg-amber-50 border border-amber-200">
+          <span class="text-amber-800 font-bold block mb-0.5">📦 Alamat Pengiriman Sertifikat:</span>
+          <div id="modal-reg-cert-address" class="font-semibold text-slate-900">-</div>
+        </div>
+        <div class="sm:col-span-3 p-3 rounded-xl bg-slate-100 border border-slate-200 flex flex-wrap items-center justify-between text-xs gap-2">
+          <div class="flex items-center gap-2">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 font-mono" id="modal-va-bank-badge">VA BNI</span>
+            <span class="text-slate-600 font-semibold">Nomor Virtual Account:</span>
+            <span id="modal-va-number" class="font-mono font-black text-slate-900 text-sm tracking-wider">-</span>
+          </div>
+          <span class="text-[11px] text-slate-500 font-medium" id="modal-va-status-text">Kanal Pembayaran Otomatis</span>
+        </div>
+      </div>
+
+      <!-- Uploaded Files Preview: Pasfoto, KTP, Institusi, Bukti Transfer -->
+      <div class="space-y-4 mb-6">
+        <h4 class="font-bold text-xs uppercase tracking-wider text-slate-700">Berkas yang Diunggah Peserta:</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+          
+          <!-- Pasfoto -->
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center text-center">
+            <span class="font-semibold text-slate-700 mb-2">Pasfoto Resmi</span>
+            <img id="modal-foto-img" class="h-28 w-20 object-cover rounded border border-slate-300 shadow-xs mb-2" alt="Pasfoto" />
+            <div id="modal-foto-empty" class="text-slate-400 py-8">Belum ada foto</div>
+          </div>
+
+          <!-- KTP -->
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center text-center">
+            <span class="font-semibold text-slate-700 mb-2">Scan / Foto KTP</span>
+            <img id="modal-ktp-img" class="h-28 w-36 object-contain rounded border border-slate-300 shadow-xs mb-2 bg-white" alt="KTP" />
+            <div id="modal-ktp-empty" class="text-slate-400 py-8">Belum ada KTP</div>
+          </div>
+
+          <!-- Identitas Institusi -->
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center text-center">
+            <span class="font-semibold text-slate-700 mb-2">Foto / ID Institusi</span>
+            <img id="modal-institution-img" class="h-28 w-36 object-contain rounded border border-slate-300 shadow-xs mb-2 bg-white" alt="ID Institusi" />
+            <div id="modal-institution-empty" class="text-slate-400 py-8">Belum ada kartu</div>
+          </div>
+
+          <!-- Bukti Bayar -->
+          <div class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex flex-col items-center text-center">
+            <span class="font-semibold text-slate-700 mb-2">Bukti Bayar Bank/QRIS</span>
+            <img id="modal-proof-img" class="h-28 w-24 object-contain rounded border border-slate-300 shadow-xs mb-2 bg-white" alt="Bukti Transfer" />
+            <div id="modal-proof-empty" class="text-slate-400 py-8">Belum upload bukti</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Action Form -->
+      <div class="p-5 rounded-2xl bg-red-50/50 border border-red-200 space-y-4">
+        <h4 class="font-bold text-xs uppercase tracking-wider text-red-950">Keputusan Verifikasi Panitia:</h4>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Ubah Status Pembayaran & Berkas:</label>
+            <select id="modal-status-select" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold bg-white">
+              <option value="VERIFIED">VERIFIED (Lolos Verifikasi - Siap Ujian)</option>
+              <option value="PENDING">PENDING (Menunggu Pemeriksaan)</option>
+              <option value="REJECTED">REJECTED (Tolak - Berkas Tidak Sesuai)</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-2 pt-6">
+            <input type="checkbox" id="modal-card-issued" class="w-4 h-4 text-red-600 rounded" />
+            <label for="modal-card-issued" class="text-xs font-bold text-slate-800 cursor-pointer">
+              Terbitkan Kartu Tanda Peserta Ujian
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Tambahan untuk Peserta (Opsional):</label>
+          <input type="text" id="modal-notes" placeholder="Contoh: Bukti bayar sah, sesi pagi pukul 08.00 WIB." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white" />
+        </div>
+
+        <button onclick="saveVerificationStatus()" class="w-full py-3 rounded-xl btn-japan font-bold text-xs shadow-md">
+          Simpan Keputusan Verifikasi
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MODAL: TAMBAH USER / ADMIN BARU                           -->
+  <!-- ========================================================== -->
+  <div id="add-user-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200">
+      <button onclick="closeAddUserModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-5 space-y-1">
+        <h3 class="text-xl font-extrabold text-slate-900">Tambah Pengguna Baru</h3>
+        <p class="text-xs text-slate-500">Tentukan role dan hak akses akun baru</p>
+      </div>
+
+      <form onsubmit="handleAddUserSubmit(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama Lengkap: *</label>
+          <input type="text" id="new_user_name" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Email: *</label>
+          <input type="email" id="new_user_email" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Kata Sandi: *</label>
+          <input type="password" id="new_user_password" required minlength="6" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Role / Hak Akses: *</label>
+          <select id="new_user_role" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold bg-white">
+            <option value="PESERTA">PESERTA (Peserta Ujian Biasa)</option>
+            <option value="VERIFIKATOR">VERIFIKATOR (Panitia Verifikasi)</option>
+            <option value="ADMIN">ADMIN (Administrator Penuh)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nomor Telepon / WhatsApp:</label>
+          <input type="tel" id="new_user_phone" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm" />
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl btn-japan font-bold text-xs shadow-md mt-2">
+          Simpan Akun Pengguna
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MODAL: UBAH ROLE & STATUS USER                             -->
+  <!-- ========================================================== -->
+  <div id="edit-role-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl relative border border-slate-200">
+      <button onclick="closeEditRoleModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">Ubah Role & Status</h3>
+        <div id="edit-role-name" class="font-bold text-slate-800 text-sm mt-1">-</div>
+        <div id="edit-role-email" class="text-xs text-slate-500">-</div>
+      </div>
+
+      <div class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Role Akun:</label>
+          <select id="edit-user-role-select" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold bg-white">
+            <option value="PESERTA">PESERTA</option>
+            <option value="VERIFIKATOR">VERIFIKATOR</option>
+            <option value="ADMIN">ADMIN</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Status Akun:</label>
+          <select id="edit-user-status-select" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold bg-white">
+            <option value="ACTIVE">ACTIVE (Aktif)</option>
+            <option value="SUSPENDED">SUSPENDED (Dinonaktifkan)</option>
+          </select>
+        </div>
+
+        <button onclick="handleSaveRoleChange()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-md">
+          Simpan Perubahan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MODAL: TAMBAH / EDIT MENU HEADER                           -->
+  <!-- ========================================================== -->
+  <div id="nav-menu-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl relative border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+      <button onclick="closeNavMenuModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-5 space-y-1">
+        <span class="text-[10px] font-bold text-red-600 tracking-wider font-mono uppercase">MENU MANAGER</span>
+        <h3 id="nav-menu-modal-title" class="text-xl font-extrabold text-slate-900">Tambah Menu Navigasi Header</h3>
+        <p class="text-xs text-slate-500">Tentukan nama label menu dan tautan tujuan</p>
+      </div>
+
+      <form id="form-nav-menu" onsubmit="handleNavMenuSubmit(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="menu_edit_id" value="" />
+        
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nama / Label Menu: *</label>
+          <input type="text" id="menu_label" required placeholder="Contoh: Jadwal Ujian / Galeri" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-semibold outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Link URL / Anchor Target: *</label>
+          <input type="text" id="menu_url" required placeholder="Contoh: #jadwal, /cetak-kartu, https://..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm font-mono outline-none focus:ring-2 focus:ring-red-500" />
+          <p class="text-[11px] text-slate-400 mt-1">Gunakan awalan <code>#</code> untuk bagian di halaman depan (misal: <code>#jadwal</code>, <code>#lokasi</code>, <code>#aturan-pakaian</code>, <code>#atk-wajib</code>, <code>#pembayaran</code>, <code>#faq</code>), atau URL halaman lain (misal: <code>/cetak-kartu</code>).</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Buka di:</label>
+            <select id="menu_target" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white font-medium">
+              <option value="_self">Tab Saat Ini (_self)</option>
+              <option value="_blank">Tab Baru (_blank)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Status Menu:</label>
+            <select id="menu_active" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white font-medium">
+              <option value="true">Aktif (Tampilkan)</option>
+              <option value="false">Nonaktif (Sembunyikan)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Posisi / Nomor Urut Tampilan:</label>
+          <select id="menu_position" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white font-semibold">
+            <!-- Populated dynamically based on menus count -->
+          </select>
+        </div>
+
+        <button type="submit" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-md mt-2">
+          Simpan Menu
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MODAL: TAMBAH / EDIT PERTANYAAN FAQ                        -->
+  <!-- ========================================================== -->
+  <div id="faq-item-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+      <button onclick="closeFaqModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-5 space-y-1">
+        <span class="text-[10px] font-bold text-amber-700 tracking-wider font-mono uppercase">FAQ BUILDER</span>
+        <h3 id="faq-modal-title" class="text-xl font-extrabold text-slate-900">Tambah Pertanyaan FAQ Baru</h3>
+        <p class="text-xs text-slate-500">Tuliskan pertanyaan umum dan jawaban penjelasan resmi</p>
+      </div>
+
+      <form id="form-faq-item" onsubmit="handleFaqModalSubmit(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="faq_edit_index" value="-1" />
+        
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Pertanyaan (Question): *</label>
+          <input type="text" id="faq_form_question" required placeholder="Contoh: Apakah sertifikat NAT-TEST diakui oleh Imigrasi Jepang?" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Jawaban Penjelasan (Answer): *</label>
+          <textarea id="faq_form_answer" rows="6" required placeholder="Tuliskan jawaban lengkap dan resmi di sini..." class="w-full p-3 rounded-xl border border-slate-300 text-xs leading-relaxed outline-none focus:ring-2 focus:ring-red-500"></textarea>
+          <p class="text-[11px] text-slate-400 mt-1">Dapat menggunakan paragraf atau baris baru untuk penjelasan terstruktur.</p>
+        </div>
+
+        <!-- Lampiran Gambar Pendukung FAQ (Opsional) -->
+        <div class="space-y-2 pt-2 border-t border-slate-100">
+          <label class="block font-bold text-slate-700">Lampiran Gambar Pendukung (Opsional):</label>
+          <div class="flex gap-2">
+            <input type="text" id="faq_form_image_url" oninput="updateFaqImagePreview(this.value)" placeholder="Path / URL gambar atau klik Upload..." class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs outline-none focus:ring-2 focus:ring-red-500" />
+            <label class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer shrink-0 transition-colors flex items-center gap-1.5 shadow-xs">
+              <span>📁 Upload</span>
+              <input type="file" id="faq_form_image_file" accept="image/*" onchange="handleUploadFaqImage(event)" class="hidden" />
+            </label>
+            <button type="button" id="btn-clear-faq-img" onclick="clearFaqImage()" class="hidden px-2.5 py-2 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 font-bold text-xs transition-colors" title="Hapus Gambar Terlampir">
+              ✕
+            </button>
+          </div>
+          <p class="text-[10px] text-slate-400">Maks. 5MB (PNG, JPG, SVG, WebP). Gambar ilustrasi / diagram akan ditampilkan di bawah teks jawaban.</p>
+
+          <!-- Pratinjau Gambar -->
+          <div id="faq_form_image_preview_box" class="hidden mt-2 p-2 rounded-xl border border-slate-200 bg-slate-50 flex items-center gap-3">
+            <img id="faq_form_image_preview" src="" alt="Preview Gambar FAQ" class="h-20 w-auto max-w-[140px] object-contain rounded-lg border border-slate-200 bg-white" />
+            <div class="text-[11px] text-slate-600 space-y-1">
+              <span class="font-bold text-emerald-700">✓ Gambar Terlampir</span>
+              <p class="text-slate-400 text-[10px]">Gambar ini akan ditampilkan saat calon peserta membuka akordeon pertanyaan ini.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeFaqModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50 transition-colors">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl btn-japan font-bold text-xs shadow-md">
+            Simpan Pertanyaan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================== -->
+  <!-- MODAL: BUAT / EDIT HALAMAN STATIK                           -->
+  <!-- ========================================================== -->
+  <div id="static-page-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200 my-8 max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+      <button onclick="closeStaticPageModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-5 space-y-1">
+        <span class="text-[10px] font-bold text-red-600 tracking-wider font-mono uppercase">STATIC PAGE BUILDER</span>
+        <h3 id="static-page-modal-title" class="text-xl font-extrabold text-slate-900">Buat Halaman Statik Baru</h3>
+        <p class="text-xs text-slate-500">Kelola judul, slug URL, ringkasan, dan konten dokumen resmi</p>
+      </div>
+
+      <form id="form-static-page" onsubmit="handleStaticPageSubmit(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="page_edit_id" value="" />
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Judul Halaman (H1): *</label>
+          <input type="text" id="page_form_title" required oninput="handlePageTitleInput(this.value)" placeholder="Contoh: Panduan Sertifikat & Transkrip Nilai" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm font-bold outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Slug URL (Alamat Web): *</label>
+            <div class="flex items-center">
+              <span class="px-2.5 py-2.5 rounded-l-xl bg-slate-100 border border-r-0 border-slate-300 text-slate-500 font-mono text-[11px]">/page/</span>
+              <input type="text" id="page_form_slug" required placeholder="panduan-sertifikat" class="w-full px-3 py-2.5 rounded-r-xl border border-slate-300 text-xs font-mono font-bold outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+            <p class="text-[10px] text-slate-400 mt-0.5">Hanya huruf kecil, angka, dan tanda hubung (-).</p>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Status Publikasi: *</label>
+            <select id="page_form_published" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white font-semibold">
+              <option value="1">Diterbitkan (Tampil Publik)</option>
+              <option value="0">Draf (Hanya Administrator)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Subjudul Halaman:</label>
+          <input type="text" id="page_form_subtitle" placeholder="Contoh: Tata cara penerbitan dan pengiriman sertifikat resmi dari Tokyo" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-red-500" />
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Ringkasan Singkat (Meta Description):</label>
+          <textarea id="page_form_summary" rows="2" placeholder="Ringkasan 1-2 kalimat untuk pratinjau halaman dan pencarian..." class="w-full p-2.5 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-red-500"></textarea>
+        </div>
+
+        <!-- Content Area with Quick Helper Templates -->
+        <div class="space-y-1.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <label class="font-bold text-slate-700">Isi Konten Halaman (HTML / Teks): *</label>
+            <div class="flex flex-wrap items-center gap-1">
+              <span class="text-[10px] text-slate-400 mr-1">Sisipkan Cepat:</span>
+              <button type="button" onclick="insertPageSnippet('heading')" class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold">+ Judul H2</button>
+              <button type="button" onclick="insertPageSnippet('callout')" class="px-2 py-0.5 rounded bg-red-50 hover:bg-red-100 text-red-700 text-[10px] font-bold">+ Kotak Peringatan</button>
+              <button type="button" onclick="insertPageSnippet('list')" class="px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-bold">+ Daftar Bullet</button>
+            </div>
+          </div>
+          <textarea id="page_form_content" rows="10" required placeholder="Tuliskan isi halaman di sini. Anda dapat menggunakan tag HTML seperti <h2>, <p>, <ul>, <li>, <strong> untuk format artikel yang rapi..." class="w-full p-3 rounded-xl border border-slate-300 text-xs font-mono outline-none focus:ring-2 focus:ring-red-500"></textarea>
+        </div>
+
+        <div id="add-to-nav-wrapper" class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center gap-2">
+          <input type="checkbox" id="page_form_add_nav" class="w-4 h-4 text-red-600 rounded" />
+          <label for="page_form_add_nav" class="text-xs font-semibold text-slate-700 cursor-pointer">
+            Tambahkan link halaman ini otomatis ke Main Menu Navigasi Header
+          </label>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button type="button" onclick="closeStaticPageModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50 transition-colors">
+            Batal
+          </button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl btn-japan font-bold text-xs shadow-md">
+            Simpan Halaman Statik
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
+      <p>&copy; 2026 NAT-TEST Official & UKK CSGS Universitas Indonesia. Portal Administrasi & Pengelolaan Ujian.</p>
+      <div class="flex items-center gap-4 text-[11px]">
+        <a href="/admin-dashboard.html" class="hover:text-white font-semibold">Dashboard</a>
+        <a href="/laporan-transaksi.html" class="hover:text-white font-semibold">Laporan Transaksi</a>
+        <a href="/pengaturan-backup.html" class="hover:text-white font-semibold">Pengaturan & Backup</a>
+        <a href="/cetak-kartu.html" class="hover:text-white font-semibold">Studio Cetak</a>
+        <a href="/" target="_blank" class="hover:text-white font-semibold">Landing Page ↗</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>

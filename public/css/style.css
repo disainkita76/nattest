@@ -1,0 +1,213 @@
+/* public/css/style.css - Japanese Theme Aesthetics for NAT-TEST UKK CSGS UI */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Shippori+Mincho:wght@500;700;800&display=swap');
+
+:root {
+  --jp-red: #DC2626;
+  --jp-red-dark: #991B1B;
+  --jp-red-light: #FEE2E2;
+  --jp-sakura: #FFF1F2;
+  --jp-sakura-accent: #FDA4AF;
+  --jp-sumi: #0F172A;
+  --jp-slate: #334155;
+  --jp-washi: #FAF9F6;
+  --jp-gold: #D97706;
+  --jp-gold-light: #FEF3C7;
+  --jp-indigo: #1E3A8A;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #FAF9F6;
+  color: #1E293B;
+  overflow-x: hidden;
+}
+
+.font-jp {
+  font-family: 'Noto Serif JP', 'Shippori Mincho', serif;
+}
+
+/* Subtle Japanese Seigaiha wave pattern overlay */
+.bg-seigaiha {
+  background-color: #FAF9F6;
+  background-image: radial-gradient(circle at 100% 150%, #FAF9F6 24%, #F1F5F9 25%, #F1F5F9 28%, #FAF9F6 29%, #FAF9F6 36%, #F1F5F9 37%, #F1F5F9 40%, transparent 40%, transparent),
+    radial-gradient(circle at 0    150%, #FAF9F6 24%, #F1F5F9 25%, #F1F5F9 28%, #FAF9F6 29%, #FAF9F6 36%, #F1F5F9 37%, #F1F5F9 40%, transparent 40%, transparent),
+    radial-gradient(circle at 50%  100%, #FAF9F6 10%, #F1F5F9 11%, #F1F5F9 23%, #FAF9F6 24%, #FAF9F6 30%, #F1F5F9 31%, #F1F5F9 43%, transparent 43%, transparent),
+    radial-gradient(circle at 100% 50%, #FAF9F6 5%, #F1F5F9 6%, #F1F5F9 15%, #FAF9F6 16%, #FAF9F6 20%, #F1F5F9 21%, #F1F5F9 30%, transparent 30%, transparent),
+    radial-gradient(circle at 0    50%, #FAF9F6 5%, #F1F5F9 6%, #F1F5F9 15%, #FAF9F6 16%, #FAF9F6 20%, #F1F5F9 21%, #F1F5F9 30%, transparent 30%, transparent);
+  background-size: 80px 40px;
+}
+
+/* Subtle Hero Pattern */
+.bg-hero-pattern {
+  background: linear-gradient(135deg, rgba(255, 241, 242, 0.75) 0%, rgba(250, 249, 246, 0.95) 100%),
+              radial-gradient(at 80% 20%, rgba(220, 38, 38, 0.08) 0px, transparent 50%),
+              radial-gradient(at 10% 80%, rgba(217, 119, 6, 0.06) 0px, transparent 50%);
+}
+
+/* Hanko Japanese Seal Badge */
+.hanko-stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #DC2626;
+  color: #DC2626;
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+  position: relative;
+  background-color: rgba(254, 226, 226, 0.25);
+  box-shadow: inset 0 0 4px rgba(220, 38, 38, 0.2);
+}
+
+.hanko-circle {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #DC2626;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #DC2626;
+  font-family: 'Noto Serif JP', serif;
+  font-weight: 900;
+  font-size: 13px;
+  line-height: 1.1;
+  text-align: center;
+  background-color: rgba(254, 226, 226, 0.3);
+  box-shadow: 0 0 0 2px #fff, 0 2px 6px rgba(220, 38, 38, 0.2);
+}
+
+/* Japanese Torii Silhouette Accent */
+.torii-accent {
+  position: relative;
+}
+.torii-accent::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background-color: #DC2626;
+  border-radius: 2px;
+}
+
+/* Animasi Daun Berguguran (Dinonaktifkan) */
+.sakura-container, .petal {
+  display: none !important;
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.glass-card:hover {
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Japanese Red Ribbon Button */
+.btn-japan {
+  background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px 0 rgba(220, 38, 38, 0.35);
+  transition: all 0.25s ease;
+}
+.btn-japan:hover {
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  box-shadow: 0 6px 20px 0 rgba(220, 38, 38, 0.45);
+  transform: translateY(-2px);
+}
+
+/* Modals */
+.modal-backdrop {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+}
+
+/* File Upload Drop Area */
+.upload-drop-zone {
+  border: 2px dashed #CBD5E1;
+  transition: all 0.2s ease;
+  background-color: #F8FAFC;
+}
+.upload-drop-zone:hover, .upload-drop-zone.dragover {
+  border-color: #DC2626;
+  background-color: #FFF1F2;
+}
+
+/* Badge for 2MB strict notice */
+.badge-file-limit {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #B91C1C;
+  background-color: #FEE2E2;
+  border: 1px solid #FCA5A5;
+  border-radius: 9999px;
+  padding: 2px 10px;
+}
+
+/* Print Styles for Exam Card (Kartu Ujian) */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable-exam-card, #printable-exam-card * {
+    visibility: visible;
+  }
+  #printable-exam-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Drag and Drop Styling for Navigation Menu Reordering */
+.nav-row-dragging {
+  opacity: 0.35 !important;
+  background-color: #FEE2E2 !important;
+}
+
+.nav-row-drag-over {
+  border-top: 3px solid #DC2626 !important;
+  background-color: #FEF2F2 !important;
+}
+
+.drag-handle {
+  cursor: grab;
+  user-select: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}

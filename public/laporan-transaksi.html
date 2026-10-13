@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laporan Transaksi Pendaftaran Harian & Bulanan - NAT-TEST UKK CSGS UI</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Japanese Theme CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
+  <style>
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .report-card {
+        border: 1px solid #cbd5e1 !important;
+        box-shadow: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-seigaiha text-slate-800 antialiased selection:bg-red-500 selection:text-white min-h-screen flex flex-col">
+
+  <!-- Top Admin Navbar (Hidden in Print) -->
+  <header class="bg-slate-900 text-white border-b border-red-900/40 sticky top-0 z-50 shadow-md no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="/admin-dashboard.html" class="flex items-center gap-3 group">
+          <img src="/images/logo-nat-test.svg" alt="NAT-TEST Logo" class="h-8 w-auto brightness-200" />
+          <div class="h-5 w-[1px] bg-slate-700"></div>
+          <img src="/images/logo-csgs-ui.svg" alt="CSGS UI Logo" class="h-8 w-auto brightness-200" />
+        </a>
+        <div class="hidden md:flex items-center gap-2 pl-3 border-l border-slate-700 text-xs">
+          <span class="px-2 py-0.5 rounded bg-red-600 text-white font-black text-[10px] uppercase">FINANCE</span>
+          <span class="font-bold text-slate-300">Laporan Transaksi Harian & Bulanan</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 text-xs font-bold">
+        <a href="/admin-dashboard.html" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors flex items-center gap-1.5">
+          <span>← Kembali ke Dashboard</span>
+        </a>
+        <a href="/pengaturan-backup.html" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors flex items-center gap-1.5">
+          <span>⚙️ Pengaturan & Backup</span>
+        </a>
+        <button onclick="Auth.logout()" class="px-3 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-200 hover:text-white transition-colors">
+          Keluar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs (Hidden in Print) -->
+  <div class="bg-white/80 border-b border-slate-200 py-3 px-4 sm:px-6 no-print">
+    <div class="max-w-7xl mx-auto flex items-center gap-2 text-xs text-slate-500 overflow-x-auto whitespace-nowrap">
+      <a href="/admin-dashboard.html" class="hover:text-red-600 font-semibold">🏠 Dashboard Pengelola</a>
+      <span>/</span>
+      <span class="text-slate-400">Keuangan & Transaksi</span>
+      <span>/</span>
+      <span class="font-bold text-slate-900">Laporan Transaksi Pendaftaran</span>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-8">
+    
+    <!-- Kop Surat Resmi (Hanya Tampil saat Cetak / Print) -->
+    <div class="hidden print-only border-b-2 border-slate-900 pb-4 mb-6">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-14 w-auto" />
+          <div class="h-10 w-[1.5px] bg-slate-400"></div>
+          <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-14 w-auto" />
+        </div>
+        <div class="text-right text-xs">
+          <div class="font-extrabold text-sm uppercase text-slate-900">Unit Kerja Khusus CSGS Universitas Indonesia</div>
+          <div class="text-slate-600">Sekretariat Pelaksana Ujian NAT-TEST Resmi di Indonesia</div>
+          <div class="text-[10px] text-slate-500">Pusat Studi Jepang Kampus UI Depok | Telp: +62 812-8888-9999</div>
+        </div>
+      </div>
+      <div class="text-center pt-4">
+        <h2 id="print-report-title" class="text-lg font-black uppercase tracking-wider text-slate-950">LAPORAN REKAPITULASI TRANSAKSI PENDAFTARAN PESERTA</h2>
+        <p id="print-report-period" class="text-xs text-slate-600 font-medium">Periode: Memuat...</p>
+      </div>
+    </div>
+
+    <!-- Header Banner & Period Controls (Hidden in Print) -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4 no-print">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="hanko-stamp text-xs">出納</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight">Laporan Transaksi Pendaftaran</h1>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-600">
+          Monitoring arus kas pendaftaran ujian NAT-TEST, verifikasi pembayaran harian, dan rekapitulasi bulanan resmi.
+        </p>
+      </div>
+
+      <!-- Mode Switcher Tabs & Actions -->
+      <div class="flex flex-wrap items-center gap-2">
+        <div class="bg-slate-100 p-1 rounded-2xl flex items-center">
+          <button id="btn-mode-daily" onclick="switchReportMode('daily')" class="px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-900 shadow-xs transition-all">
+            📅 Laporan Harian
+          </button>
+          <button id="btn-mode-monthly" onclick="switchReportMode('monthly')" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 transition-all">
+            📆 Laporan Bulanan
+          </button>
+        </div>
+
+        <button onclick="exportReportCsv()" class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs flex items-center gap-1.5 shadow-2xs transition-colors" title="Download spreadsheet CSV">
+          <span>📥 Ekspor CSV</span>
+        </button>
+        <button onclick="window.print()" class="px-4 py-2.5 rounded-xl btn-japan font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors" title="Cetak laporan resmi / Simpan PDF">
+          <span>🖨️ Cetak / PDF</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Control Panel (Hidden in Print) -->
+    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs flex flex-wrap items-center justify-between gap-4 no-print">
+      
+      <!-- Daily Date Selector -->
+      <div id="filter-daily-container" class="flex flex-wrap items-center gap-3 text-xs">
+        <span class="font-bold text-slate-700 flex items-center gap-1.5">
+          <span>📅</span> Pilih Tanggal Transaksi:
+        </span>
+        <input type="date" id="input-daily-date" class="px-3.5 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 text-xs bg-slate-50 focus:ring-2 focus:ring-red-500 outline-none" />
+        <button onclick="loadDailyReport()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors shadow-2xs">
+          Tampilkan Data
+        </button>
+        <button onclick="setTodayDate()" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs transition-colors">
+          Hari Ini
+        </button>
+      </div>
+
+      <!-- Monthly Selector -->
+      <div id="filter-monthly-container" class="hidden flex flex-wrap items-center gap-3 text-xs">
+        <span class="font-bold text-slate-700 flex items-center gap-1.5">
+          <span>📆</span> Pilih Bulan & Tahun:
+        </span>
+        <select id="select-monthly-month" class="px-3.5 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 text-xs bg-white focus:ring-2 focus:ring-red-500 outline-none">
+          <option value="01">Januari</option>
+          <option value="02">Februari</option>
+          <option value="03">Maret</option>
+          <option value="04">April</option>
+          <option value="05">Mei</option>
+          <option value="06">Juni</option>
+          <option value="07">Juli</option>
+          <option value="08">Agustus</option>
+          <option value="09">September</option>
+          <option value="10" selected>Oktober</option>
+          <option value="11">November</option>
+          <option value="12">Desember</option>
+        </select>
+        <select id="select-monthly-year" class="px-3.5 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 text-xs bg-white focus:ring-2 focus:ring-red-500 outline-none">
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+        </select>
+        <button onclick="loadMonthlyReport()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors shadow-2xs">
+          Tampilkan Data
+        </button>
+      </div>
+
+      <div class="text-xs text-slate-500 font-medium">
+        Status: <span id="report-period-badge" class="font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">Memuat...</span>
+      </div>
+    </div>
+
+    <!-- Summary KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs report-card">
+        <span class="text-xs font-semibold text-slate-500 block">Total Pendaftaran:</span>
+        <div id="kpi-total-regs" class="text-2xl sm:text-3xl font-black text-slate-900 mt-1">0</div>
+        <span class="text-[10px] text-slate-400 mt-1 block">Peserta terdata</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs report-card">
+        <span class="text-xs font-semibold text-slate-500 block">Lolos Verifikasi:</span>
+        <div id="kpi-verified-regs" class="text-2xl sm:text-3xl font-black text-emerald-600 mt-1">0</div>
+        <span id="kpi-rate-text" class="text-[10px] text-emerald-700 font-bold mt-1 block">0% terverifikasi</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs report-card">
+        <span class="text-xs font-semibold text-slate-500 block">Menunggu Verifikasi:</span>
+        <div id="kpi-pending-regs" class="text-2xl sm:text-3xl font-black text-amber-600 mt-1">0</div>
+        <span class="text-[10px] text-amber-700 mt-1 block">Perlu tindak lanjut panitia</span>
+      </div>
+
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs report-card col-span-2 md:col-span-1">
+        <span class="text-xs font-semibold text-slate-500 block">Total Kas Diterima:</span>
+        <div id="kpi-total-revenue" class="text-xl sm:text-2xl font-black text-red-600 mt-1">Rp 0</div>
+        <span class="text-[10px] text-red-800 font-bold mt-1 block">Dari transaksi lolos verifikasi</span>
+      </div>
+    </div>
+
+    <!-- Level & Payment Method Distribution Badges -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- Breakdown Level Ujian -->
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3 report-card">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
+            <span>🏷️</span> Distribusi Tingkat Level Ujian
+          </h3>
+          <span class="text-[10px] font-mono font-bold text-slate-400">1Q - 5Q</span>
+        </div>
+        <div id="level-breakdown-container" class="grid grid-cols-5 gap-2 text-center text-xs">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Breakdown Kanal Pembayaran -->
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-xs space-y-3 report-card">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+          <h3 class="font-extrabold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
+            <span>💳</span> Kanal & Metode Pembayaran
+          </h3>
+          <span class="text-[10px] font-mono font-bold text-slate-400">METODE</span>
+        </div>
+        <div id="method-breakdown-container" class="space-y-2 text-xs">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Monthly Daily Trend Visual Bars (Only visible in Monthly mode) -->
+    <div id="monthly-chart-section" class="hidden bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4 report-card">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Grafik Trend Pendaftaran Harian (Bulan Ini)</h3>
+          <p class="text-xs text-slate-500">Visualisasi intensitas pendaftar baru dari tanggal 1 hingga akhir bulan.</p>
+        </div>
+        <span class="text-xs font-mono font-bold text-red-600" id="chart-month-name">Oktober 2026</span>
+      </div>
+      
+      <div id="monthly-bars-container" class="pt-2 overflow-x-auto">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Detail Transactions Table -->
+    <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs report-card space-y-0">
+      
+      <div class="p-4 sm:p-5 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 id="table-title" class="font-extrabold text-sm text-slate-900">Rincian Transaksi Pendaftaran</h3>
+          <p id="table-subtitle" class="text-xs text-slate-500">Daftar transaksi peserta yang terdaftar pada periode ini.</p>
+        </div>
+        <span id="table-records-badge" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700">0 Data Transaksi</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-700 font-bold">
+            <tr>
+              <th class="py-3 px-4 w-12 text-center">No</th>
+              <th class="py-3 px-4">No. Registrasi</th>
+              <th class="py-3 px-4">Nama Peserta</th>
+              <th class="py-3 px-4 w-24 text-center">Level Ujian</th>
+              <th class="py-3 px-4 w-36">Gelombang</th>
+              <th class="py-3 px-4 w-32 text-right">Biaya Ujian</th>
+              <th class="py-3 px-4 w-32">Metode Bayar</th>
+              <th class="py-3 px-4 w-28 text-center">Status</th>
+              <th class="py-3 px-4 w-32">Waktu Terdata</th>
+            </tr>
+          </thead>
+          <tbody id="report-transactions-tbody">
+            <!-- Dynamically populated by reports.js -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Tanda Tangan Resmi Pengelola (Tampil saat Cetak / Print) -->
+    <div class="hidden print-only pt-8 mt-12 border-t border-slate-300">
+      <div class="grid grid-cols-2 gap-8 text-center text-xs">
+        <div class="space-y-16">
+          <div>
+            <p class="font-bold text-slate-800">Mengetahui,</p>
+            <p class="text-slate-600">Ketua Panitia Pelaksana NAT-TEST UI</p>
+          </div>
+          <div class="space-y-1">
+            <p class="font-extrabold text-slate-900 underline">( Dr. Penyelenggara Resmi, M.Si. )</p>
+            <p class="text-slate-500 text-[10px]">NIP. 197805122003121002</p>
+          </div>
+        </div>
+
+        <div class="space-y-16">
+          <div>
+            <p class="font-bold text-slate-800">Depok, <span id="print-signature-date">12 Oktober 2026</span></p>
+            <p class="text-slate-600">Koordinator Keuangan & Administrasi</p>
+          </div>
+          <div class="space-y-1">
+            <div class="inline-block relative">
+              <span class="hanko-stamp text-xs absolute -top-8 -right-8 opacity-80">公認</span>
+              <p class="font-extrabold text-slate-900 underline">( Administrator UKK CSGS UI )</p>
+            </div>
+            <p class="text-slate-500 text-[10px]">Unit Kerja Khusus CSGS UI</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer (Hidden in Print) -->
+  <footer class="bg-slate-950 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
+      <p>&copy; 2026 NAT-TEST Official & UKK CSGS Universitas Indonesia. Modul Laporan Keuangan.</p>
+      <div class="flex items-center gap-4 text-[11px]">
+        <a href="/admin-dashboard.html" class="hover:text-white">Dashboard</a>
+        <a href="/pengaturan-backup.html" class="hover:text-white">Pengaturan & Backup</a>
+        <a href="/cetak-kartu.html" class="hover:text-white">Studio Cetak</a>
+        <a href="/" target="_blank" class="hover:text-white">Landing Page ↗</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/reports.js"></script>
+</body>
+</html>

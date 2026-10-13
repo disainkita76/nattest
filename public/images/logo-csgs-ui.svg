@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 80" width="340" height="80">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <filter id="csgsShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15" />
+    </filter>
+  </defs>
+  <!-- Background Card -->
+  <rect x="2" y="2" width="336" height="76" rx="12" fill="#FFFFFF" stroke="#F1F5F9" stroke-width="2" filter="url(#csgsShadow)"/>
+  
+  <!-- UI Makara Emblem Graphic -->
+  <g transform="translate(42, 40)">
+    <!-- Yellow Aura -->
+    <circle cx="0" cy="0" r="26" fill="url(#goldGrad)" />
+    <!-- Makara tree-sun stylized crown -->
+    <path d="M 0 -19 L 4 -9 L 14 -12 L 8 -3 L 18 2 L 8 6 L 12 16 L 3 10 L 0 20 L -3 10 L -12 16 L -8 6 L -18 2 L -8 -3 L -14 -12 L -4 -9 Z" fill="#78350F" opacity="0.18"/>
+    <!-- Central UI Tree & Calyx Motif -->
+    <circle cx="0" cy="0" r="14" fill="#FFFFFF" />
+    <path d="M 0 -10 C 3 -10 6 -6 6 0 C 6 6 3 9 0 10 C -3 9 -6 6 -6 0 C -6 -6 -3 -10 0 -10 Z" fill="#D97706" />
+    <circle cx="0" cy="0" r="4" fill="#78350F" />
+    <path d="M -8 8 C -4 4 4 4 8 8" stroke="#78350F" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Text CSGS UI -->
+  <g transform="translate(80, 0)">
+    <text x="0" y="28" font-family="'Montserrat', sans-serif" font-size="16" font-weight="900" fill="#0F172A" letter-spacing="0.5">UKK CSGS UI</text>
+    <rect x="120" y="14" width="70" height="17" rx="4" fill="#FEF3C7" stroke="#F59E0B" stroke-width="1"/>
+    <text x="155" y="26" font-family="sans-serif" font-size="9" font-weight="700" fill="#92400E" text-anchor="middle">MITRA RESMI</text>
+    <text x="0" y="44" font-family="sans-serif" font-size="9" font-weight="700" fill="#B45309" letter-spacing="0.3">UNIVERSITAS INDONESIA</text>
+    <text x="0" y="58" font-family="sans-serif" font-size="8.5" font-weight="500" fill="#64748B">Unit Kerja Khusus CSGS UI</text>
+    <text x="0" y="69" font-family="sans-serif" font-size="8" font-weight="500" fill="#94A3B8">Pusat Studi Jepang Kampus UI Depok</text>
+  </g>
+</svg>

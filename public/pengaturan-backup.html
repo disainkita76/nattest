@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengaturan Sistem & Backup Database - NAT-TEST UKK CSGS UI</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Japanese Theme CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
+</head>
+<body class="bg-seigaiha text-slate-800 antialiased selection:bg-red-500 selection:text-white min-h-screen flex flex-col">
+
+  <!-- Top Admin Navbar -->
+  <header class="bg-slate-900 text-white border-b border-red-900/40 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <a href="/admin-dashboard.html" class="flex items-center gap-3 group">
+          <img src="/images/logo-nat-test.svg" alt="NAT-TEST Logo" class="h-8 w-auto brightness-200" />
+          <div class="h-5 w-[1px] bg-slate-700"></div>
+          <img src="/images/logo-csgs-ui.svg" alt="CSGS UI Logo" class="h-8 w-auto brightness-200" />
+        </a>
+        <div class="hidden md:flex items-center gap-2 pl-3 border-l border-slate-700 text-xs">
+          <span class="px-2 py-0.5 rounded bg-red-600 text-white font-black text-[10px] uppercase">CONFIG</span>
+          <span class="font-bold text-slate-300">Pengaturan Sistem & Pusat Backup</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2.5 text-xs font-bold">
+        <a href="/admin-dashboard.html" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors flex items-center gap-1.5">
+          <span>← Kembali ke Dashboard</span>
+        </a>
+        <a href="/laporan-transaksi.html" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors flex items-center gap-1.5">
+          <span>📊 Laporan Transaksi</span>
+        </a>
+        <button onclick="Auth.logout()" class="px-3 py-1.5 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-200 hover:text-white transition-colors">
+          Keluar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumbs -->
+  <div class="bg-white/80 border-b border-slate-200 py-3 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto flex items-center gap-2 text-xs text-slate-500 overflow-x-auto whitespace-nowrap">
+      <a href="/admin-dashboard.html" class="hover:text-red-600 font-semibold">🏠 Dashboard Pengelola</a>
+      <span>/</span>
+      <span class="text-slate-400">Pengaturan & Pemeliharaan</span>
+      <span>/</span>
+      <span class="font-bold text-slate-900">Pengaturan Sistem & Backup Database</span>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full space-y-8">
+    
+    <!-- Page Header Banner -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-2">
+          <span class="hanko-stamp text-xs">設定</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight">Pengaturan Sistem & Pusat Backup</h1>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-600">
+          Konfigurasi parameter operasional ujian, rekening pembayaran, batas kuota, serta pencadangan & pemulihan database SQLite resmi.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="downloadSqliteBackup()" class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-colors">
+          <span>📥 Unduh Backup .db</span>
+        </button>
+        <button onclick="downloadJsonBackup()" class="px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs flex items-center gap-2 shadow-2xs transition-colors">
+          <span>📋 Unduh Data JSON</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Alert / Toast Container -->
+    <div id="alert-container" class="hidden p-4 rounded-2xl text-xs font-semibold"></div>
+
+    <!-- 2 Column Layout: Settings & Database Tools -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Left Column: Settings Form (7 cols) -->
+      <div class="lg:col-span-7 space-y-6">
+        
+        <form id="form-settings" onsubmit="handleSaveSettings(event)" class="space-y-6">
+          
+          <!-- Card 1: Identitas & Penyelenggara -->
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🏛️</span>
+                <h2 class="font-extrabold text-sm sm:text-base text-slate-900">1. Identitas & Penyelenggara Resmi</h2>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-slate-400 uppercase">IDENTITAS</span>
+            </div>
+
+            <div class="space-y-3.5 text-xs">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Nama Aplikasi / Ujian: *</label>
+                <input type="text" id="set_app_name" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Nama Penyelenggara Resmi di Indonesia: *</label>
+                <input type="text" id="set_organizer_name" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-800 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Alamat Gedung / Lokasi Pelaksanaan Ujian: *</label>
+                <textarea id="set_exam_venue" rows="2" required class="w-full p-3 rounded-xl border border-slate-300 text-slate-800 focus:ring-2 focus:ring-red-500 outline-none text-xs"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Pengaturan Pendaftaran & Kuota -->
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-base">📋</span>
+                <h2 class="font-extrabold text-sm sm:text-base text-slate-900">2. Pendaftaran, Gelombang & Kuota</h2>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-red-600 uppercase">GELOMBANG</span>
+            </div>
+
+            <div class="space-y-3.5 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Gelombang Aktif: *</label>
+                  <input type="text" id="set_current_wave" required placeholder="Gelombang 3 - Juni 2026" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Status Pendaftaran: *</label>
+                  <select id="set_registration_status" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold bg-white focus:ring-2 focus:ring-red-500 outline-none text-xs">
+                    <option value="OPEN">OPEN (Pendaftaran Dibuka)</option>
+                    <option value="CLOSED">CLOSED (Pendaftaran Ditutup)</option>
+                    <option value="MAINTENANCE">MAINTENANCE (Pemeliharaan Sistem)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Batas Kuota Peserta per Gelombang: *</label>
+                  <div class="relative">
+                    <input type="number" id="set_max_quota_per_wave" min="1" max="5000" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs pr-16" />
+                    <span class="absolute right-3.5 top-2.5 text-slate-400 font-medium">Orang</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Biaya Standar Ujian per Peserta: *</label>
+                  <div class="relative">
+                    <span class="absolute left-3.5 top-2.5 text-slate-400 font-bold">Rp</span>
+                    <input type="number" id="set_default_exam_fee" min="100000" step="10000" required class="w-full pl-10 pr-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Batas Max Upload Berkas (KTP/Foto):</label>
+                  <div class="relative">
+                    <input type="number" id="set_max_upload_size_mb" min="1" max="10" readonly value="2" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 font-mono font-bold text-slate-600 text-xs pr-12" />
+                    <span class="absolute right-3.5 top-2.5 text-slate-400 font-bold">MB</span>
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-1">Ditetapkan ketat 2 MB sesuai regulasi kompresi.</p>
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Penerbitan Kartu Otomatis:</label>
+                  <select id="set_auto_issue_card_on_verify" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-xs">
+                    <option value="true">Otomatis terbitkan saat status VERIFIED</option>
+                    <option value="false">Manual oleh petugas pengawas</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Rekening Pembayaran Resmi -->
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-base">💳</span>
+                <h2 class="font-extrabold text-sm sm:text-base text-slate-900">3. Rekening Penerimaan Pembayaran Resmi</h2>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-emerald-600 uppercase">REKENING</span>
+            </div>
+
+            <div class="space-y-3.5 text-xs">
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Nama Bank Penerima: *</label>
+                <input type="text" id="set_bank_name" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Nomor Rekening / Virtual Account: *</label>
+                  <input type="text" id="set_bank_account_number" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Atas Nama Rekening: *</label>
+                  <input type="text" id="set_bank_account_holder" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Pengaturan Pembayaran QRIS Resmi -->
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-base">📱</span>
+                <h2 class="font-extrabold text-sm sm:text-base text-slate-900">4. Konfigurasi Pembayaran QRIS Resmi</h2>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-0.5 rounded-full uppercase">QRIS STANDAR</span>
+            </div>
+
+            <div class="space-y-4 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Status Metode QRIS: *</label>
+                  <select id="set_qris_enabled" onchange="updateQrisPreview()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold bg-white focus:ring-2 focus:ring-red-500 outline-none text-xs">
+                    <option value="true">Aktif (Menerima Pembayaran QRIS)</option>
+                    <option value="false">Nonaktif (Sembunyikan Opsi QRIS)</option>
+                  </select>
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block font-bold text-slate-700 mb-1">Nama Merchant QRIS Terdaftar: *</label>
+                  <input type="text" id="set_qris_merchant_name" oninput="updateQrisPreview()" required placeholder="NAT-TEST UKK CSGS UNIVERSITAS INDONESIA" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">National Merchant ID (NMID): *</label>
+                  <input type="text" id="set_qris_nmid" oninput="updateQrisPreview()" required placeholder="ID1020261012345" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono font-bold text-red-600 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Path / URL Gambar QRIS: *</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="set_qris_image_url" oninput="updateQrisPreview()" required value="/images/qris-nat-test.svg" class="flex-1 px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-slate-800 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                    <label class="px-3 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer transition-colors shrink-0 flex items-center gap-1">
+                      <span>📁 Unggah</span>
+                      <input type="file" id="qris-image-file-input" accept="image/*" onchange="handleQrisImageUpload(event)" class="hidden" />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Instruksi Pembayaran QRIS bagi Peserta:</label>
+                <textarea id="set_qris_instructions" rows="2" placeholder="Buka aplikasi e-wallet (GoPay, OVO, DANA, ShopeePay) atau m-Banking lalu scan barcode QRIS..." class="w-full p-2.5 rounded-xl border border-slate-300 text-slate-800 focus:ring-2 focus:ring-red-500 outline-none text-xs"></textarea>
+              </div>
+
+              <!-- Live QRIS Card Preview -->
+              <div class="pt-3 border-t border-slate-100">
+                <span class="block font-bold text-slate-700 mb-2">Pratinjau Tampilan QRIS Resmi bagi Calon Peserta:</span>
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-wrap sm:flex-nowrap items-center gap-5">
+                  <div class="w-32 h-40 bg-white rounded-xl border border-slate-300 overflow-hidden shrink-0 flex items-center justify-center p-1 shadow-2xs">
+                    <img id="qris-preview-img" src="/images/qris-nat-test.svg" alt="Preview QRIS" class="w-full h-full object-contain" />
+                  </div>
+                  <div class="space-y-1.5 text-xs flex-1">
+                    <div class="flex items-center gap-2">
+                      <span id="qris-preview-badge" class="px-2 py-0.5 rounded-full font-bold text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300">✓ QRIS Aktif</span>
+                      <span class="text-slate-400 font-mono text-[10px]">STANDAR ASPI / BI</span>
+                    </div>
+                    <div id="qris-preview-merchant" class="font-black text-sm text-slate-900">NAT-TEST UKK CSGS UNIVERSITAS INDONESIA</div>
+                    <div class="text-xs font-mono font-bold text-red-600">NMID: <span id="qris-preview-nmid">ID1020261012345</span></div>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">
+                      Menerima pembayaran instan dari GoPay, OVO, DANA, ShopeePay, LinkAja, BCA Mobile, Livin Mandiri, BNI Mobile, dan seluruh aplikasi berstandar QRIS.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5: Konfigurasi Virtual Account Bank (BNI46, Mandiri, BRI) -->
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🏦</span>
+                <h2 class="font-extrabold text-sm sm:text-base text-slate-900">5. Konfigurasi Saluran Virtual Account (BNI46, Mandiri, BRI)</h2>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-blue-600 bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-full uppercase">VA MULTI-BANK</span>
+            </div>
+
+            <div class="space-y-4 text-xs">
+              <!-- BNI46 VA Config -->
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-orange-400"></span>
+                    <h3 class="font-bold text-xs text-slate-900">Virtual Account BNI46</h3>
+                  </div>
+                  <span class="text-[10px] text-slate-400 font-mono">Format: [Prefix 9880033] + [26] + [ID 6-digit]</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Status VA BNI: *</label>
+                    <select id="set_va_bni_enabled" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold bg-white focus:ring-2 focus:ring-red-500 outline-none text-xs">
+                      <option value="true">Aktif (Tersedia bagi Peserta)</option>
+                      <option value="false">Nonaktif</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Prefix CSGS UI BNI: *</label>
+                    <input type="text" id="set_va_bni_prefix" required value="9880033" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                  </div>
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nama Merchant / Biller: *</label>
+                    <input type="text" id="set_va_bni_merchant_name" required value="NAT CSGS UI" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mandiri Bill Config -->
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                    <h3 class="font-bold text-xs text-slate-900">Virtual Account Bank Mandiri (Bill Payment)</h3>
+                  </div>
+                  <span class="text-[10px] text-slate-400 font-mono">Format: [Biller 88708] + [26] + [ID 6-digit]</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Status VA Mandiri: *</label>
+                    <select id="set_va_mandiri_enabled" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold bg-white focus:ring-2 focus:ring-red-500 outline-none text-xs">
+                      <option value="true">Aktif (Tersedia bagi Peserta)</option>
+                      <option value="false">Nonaktif</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Kode Perusahaan (Biller): *</label>
+                    <input type="text" id="set_va_mandiri_prefix" required value="88708" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                  </div>
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nama Merchant / Biller: *</label>
+                    <input type="text" id="set_va_mandiri_merchant_name" required value="NAT CSGS UI" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- BRI BRIVA Config -->
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                    <h3 class="font-bold text-xs text-slate-900">Virtual Account BRI (BRIVA)</h3>
+                  </div>
+                  <span class="text-[10px] text-slate-400 font-mono">Format: [BRIVA 12800] + [26] + [ID 6-digit]</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Status BRIVA (BRI): *</label>
+                    <select id="set_va_bri_enabled" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold bg-white focus:ring-2 focus:ring-red-500 outline-none text-xs">
+                      <option value="true">Aktif (Tersedia bagi Peserta)</option>
+                      <option value="false">Nonaktif</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Kode Institusi BRIVA: *</label>
+                    <input type="text" id="set_va_bri_prefix" required value="12800" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                  </div>
+                  <div>
+                    <label class="block font-bold text-slate-700 mb-1">Nama Institusi BRIVA: *</label>
+                    <input type="text" id="set_va_bri_merchant_name" required value="BRIVA NAT CSGS UI" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-bold text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6: Kontak Sekretariat -->
+          <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center gap-2">
+                <span class="text-base">📞</span>
+                <h2 class="font-extrabold text-sm sm:text-base text-slate-900">6. Kontak & Layanan Sekretariat</h2>
+              </div>
+              <span class="text-[10px] font-mono font-bold text-blue-600 uppercase">KONTAK</span>
+            </div>
+
+            <div class="space-y-3.5 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Alamat Email Resmi: *</label>
+                  <input type="email" id="set_contact_email" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Nomor WhatsApp Hotline: *</label>
+                  <input type="text" id="set_contact_whatsapp" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 font-mono text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+                </div>
+              </div>
+              <div>
+                <label class="block font-bold text-slate-700 mb-1">Jam Pelayanan Operasional:</label>
+                <input type="text" id="set_contact_hours" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-slate-900 focus:ring-2 focus:ring-red-500 outline-none text-xs" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button type="submit" class="w-full py-3.5 rounded-2xl btn-japan font-bold text-sm shadow-lg flex items-center justify-center gap-2">
+              <span>💾 Simpan Seluruh Pengaturan Sistem</span>
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+      <!-- Right Column: Database Health, Backup & Restore (5 cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- Database Health & Info Card -->
+        <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🗄️</span>
+              <h2 class="font-extrabold text-sm sm:text-base text-slate-900">Kesehatan Database SQLite</h2>
+            </div>
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> SEHAT
+            </span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <span class="text-slate-600 font-medium">Ukuran Berkas Database:</span>
+              <span id="db-size-text" class="font-mono font-black text-slate-900 text-sm">Memuat...</span>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <span class="text-slate-600 font-medium">Driver Mesin:</span>
+              <span class="font-mono font-bold text-slate-800">Node 24 Native node:sqlite</span>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <span class="text-slate-600 font-medium">Waktu Terakhir Diperbarui:</span>
+              <span id="db-modified-text" class="font-mono text-slate-700 text-[11px]">-</span>
+            </div>
+          </div>
+
+          <!-- Table counts breakdown -->
+          <div class="space-y-2 pt-1 border-t border-slate-100">
+            <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Ringkasan Jumlah Data:</span>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-slate-500 block text-[10px]">Data Pendaftaran</span>
+                <span id="db-count-regs" class="font-black text-slate-900 text-base">0</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-slate-500 block text-[10px]">Total Akun User</span>
+                <span id="db-count-users" class="font-black text-slate-900 text-base">0</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-slate-500 block text-[10px]">Halaman Statik</span>
+                <span id="db-count-pages" class="font-black text-slate-900 text-base">0</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="text-slate-500 block text-[10px]">Bagian CMS</span>
+                <span id="db-count-cms" class="font-black text-slate-900 text-base">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- VACUUM Button -->
+          <div class="pt-2">
+            <button onclick="runDatabaseVacuum()" class="w-full py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-2xs">
+              <span>⚡ Bersihkan & Optimasi Penyimpanan (VACUUM)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Download Backup Options Card -->
+        <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <span class="text-base">📦</span>
+            <h2 class="font-extrabold text-sm sm:text-base text-slate-900">Pencadangan Data (Backup)</h2>
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Unduh salinan penuh basis data secara teratur untuk keperluan arsip kepanitiaan atau keamanan data:
+          </p>
+
+          <div class="space-y-3">
+            <!-- SQLite DB Download -->
+            <div class="p-4 rounded-2xl bg-red-50/50 border border-red-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-red-950">Backup Database Asli (.db)</span>
+                <span class="text-[10px] bg-red-600 text-white font-bold px-2 py-0.5 rounded uppercase">Full Binary</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Salinan langsung berkas database SQLite <code>nattest.db</code> dengan integritas relasi penuh.
+              </p>
+              <button onclick="downloadSqliteBackup()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm flex items-center justify-center gap-2 mt-1">
+                <span>📥 Unduh Berkas nattest.db</span>
+              </button>
+            </div>
+
+            <!-- JSON Dump Download -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-xs text-slate-900">Backup Portabel Data (.json)</span>
+                <span class="text-[10px] bg-slate-200 text-slate-700 font-bold px-2 py-0.5 rounded uppercase">Text JSON</span>
+              </div>
+              <p class="text-[11px] text-slate-600 leading-relaxed">
+                Ekspor terstruktur format JSON meliputi seluruh tabel registrasi, akun, CMS, dan halaman statik.
+              </p>
+              <button onclick="downloadJsonBackup()" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 mt-1">
+                <span>📋 Unduh Salinan JSON</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Restore Database from Backup -->
+        <div class="bg-white p-6 sm:p-7 rounded-3xl border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <span class="text-base">🔄</span>
+            <h2 class="font-extrabold text-sm sm:text-base text-slate-900">Pemulihan Data (Restore)</h2>
+          </div>
+
+          <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-1">
+            <span class="font-bold flex items-center gap-1">⚠️ Perhatian Khusus:</span>
+            <p class="text-[11px] leading-relaxed">
+              Memulihkan data akan menggabungkan atau menimpa rekaman yang ada dengan data dari berkas backup JSON. Pastikan Anda telah mengunduh backup terkini sebelum melanjutkan.
+            </p>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1">Pilih Berkas Backup (.json):</label>
+              <input type="file" id="restore-file-input" accept=".json" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs bg-white file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-red-50 file:text-red-700 hover:file:bg-red-100" />
+            </div>
+
+            <button onclick="handleRestoreDatabase()" class="w-full py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-colors">
+              <span>🔄 Proses Pemulihan Data</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-950 text-slate-400 text-xs py-6 border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
+      <p>&copy; 2026 NAT-TEST Official & UKK CSGS Universitas Indonesia. Portal Pengelola.</p>
+      <div class="flex items-center gap-4 text-[11px]">
+        <a href="/admin-dashboard.html" class="hover:text-white">Dashboard</a>
+        <a href="/laporan-transaksi.html" class="hover:text-white">Laporan Transaksi</a>
+        <a href="/cetak-kartu.html" class="hover:text-white">Studio Cetak</a>
+        <a href="/" target="_blank" class="hover:text-white">Landing Page ↗</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/settings-backup.js"></script>
+</body>
+</html>

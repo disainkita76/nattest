@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="page-meta-title">Halaman Resmi - NAT-TEST UKK CSGS Universitas Indonesia</title>
+  <meta id="page-meta-desc" name="description" content="Informasi resmi pelaksanaan ujian bahasa Jepang NAT-TEST bekerjasama dengan UKK CSGS Universitas Indonesia.">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Japanese Theme CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
+</head>
+<body class="bg-seigaiha text-slate-800 antialiased selection:bg-red-500 selection:text-white flex flex-col min-h-screen">
+
+  <!-- 1. Top Announcement Bar -->
+  <div class="bg-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-red-900/40 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2 overflow-hidden">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white uppercase tracking-wider">RESMI</span>
+        <span id="top-announcement-text" class="truncate font-medium">📢 Pengumuman: Pendaftaran NAT-TEST Resmi Dibuka di Kampus Universitas Indonesia Depok</span>
+      </div>
+      <div class="hidden md:flex items-center gap-4 text-slate-400 text-[11px]">
+        <span>📍 Pusat Studi Jepang UI Depok</span>
+        <span>⏱️ Jam Layanan: 08.30 - 16.00 WIB</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Main Navigation Header -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-8 z-40 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      
+      <!-- Dual Official Logos -->
+      <a href="/" class="flex items-center gap-3 sm:gap-5 group">
+        <img src="/images/logo-nat-test.svg" alt="NAT-TEST Official Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+        <div class="h-7 w-[1px] bg-slate-300"></div>
+        <img src="/images/logo-csgs-ui.svg" alt="UKK CSGS UI Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+      </a>
+
+      <!-- Desktop Nav Menu -->
+      <nav id="main-header-nav" class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-700">
+        <a href="/#jadwal" class="hover:text-red-600 transition-colors">Jadwal Ujian</a>
+        <a href="/#lokasi" class="hover:text-red-600 transition-colors">Akses Lokasi</a>
+        <a href="/#aturan-pakaian" class="hover:text-red-600 transition-colors">Aturan Pakaian</a>
+        <a href="/#atk-wajib" class="hover:text-red-600 transition-colors">ATK Wajib</a>
+        <a href="/#pembayaran" class="hover:text-red-600 transition-colors">Biaya & Pembayaran</a>
+        <a href="/#faq" class="hover:text-red-600 transition-colors">FAQ</a>
+      </nav>
+
+      <!-- Auth Section -->
+      <div class="flex items-center gap-2">
+        <div id="nav-auth-section" class="flex items-center gap-2 sm:gap-3">
+          <a href="/" class="px-3.5 py-2 text-xs font-bold text-slate-700 hover:text-red-600 transition-colors">
+            Beranda
+          </a>
+          <a href="/#jadwal" class="px-4 py-2 text-xs font-bold rounded-xl btn-japan shadow-sm">
+            Daftar Ujian
+          </a>
+        </div>
+
+        <!-- Mobile hamburger toggle button -->
+        <button id="mobile-menu-btn" onclick="toggleMobileNav()" class="lg:hidden p-2 text-slate-600 hover:text-red-600 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Toggle Navigation Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-drawer" class="hidden lg:hidden border-t border-slate-200 bg-white/98 backdrop-blur px-5 py-4 shadow-lg">
+      <nav id="mobile-header-nav" class="flex flex-col space-y-3 text-sm font-semibold text-slate-700">
+        <a href="/" class="hover:text-red-600 transition-colors py-1">Beranda</a>
+        <a href="/#jadwal" class="hover:text-red-600 transition-colors py-1">Jadwal Ujian</a>
+        <a href="/#lokasi" class="hover:text-red-600 transition-colors py-1">Akses Lokasi</a>
+        <a href="/#aturan-pakaian" class="hover:text-red-600 transition-colors py-1">Aturan Pakaian</a>
+        <a href="/#atk-wajib" class="hover:text-red-600 transition-colors py-1">ATK Wajib</a>
+        <a href="/#pembayaran" class="hover:text-red-600 transition-colors py-1">Biaya & Pembayaran</a>
+        <a href="/#faq" class="hover:text-red-600 transition-colors py-1">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 3. Breadcrumbs -->
+  <div class="bg-white/80 border-b border-slate-200 py-3 px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto flex items-center gap-2 text-xs text-slate-500 overflow-x-auto whitespace-nowrap">
+      <a href="/" class="hover:text-red-600 flex items-center gap-1 font-semibold">
+        <span>🏠 Beranda</span>
+      </a>
+      <span>/</span>
+      <span class="text-slate-400">Informasi Resmi</span>
+      <span>/</span>
+      <span id="breadcrumb-page-title" class="font-bold text-slate-900 truncate">Memuat...</span>
+    </div>
+  </div>
+
+  <!-- 4. Main Content Area -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full">
+    
+    <!-- State: Loading skeleton -->
+    <div id="page-loading" class="space-y-6 animate-pulse">
+      <div class="h-8 bg-slate-200 rounded-xl w-3/4"></div>
+      <div class="h-4 bg-slate-200 rounded w-1/2"></div>
+      <div class="space-y-3 pt-6">
+        <div class="h-4 bg-slate-200 rounded"></div>
+        <div class="h-4 bg-slate-200 rounded"></div>
+        <div class="h-4 bg-slate-200 rounded w-5/6"></div>
+      </div>
+    </div>
+
+    <!-- State: Error / Not Found -->
+    <div id="page-error" class="hidden text-center py-20 space-y-4">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 text-red-600 text-2xl font-bold">
+        ⚠️
+      </div>
+      <h2 class="text-2xl font-extrabold text-slate-900">Halaman Tidak Ditemukan</h2>
+      <p id="page-error-message" class="text-sm text-slate-500 max-w-md mx-auto">
+        Maaf, halaman statik yang Anda cari tidak tersedia atau telah dipindahkan.
+      </p>
+      <div class="pt-4">
+        <a href="/" class="px-6 py-3 rounded-xl btn-japan font-bold text-xs inline-flex items-center gap-2 shadow-sm">
+          ← Kembali ke Halaman Utama
+        </a>
+      </div>
+    </div>
+
+    <!-- State: Content Container -->
+    <div id="page-container" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      
+      <!-- Article Column (Left, 8 cols) -->
+      <article class="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6">
+        
+        <!-- Badge & Hanko -->
+        <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div class="flex items-center gap-2">
+            <span class="hanko-stamp text-xs">公認</span>
+            <span class="text-xs font-bold text-red-700 tracking-wider uppercase">DOKUMEN RESMI SEKRETARIAT UI</span>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-400">
+            <span id="page-read-time" class="hidden sm:inline">⏱️ ~3 Menit Baca</span>
+            <span id="page-view-count" class="font-mono">👁️ 0 Pembaca</span>
+          </div>
+        </div>
+
+        <!-- Header Titles -->
+        <div class="space-y-2">
+          <h1 id="page-title" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-950 tracking-tight leading-tight">
+            <!-- Rendered by page.js -->
+          </h1>
+          <p id="page-subtitle" class="text-base text-slate-600 font-medium leading-relaxed">
+            <!-- Rendered by page.js -->
+          </p>
+        </div>
+
+        <!-- Meta info strip -->
+        <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500">
+          <div class="flex items-center gap-2">
+            <span>📅 Terakhir Diperbarui:</span>
+            <span id="page-updated-at" class="font-bold text-slate-800">-</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span>🏛️ Penerbit:</span>
+            <span class="font-bold text-slate-800">UKK CSGS Universitas Indonesia</span>
+          </div>
+        </div>
+
+        <!-- Main Body Content -->
+        <div id="page-body-content" class="prose prose-slate max-w-none text-slate-800 leading-relaxed pt-2">
+          <!-- Rendered by page.js -->
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div class="pt-8 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+          <a href="/" class="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:border-red-500 hover:text-red-600 transition-colors flex items-center gap-1.5 shadow-2xs">
+            ← Kembali ke Beranda
+          </a>
+          <div class="flex items-center gap-2">
+            <button onclick="sharePage()" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-colors flex items-center gap-1.5">
+              🔗 Salin Tautan
+            </button>
+            <a href="/#jadwal" class="px-5 py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm flex items-center gap-1.5">
+              Daftar Ujian Sekarang →
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Sidebar (Right, 4 cols) -->
+      <aside class="lg:col-span-4 space-y-6">
+        
+        <!-- Other Static Pages Navigation -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <span class="text-base">📄</span>
+            <h3 class="font-extrabold text-sm text-slate-900">Informasi & Halaman Terkait</h3>
+          </div>
+          <div id="sidebar-pages-list" class="space-y-2">
+            <!-- Dynamically populated by page.js -->
+          </div>
+        </div>
+
+        <!-- Helpdesk & Contact Card -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+            <span class="text-base">💬</span>
+            <h3 class="font-extrabold text-sm text-slate-900">Pusat Bantuan & Layanan</h3>
+          </div>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Ada pertanyaan seputar pendaftaran, pembayaran, atau jadwal ujian? Hubungi narahubung resmi kami:
+          </p>
+          <div class="space-y-2 text-xs">
+            <a href="https://wa.me/6281288889999" target="_blank" class="p-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold flex items-center justify-between transition-colors">
+              <span>WhatsApp Hotline 1</span>
+              <span>+62 812-8888-9999 ↗</span>
+            </a>
+            <a href="mailto:nattest.csgs@ui.ac.id" class="p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold flex items-center justify-between transition-colors">
+              <span>Email Resmi</span>
+              <span>nattest.csgs@ui.ac.id ↗</span>
+            </a>
+          </div>
+          <div class="pt-2 border-t border-slate-100 text-[11px] text-slate-500">
+            📍 Pusat Studi Jepang, Kampus Universitas Indonesia, Depok (Senin - Jumat: 08.30 - 16.00 WIB).
+          </div>
+        </div>
+
+        <!-- Quick Registration CTA Banner -->
+        <div class="bg-gradient-to-br from-red-600 to-red-800 rounded-3xl p-6 text-white space-y-3 shadow-md">
+          <span class="text-[10px] font-bold uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded">Jadwal 2026/2027</span>
+          <h4 class="font-black text-lg leading-snug">Daftarkan Diri Anda di Gelombang Ujian Terdekat</h4>
+          <p class="text-xs text-red-100 leading-relaxed">
+            Sertifikat resmi diakui Imigrasi Jepang untuk studi & visa kerja Tokutei Ginou.
+          </p>
+          <a href="/#jadwal" class="block w-full py-2.5 rounded-xl bg-white text-red-700 hover:bg-red-50 text-center font-bold text-xs transition-colors shadow">
+            Lihat Jadwal & Daftar Sekarang
+          </a>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- 5. Footer -->
+  <footer class="bg-slate-950 text-slate-300 pt-12 pb-8 border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+        <div class="md:col-span-5 space-y-3">
+          <div class="flex items-center gap-3">
+            <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-9 w-auto brightness-200" />
+            <div class="h-6 w-[1px] bg-slate-700"></div>
+            <img src="/images/logo-csgs-ui.svg" alt="UKK CSGS UI" class="h-9 w-auto brightness-200" />
+          </div>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Penyelenggaraan Resmi Ujian Standar Kemampuan Bahasa Jepang NAT-TEST bekerjasama dengan Unit Kerja Khusus Center for Strategic and Global Studies (UKK CSGS) Universitas Indonesia.
+          </p>
+        </div>
+
+        <div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-6 text-xs">
+          <div class="space-y-2">
+            <span class="font-bold text-white uppercase tracking-wider text-[11px]">Halaman Utama</span>
+            <ul class="space-y-1.5 text-slate-400">
+              <li><a href="/#jadwal" class="hover:text-white">Jadwal Ujian</a></li>
+              <li><a href="/#lokasi" class="hover:text-white">Akses Lokasi</a></li>
+              <li><a href="/#aturan-pakaian" class="hover:text-white">Aturan Pakaian</a></li>
+              <li><a href="/#atk-wajib" class="hover:text-white">ATK Wajib</a></li>
+              <li><a href="/#pembayaran" class="hover:text-white">Biaya Ujian</a></li>
+            </ul>
+          </div>
+          <div class="space-y-2">
+            <span class="font-bold text-white uppercase tracking-wider text-[11px]">Informasi Resmi</span>
+            <ul class="space-y-1.5 text-slate-400" id="footer-static-pages-list">
+              <li><a href="/page/tentang-kami" class="hover:text-white">Tentang NAT-TEST</a></li>
+              <li><a href="/page/panduan-pendaftaran" class="hover:text-white">Panduan Pendaftaran</a></li>
+              <li><a href="/page/syarat-ketentuan" class="hover:text-white">Syarat & Ketentuan</a></li>
+              <li><a href="/page/kebijakan-privasi" class="hover:text-white">Kebijakan Privasi</a></li>
+              <li><a href="/page/kontak-layanan" class="hover:text-white">Kontak & Sekretariat</a></li>
+            </ul>
+          </div>
+          <div class="space-y-2 col-span-2 sm:col-span-1">
+            <span class="font-bold text-white uppercase tracking-wider text-[11px]">Layanan</span>
+            <ul class="space-y-1.5 text-slate-400">
+              <li><a href="/cetak-kartu.html" target="_blank" class="hover:text-white">Studio Cetak Kartu</a></li>
+              <li><a href="/" class="hover:text-white">Portal Peserta</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-6 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+        <p>&copy; 2026 NAT-TEST Official & UKK CSGS Universitas Indonesia. Seluruh hak cipta dilindungi.</p>
+        <!-- Discreet Admin Portal Link -->
+        <a href="/admin-login.html" class="hover:text-slate-400 text-[11px] flex items-center gap-1 font-mono transition-colors opacity-70 hover:opacity-100" title="Akses Portal Pengelola">
+          <span>🔒 Portal Pengelola</span>
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/page.js"></script>
+</body>
+</html>

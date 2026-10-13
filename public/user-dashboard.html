@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Peserta - NAT-TEST UKK CSGS UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-9 w-auto" />
+          <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-9 w-auto hidden sm:block" />
+        </a>
+        <div class="h-6 w-[1px] bg-slate-200 hidden sm:block"></div>
+        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider hidden sm:block">Portal Peserta Ujian</span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="text-right">
+          <div id="user-header-name" class="font-extrabold text-sm text-slate-900">Peserta Ujian</div>
+          <div id="user-header-email" class="text-xs text-slate-500">peserta@email.com</div>
+        </div>
+        <button onclick="Auth.logout()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:text-red-600 hover:border-red-200 transition-colors">
+          Keluar
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Sub-bar -->
+  <div class="bg-white border-b border-slate-200 shadow-xs no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center gap-2 overflow-x-auto py-2">
+      <button id="user-btn-status" onclick="switchUserTab('status')" class="user-tab-btn px-4 py-2 rounded-xl text-xs font-bold bg-red-600 text-white transition-colors shrink-0">
+        📌 Status Pendaftaran & Kartu Ujian
+      </button>
+      <button id="user-btn-register" onclick="switchUserTab('register')" class="user-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors shrink-0">
+        📝 Formulir Pendaftaran Ujian
+      </button>
+      <button id="user-btn-password" onclick="switchUserTab('password')" class="user-tab-btn px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-100 transition-colors shrink-0">
+        🔒 Fasilitas Ubah Password
+      </button>
+      <a href="/cetak-kartu.html" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white hover:bg-slate-800 transition-colors shrink-0 flex items-center gap-1.5 shadow-xs">
+        🖨️ Studio Cetak & Layout Kartu ↗
+      </a>
+      <a href="/" class="ml-auto text-xs font-semibold text-slate-500 hover:text-red-600 shrink-0">
+        ← Halaman Depan
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
+    
+    <!-- ========================================================== -->
+    <!-- TAB 1: STATUS PENDAFTARAN & KARTU UJIAN                     -->
+    <!-- ========================================================== -->
+    <div id="user-tab-status" class="user-tab-content space-y-8">
+      
+      <!-- When Registration Exists -->
+      <div id="section-registered-view" class="space-y-8">
+        
+        <!-- Registration Summary Card -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100">
+            <div>
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">NOMOR REGISTRASI RESMI</span>
+              <h2 id="my-reg-number" class="text-2xl sm:text-3xl font-black text-red-600 font-mono tracking-tight">NAT-2026-XXXX</h2>
+            </div>
+            <div id="my-reg-status-badge">
+              <!-- Rendered by user.js -->
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 my-6 text-sm">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+              <span class="text-xs text-slate-500 font-medium">Nama Peserta:</span>
+              <div id="my-reg-fullname" class="font-bold text-slate-900 mt-1">-</div>
+              <div class="text-xs text-slate-500 mt-0.5">NIK: <span id="my-reg-nik">-</span></div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+              <span class="text-xs text-slate-500 font-medium">Tempat & Tanggal Lahir:</span>
+              <div id="my-reg-birth" class="font-bold text-slate-900 mt-1">-</div>
+              <div class="text-[11px] text-emerald-700 font-semibold mt-0.5">✓ Terverifikasi Asli</div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+              <span class="text-xs text-slate-500 font-medium">Level & Gelombang:</span>
+              <div class="flex items-center gap-2 mt-1">
+                <span id="my-reg-level" class="px-2 py-0.5 rounded text-xs font-black bg-red-100 text-red-700">4Q</span>
+                <span id="my-reg-period" class="font-bold text-slate-900 text-xs">Gelombang 3</span>
+              </div>
+              <div class="text-xs text-slate-500 mt-1">HP: <span id="my-reg-phone">-</span></div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+              <span class="text-xs text-slate-500 font-medium">Biaya Ujian:</span>
+              <div id="my-reg-fee" class="font-black text-lg text-red-600 mt-0.5">Rp 500.000</div>
+              <div id="my-reg-method" class="text-xs text-slate-600 font-medium mt-0.5">Virtual Account BNI</div>
+            </div>
+          </div>
+
+          <!-- Document Upload Status & Proof Box -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+            
+            <!-- Upload Bukti Pembayaran Form -->
+            <div class="bg-red-50/50 p-5 rounded-2xl border border-red-200 space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-bold text-sm text-slate-900">Instruksi & Bukti Pembayaran Ujian</h3>
+                <span class="badge-file-limit">Maks. 2 MB</span>
+              </div>
+
+              <!-- Payment Channel Switcher Tabs (BNI46, Mandiri, BRI, QRIS) -->
+              <div class="space-y-2 border-b border-red-200/80 pb-3">
+                <span class="text-[11px] font-bold text-slate-600 block">Pilih Saluran Pembayaran Resmi:</span>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <button type="button" id="btn-paytab-bni" onclick="switchUserPaymentTab('BNI')" class="px-2.5 py-2 rounded-xl text-xs font-bold bg-slate-900 text-white transition-all shadow-xs flex items-center justify-center gap-1.5 border border-slate-800">
+                    <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+                    <span>VA BNI46</span>
+                  </button>
+                  <button type="button" id="btn-paytab-mandiri" onclick="switchUserPaymentTab('MANDIRI')" class="px-2.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:bg-slate-100 transition-all shadow-2xs flex items-center justify-center gap-1.5 border border-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span>VA Mandiri</span>
+                  </button>
+                  <button type="button" id="btn-paytab-bri" onclick="switchUserPaymentTab('BRI')" class="px-2.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:bg-slate-100 transition-all shadow-2xs flex items-center justify-center gap-1.5 border border-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+                    <span>BRIVA (BRI)</span>
+                  </button>
+                  <button type="button" id="btn-paytab-qris" onclick="switchUserPaymentTab('QRIS')" class="px-2.5 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 hover:bg-slate-100 transition-all shadow-2xs flex items-center justify-center gap-1.5 border border-slate-300">
+                    <span class="w-2 h-2 rounded-full bg-red-600"></span>
+                    <span>📱 QRIS</span>
+                  </button>
+                </div>
+                <div id="pay-switch-alert" class="hidden p-2 rounded-xl text-[11px] font-semibold bg-blue-50 text-blue-800 border border-blue-200 flex items-center justify-between">
+                  <span id="pay-switch-alert-text">Metode pembayaran aktif diperbarui.</span>
+                </div>
+              </div>
+
+              <!-- Channel 1: Virtual Account Details (BNI, Mandiri, BRI) -->
+              <div id="paybox-va" class="p-4 rounded-2xl bg-white border border-slate-200 text-xs space-y-3.5 shadow-2xs">
+                <!-- Header Bank Badge -->
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <span id="user-va-badge-icon" class="text-base">🏦</span>
+                    <div>
+                      <h4 id="user-va-bank-title" class="font-extrabold text-xs text-slate-900">Virtual Account BNI46</h4>
+                      <span id="user-va-bank-subtitle" class="text-[10px] text-slate-500 font-mono">Kode Institusi: 9880033</span>
+                    </div>
+                  </div>
+                  <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    REALTIME BILLING
+                  </span>
+                </div>
+
+                <!-- VA Number Display with Copy Button -->
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <div class="flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Nomor Virtual Account:</span>
+                    <span class="font-mono text-[10px] text-slate-400">Otomatis Terbit</span>
+                  </div>
+                  <div class="flex items-center justify-between gap-2">
+                    <span id="user-va-number" class="font-mono font-black text-red-600 text-lg tracking-wider select-all">
+                      988003326000001
+                    </span>
+                    <button type="button" id="btn-copy-va" onclick="copyVaNumber()" class="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center gap-1 shadow-2xs transition-all shrink-0">
+                      <span>📋 Salin VA</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Name & Fee Summary -->
+                <div class="space-y-2 text-xs">
+                  <div class="flex justify-between items-center text-slate-600">
+                    <span>Nama Tagihan / Biller:</span>
+                    <span id="user-va-name" class="font-bold text-slate-900 text-right">NAT CSGS UI - PESERTA</span>
+                  </div>
+                  <div class="flex justify-between items-center text-slate-600">
+                    <span>Total Nominal Tagihan:</span>
+                    <div class="flex items-center gap-2">
+                      <span id="user-va-amount" class="font-mono font-black text-slate-900 text-sm">Rp 500.000</span>
+                      <button type="button" id="btn-copy-amount" onclick="copyFeeAmount()" class="px-2 py-0.5 rounded text-[10px] font-bold border border-slate-300 hover:bg-slate-100 text-slate-700 transition-all">
+                        Salin
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Specific Bank Payment Guide Accordion -->
+                <div class="pt-2 border-t border-slate-100 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[11px] font-bold text-slate-700">📖 Panduan Pembayaran:</span>
+                    <span class="text-[10px] text-slate-400">m-Banking & ATM</span>
+                  </div>
+
+                  <!-- BNI Instructions -->
+                  <div id="instruct-bni" class="space-y-1.5 text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <p class="font-bold text-slate-800">📱 BNI Mobile Banking:</p>
+                    <p class="leading-relaxed">1. Login BNI Mobile > Menu <strong>Pembayaran</strong> > <strong>Virtual Account Billing</strong>.<br>2. Pilih tab <em>Input Baru</em>, masukkan Nomor VA di atas.<br>3. Tagihan & Nama Peserta akan muncul otomatis. Masukkan Password Transaksi.</p>
+                    <p class="font-bold text-slate-800 pt-1">🏧 ATM BNI:</p>
+                    <p class="leading-relaxed">Menu Lainnya > Transfer > Rekening Tabungan > <strong>Virtual Account Billing</strong> > Masukkan Nomor VA > Tekan Benar.</p>
+                  </div>
+
+                  <!-- Mandiri Instructions -->
+                  <div id="instruct-mandiri" class="hidden space-y-1.5 text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <p class="font-bold text-slate-800">📱 Livin' by Mandiri (Kuning):</p>
+                    <p class="leading-relaxed">1. Buka Livin' > Menu <strong>Bayar</strong> > Cari Penyedia Jasa: <strong>88708</strong> (CSGS UI / Mandiri Bill).<br>2. Masukkan Nomor VA Anda di atas.<br>3. Konfirmasi Nama Peserta & Nominal > Masukkan PIN Livin'.</p>
+                    <p class="font-bold text-slate-800 pt-1">🏧 ATM Mandiri:</p>
+                    <p class="leading-relaxed">Menu Bayar/Beli > Pendidikan / Multipayment > Masukkan Kode Perusahaan: <strong>88708</strong> > Masukkan Nomor VA > Tekan Benar.</p>
+                  </div>
+
+                  <!-- BRI Instructions -->
+                  <div id="instruct-bri" class="hidden space-y-1.5 text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <p class="font-bold text-slate-800">📱 BRImo (BRI Mobile):</p>
+                    <p class="leading-relaxed">1. Login BRImo > Menu <strong>Tagihan</strong> > Pilih <strong>BRIVA</strong>.<br>2. Klik <em>Tambah Transaksi Baru</em> > Masukkan Nomor BRIVA di atas.<br>3. Cek Nama Peserta & Total Tagihan > Masukkan PIN BRImo.</p>
+                    <p class="font-bold text-slate-800 pt-1">🏧 ATM BRI & Agen BRILink:</p>
+                    <p class="leading-relaxed">Menu Transaksi Lain > Pembayaran > Lain-lain > <strong>BRIVA</strong> > Masukkan Nomor BRIVA > Tekan Benar > Simpan Struk.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Channel 2: QRIS Details -->
+              <div id="paybox-qris" class="hidden p-3.5 rounded-xl bg-white border border-red-100 text-xs space-y-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-24 h-32 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center p-1">
+                    <img id="user-pay-qrisimg" src="/images/qris-nat-test.svg" alt="Kode QRIS" class="w-full h-full object-contain" />
+                  </div>
+                  <div class="space-y-1">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800 uppercase">STANDAR ASPI / BI</span>
+                    <div id="user-pay-qrismerchant" class="font-black text-xs text-slate-900">NAT-TEST UKK CSGS UNIVERSITAS INDONESIA</div>
+                    <div class="text-[11px] font-mono font-bold text-red-600">NMID: <span id="user-pay-qrisnmid">ID1020261012345</span></div>
+                    <a id="user-pay-qrisdownload" href="/images/qris-nat-test.svg" download="QRIS_NAT_TEST_CSGS_UI.svg" class="inline-block mt-1 text-[11px] font-bold text-slate-700 hover:text-red-600 underline">
+                      ⬇ Simpan / Download Barcode QRIS
+                    </a>
+                  </div>
+                </div>
+                <p id="user-pay-qrisinstruct" class="text-[11px] text-slate-500 leading-relaxed bg-slate-50 p-2 rounded-lg border border-slate-200">
+                  Scan kode QRIS menggunakan GoPay, OVO, DANA, ShopeePay, BCA Mobile, Livin Mandiri, atau m-Banking berstandar QRIS lainnya.
+                </p>
+              </div>
+
+              <p class="text-xs text-slate-600 leading-relaxed">
+                Setelah melakukan transfer bank atau scan QRIS, silakan unggah foto/struk bukti transaksi Anda di bawah ini:
+              </p>
+
+              <form onsubmit="handleUploadProof(event)" class="space-y-3">
+                <input type="file" id="payment_proof_file" accept="image/jpeg,image/png,image/jpg" class="block w-full text-xs text-slate-500 file:mr-2 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-red-600 file:text-white hover:file:bg-red-700 cursor-pointer" />
+                <div id="proof_file_status" class="text-xs text-slate-600"></div>
+                <img id="proof_file_preview" class="hidden w-28 h-28 object-contain rounded-xl border border-slate-200 bg-white shadow-xs" alt="Preview Bukti" />
+
+                <button type="submit" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-md">
+                  Kirim Bukti Pembayaran
+                </button>
+              </form>
+
+              <div id="payment-proof-uploaded-box" class="hidden pt-3 border-t border-red-200/60 text-xs text-slate-700">
+                <span class="font-semibold text-emerald-800">✓ Bukti Transfer Terunggah:</span>
+                <div class="mt-2">
+                  <img id="my-proof-img" class="h-24 w-auto rounded border border-slate-300" alt="Bukti Transfer" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Uploaded Identity Details -->
+            <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <h3 class="font-bold text-sm text-slate-900">Berkas Terlampir Peserta</h3>
+              <div class="flex items-center gap-4">
+                <div>
+                  <span class="text-[11px] text-slate-500 block mb-1">Pasfoto Resmi:</span>
+                  <img id="my-reg-pasfoto" class="w-20 h-24 object-cover rounded-xl border border-slate-300 shadow-xs bg-slate-200" src="/images/logo-nat-test.svg" alt="Pasfoto" />
+                </div>
+                <div class="space-y-2">
+                  <span class="text-[11px] text-slate-500 block">Identitas KTP & Institusi:</span>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <a id="my-reg-ktp-link" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:text-red-600 shadow-xs">
+                      <span>Lihat Dokumen KTP ↗</span>
+                    </a>
+                    <a id="my-reg-inst-link" href="#" target="_blank" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-semibold text-slate-700 hover:text-red-600 shadow-xs">
+                      <span>Lihat Kartu Institusi ↗</span>
+                    </a>
+                  </div>
+                  <p class="text-[11px] text-slate-400">Berkas diamankan secara terenkripsi oleh panitia.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PRINTABLE OFFICIAL EXAM CARD (KARTU TANDA PESERTA UJIAN) -->
+        <div id="exam-card-ready-box" class="hidden space-y-4">
+          <div class="flex items-center justify-between no-print">
+            <h3 class="text-xl font-extrabold text-slate-900">Kartu Tanda Peserta Ujian Resmi</h3>
+            <div class="flex items-center gap-2.5">
+              <a href="/cetak-kartu.html" class="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-800 hover:border-red-500 hover:text-red-600 text-xs font-bold transition-colors shadow-xs flex items-center gap-1.5">
+                🎨 Kustomisasi Layout Kartu ↗
+              </a>
+              <button onclick="printExamCard()" class="px-5 py-2.5 rounded-xl btn-japan text-xs font-bold shadow-md flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <span>Cetak Cepat</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Printable Card Container -->
+          <div id="printable-exam-card" class="bg-white rounded-3xl p-8 border-2 border-red-600 shadow-lg relative overflow-hidden max-w-4xl mx-auto">
+            
+            <!-- Japanese Hanko Stamp Background -->
+            <div class="absolute right-8 top-8 opacity-10 pointer-events-none">
+              <div class="w-48 h-48 rounded-full border-8 border-red-600 flex items-center justify-center font-jp text-5xl font-black text-red-600">
+                NAT・TEST
+              </div>
+            </div>
+
+            <!-- Header Card -->
+            <div class="flex items-center justify-between border-b-2 border-slate-900 pb-4 mb-6">
+              <div class="flex items-center gap-4">
+                <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-12 w-auto" />
+                <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-12 w-auto" />
+              </div>
+              <div class="text-right">
+                <div class="font-jp text-xs font-bold text-red-600">日本語学力テスト・受験票</div>
+                <div class="text-sm font-black text-slate-900 tracking-wider">KARTU TANDA PESERTA UJIAN</div>
+                <div class="text-[11px] text-slate-500 font-mono">PANITIA NASIONAL INDONESIA</div>
+              </div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+              
+              <!-- Photo on Card -->
+              <div class="md:col-span-3 flex flex-col items-center text-center">
+                <div class="w-28 h-36 rounded-lg border-2 border-slate-300 overflow-hidden bg-slate-100 shadow-sm mb-2">
+                  <img id="card-photo" src="/images/logo-nat-test.svg" alt="Foto Peserta" class="w-full h-full object-cover" />
+                </div>
+                <span class="text-[10px] text-slate-400">Cap Pengesahan Resmi</span>
+                <div class="hanko-circle text-[10px] w-8 h-8 mt-1 border-red-600 text-red-600">検印</div>
+              </div>
+
+              <!-- Student Details on Card -->
+              <div class="md:col-span-9 space-y-3 text-xs">
+                <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+                  <span class="text-slate-500 font-medium">Nomor Registrasi:</span>
+                  <span id="card-reg-number" class="col-span-2 font-mono font-black text-red-600 text-sm">NAT-2026-XXXX</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+                  <span class="text-slate-500 font-medium">Nama Lengkap:</span>
+                  <span id="card-full-name" class="col-span-2 font-bold text-slate-900 uppercase text-sm">-</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+                  <span class="text-slate-500 font-medium">Nomor Identitas (NIK):</span>
+                  <span id="card-nik" class="col-span-2 font-mono text-slate-800">-</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+                  <span class="text-slate-500 font-medium">Tempat, Tanggal Lahir:</span>
+                  <span id="card-birth" class="col-span-2 font-semibold text-slate-900">-</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+                  <span class="text-slate-500 font-medium">Level & Gelombang:</span>
+                  <span class="col-span-2 font-bold text-slate-900">
+                    <span id="card-level" class="bg-red-100 text-red-800 px-2 py-0.5 rounded mr-2 font-black">4Q</span>
+                    <span id="card-period">Gelombang 3</span>
+                  </span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+                  <span class="text-slate-500 font-medium">Lokasi Pelaksanaan:</span>
+                  <span class="col-span-2 font-bold text-slate-900">Gedung Pusat Studi Jepang (PSJ UI), Kampus UI Depok</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Exam Card Rules Footer -->
+            <div class="mt-6 pt-4 border-t border-slate-200 text-[10px] text-slate-500 space-y-1">
+              <div class="font-bold text-slate-700">TATA TERTIB WAJIB BAGI PESERTA:</div>
+              <p>1. Wajib membawa Kartu Ujian fisik ini beserta KTP / Identitas Asli yang masih berlaku.</p>
+              <p>2. Wajib membawa Pensil 2B Asli dan Penghapus khusus 2B. Pensil mekanik tidak diperbolehkan pada LJK.</p>
+              <p>3. Pakaian wajib rapi dan berkerah, celana panjang sopan, dan memakai sepatu tertutup. Kaos oblong dan sandal dilarang.</p>
+              <p>4. Gerbang ruang ujian ditutup tepat 15 menit sebelum waktu ujian dimulai.</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- When User Has NOT Registered Yet -->
+      <div id="section-unregistered-form" class="hidden text-center py-12 bg-white rounded-3xl border border-slate-200 p-8">
+        <div class="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4 text-2xl font-black">
+          📝
+        </div>
+        <h3 class="text-xl font-extrabold text-slate-900">Anda Belum Terdaftar di Periode Ujian Aktif</h3>
+        <p class="text-xs text-slate-500 max-w-md mx-auto my-3">
+          Silakan buka tab Formulir Pendaftaran Ujian untuk memilih level dan gelombang ujian yang ingin Anda ikuti.
+        </p>
+        <button onclick="switchUserTab('register')" class="px-6 py-2.5 rounded-xl btn-japan font-bold text-xs shadow-md">
+          Buka Formulir Pendaftaran Ujian
+        </button>
+      </div>
+
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 2: FORMULIR PENDAFTARAN UJIAN BARU                     -->
+    <!-- ========================================================== -->
+    <div id="user-tab-register" class="user-tab-content hidden max-w-3xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+      
+      <div class="border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-extrabold text-slate-900">Formulir Pendaftaran Ujian NAT-TEST</h2>
+        <p class="text-xs text-slate-500">Lengkapi data pribadi dan berkas pendaftaran Anda secara akurat.</p>
+      </div>
+
+      <form onsubmit="handleDashboardRegister(event)" class="space-y-5">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-red-50/50 border border-red-200">
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Pilih Gelombang Ujian: *</label>
+            <select id="new_reg_period" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white font-semibold">
+              <option value="Gelombang 3 - Juni 2026">Gelombang 3 - Juni 2026</option>
+              <option value="Gelombang 4 - Agustus 2026">Gelombang 4 - Agustus 2026</option>
+              <option value="Gelombang 5 - Oktober 2026">Gelombang 5 - Oktober 2026</option>
+              <option value="Gelombang 6 - Desember 2026">Gelombang 6 - Desember 2026</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Level Ujian: *</label>
+            <select id="new_reg_level" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white font-semibold">
+              <option value="5Q">5Q (Dasar Pemula / Setara N5 - Rp 500.000)</option>
+              <option value="4Q">4Q (Dasar / Setara N4 - Rp 500.000)</option>
+              <option value="3Q">3Q (Menengah Bawah / Setara N3 - Rp 500.000)</option>
+              <option value="2Q">2Q (Menengah Atas / Setara N2 - Rp 600.000)</option>
+              <option value="1Q">1Q (Tingkat Mahir / Setara N1 - Rp 600.000)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap (Sesuai KTP): *</label>
+            <input type="text" id="new_reg_fullname" required placeholder="Budi Santoso" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-red-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor Induk Kependudukan (NIK): *</label>
+            <input type="text" id="new_reg_nik" required maxlength="16" placeholder="16 Digit NIK KTP" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-mono outline-none focus:ring-2 focus:ring-red-500" />
+          </div>
+        </div>
+
+        <!-- Setting Tanggal Lahir (Pencegahan Muncul Tanggal 1/1/1970) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tempat Lahir: *</label>
+            <input type="text" id="new_reg_birth_place" required placeholder="Kota Kelahiran" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white" />
+          </div>
+          <div class="sm:col-span-2">
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-slate-700">Tanggal Lahir: *</label>
+              <span class="text-[11px] text-slate-400 font-mono">Format: HH/BB/TTTT</span>
+            </div>
+            <!-- Initial empty value, min 1950, max 2018 (NO 1970 default!) -->
+            <input type="date" id="new_reg_birth_date" required min="1950-01-01" max="2018-12-31" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white focus:ring-2 focus:ring-red-500 font-sans" />
+            <div id="new_reg_birth_preview" class="text-xs text-slate-600 mt-1"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Kelamin: *</label>
+            <select id="new_reg_gender" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="L">Laki-laki (男性)</option>
+              <option value="P">Perempuan (女性)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor WhatsApp: *</label>
+            <input type="tel" id="new_reg_phone" required placeholder="0812XXXXXXXX" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Lama Belajar Jepang:</label>
+            <select id="new_reg_learning" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="Kurang dari 6 Bulan">&lt; 6 Bulan</option>
+              <option value="6 Bulan - 1 Tahun">6 Bulan - 1 Tahun</option>
+              <option value="1 - 2 Tahun">1 - 2 Tahun</option>
+              <option value="Lebih dari 2 Tahun">&gt; 2 Tahun</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Alamat Domisili & Kode Pos Peserta -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Domisili Lengkap: *</label>
+            <input type="text" id="new_reg_address" required placeholder="Jalan, RT/RW, Kelurahan, Kecamatan, Kota" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kode Pos Peserta: *</label>
+            <input type="text" id="new_reg_postal_code" required maxlength="10" placeholder="Contoh: 16424" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Asal Lembaga / Kampus / Sekolah: *</label>
+          <input type="text" id="new_reg_institution" required placeholder="Universitas / LPK / Sekolah / Perusahaan" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm" />
+        </div>
+
+        <!-- Alamat Pengiriman Sertifikat Resmi -->
+        <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm">📦</span>
+              <label class="block text-xs font-extrabold text-slate-900">Alamat Pengiriman Sertifikat Kelulusan: *</label>
+            </div>
+            <label class="inline-flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+              <input type="checkbox" id="new_reg_same_address" onchange="toggleSameAddressDashboard()" class="rounded text-red-600 focus:ring-red-500" />
+              <span class="text-[11px] font-semibold text-slate-700">Sama dengan Domisili</span>
+            </label>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="sm:col-span-2">
+              <input type="text" id="new_reg_cert_address" required placeholder="Alamat lengkap tujuan pengiriman dokumen sertifikat" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white outline-none focus:ring-2 focus:ring-red-500" />
+            </div>
+            <div>
+              <input type="text" id="new_reg_cert_postal_code" required maxlength="10" placeholder="Kode Pos Pengiriman" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white outline-none font-mono focus:ring-2 focus:ring-red-500" />
+            </div>
+          </div>
+          <p class="text-[11px] text-amber-800 leading-relaxed">
+            * Sertifikat asli kelulusan NAT-TEST dan transkrip nilai akan dikirimkan ke alamat ini via ekspedisi.
+          </p>
+        </div>
+
+        <!-- Info Max Ukuran File Upload (KTP, Foto & Institusi) -->
+        <div class="border-t border-slate-200 pt-4 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-extrabold text-sm text-slate-900">Upload Berkas Persyaratan (KTP, Pasfoto & Kartu Institusi):</h4>
+            <span class="badge-file-limit">
+              ⚠️ Maks. Ukuran File 2 MB (JPG/PNG)
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Upload KTP -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <span class="text-xs font-bold text-slate-800">Scan / Foto KTP Asli: *</span>
+              <input type="file" id="new_reg_ktp_file" accept="image/jpeg,image/png,image/jpg,application/pdf" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-700 cursor-pointer" />
+              <div id="ktp_file_status" class="text-[11px] text-slate-500"></div>
+              <img id="ktp_file_preview" class="hidden w-24 h-16 object-cover rounded border border-slate-200 mt-2" alt="Preview KTP" />
+            </div>
+
+            <!-- Upload Pasfoto -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <span class="text-xs font-bold text-slate-800">Pasfoto Resmi (3x4 atau 4x6): *</span>
+              <input type="file" id="new_reg_foto_file" accept="image/jpeg,image/png,image/jpg" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-700 cursor-pointer" />
+              <div id="pasfoto_file_status" class="text-[11px] text-slate-500"></div>
+              <img id="pasfoto_file_preview" class="hidden w-16 h-20 object-cover rounded border border-slate-200 mt-2" alt="Preview Foto" />
+            </div>
+
+            <!-- Upload Persyaratan Foto Institusi Peserta -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2 sm:col-span-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-slate-800">Persyaratan Foto / Identitas Institusi Peserta: *</span>
+                  <span class="text-[11px] text-slate-500 block">Scan Kartu Pelajar / Kartu Mahasiswa / ID Card Pegawai / Surat Rekomendasi</span>
+                </div>
+                <span class="text-[10px] text-slate-500">Max 2 MB</span>
+              </div>
+              <input type="file" id="new_reg_inst_file" accept="image/jpeg,image/png,image/jpg,application/pdf" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-700 cursor-pointer" />
+              <div id="inst_file_status" class="text-[11px] text-slate-500"></div>
+              <img id="inst_file_preview" class="hidden w-24 h-16 object-cover rounded border border-slate-200 mt-2" alt="Preview Kartu Institusi" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pilihan Metode Pembayaran Pendaftaran -->
+        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+          <label class="block text-xs font-bold text-slate-800">Pilih Saluran Pembayaran Awal: *</label>
+          <select id="new_reg_payment_method" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white font-semibold outline-none focus:ring-2 focus:ring-red-500">
+            <option value="Virtual Account BNI46">Virtual Account BNI46 (Rekomendasi)</option>
+            <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+            <option value="Virtual Account BRI (BRIVA)">Virtual Account BRI (BRIVA)</option>
+            <option value="QRIS">QRIS (GoPay, OVO, Dana, ShopeePay, m-Banking)</option>
+          </select>
+          <p class="text-[11px] text-slate-500">* Anda dapat beralih saluran Virtual Account/QRIS kapan saja melalui halaman rincian pendaftaran.</p>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 rounded-xl btn-japan font-bold text-sm shadow-md">
+          Simpan Pendaftaran Ujian
+        </button>
+
+      </form>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 3: FASILITAS UBAH PASSWORD PESERTA                     -->
+    <!-- ========================================================== -->
+    <div id="user-tab-password" class="user-tab-content hidden max-w-lg mx-auto bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+      
+      <div class="border-b border-slate-100 pb-4">
+        <h2 class="text-xl font-extrabold text-slate-900">Fasilitas Ubah Kata Sandi</h2>
+        <p class="text-xs text-slate-500">Perbarui kata sandi akun Anda secara berkala demi keamanan.</p>
+      </div>
+
+      <div id="user_pw_error" class="hidden p-3 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-semibold"></div>
+      <div id="user_pw_success" class="hidden p-3 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold"></div>
+
+      <form id="form-user-change-password" onsubmit="handleUserChangePassword(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi Lama Saat Ini: *</label>
+          <input type="password" id="user_old_password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi Baru: *</label>
+          <input type="password" id="user_new_password" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Konfirmasi Kata Sandi Baru: *</label>
+          <input type="password" id="user_confirm_password" required minlength="6" placeholder="Ketik ulang kata sandi baru" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl btn-japan font-bold text-sm shadow-md mt-2">
+          Perbarui Kata Sandi
+        </button>
+      </form>
+
+    </div>
+
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/user.js"></script>
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NAT-TEST Official - Unit Kerja Khusus CSGS Universitas Indonesia</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Custom Japanese Theme CSS -->
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
+</head>
+<body class="bg-seigaiha text-slate-800 antialiased selection:bg-red-500 selection:text-white">
+
+  <!-- 1. Top Announcement Bar (Dynamic from CMS) -->
+  <div class="bg-slate-900 text-slate-200 text-xs py-2 px-4 border-b border-red-900/40 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2 overflow-hidden">
+        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-red-600 text-white uppercase tracking-wider">RESMI</span>
+        <span id="top-announcement-text" class="truncate font-medium">📢 Pengumuman: Pendaftaran NAT-TEST Gelombang 3 (Juni 2026) dibuka hingga 15 Mei 2026. Kuota terbatas 350 peserta!</span>
+      </div>
+      <div class="hidden md:flex items-center gap-4 text-slate-400 text-[11px]">
+        <span>📍 Lokasi: Pusat Studi Jepang UI Depok</span>
+        <span>⏱️ Jam Layanan: 08.30 - 16.00 WIB</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Main Navigation Header -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-8 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      
+      <!-- Official Logos: NAT-TEST & UKK CSGS UI (Dynamic via CMS) -->
+      <a href="/" id="header-logo-container" class="flex items-center gap-3 sm:gap-5 group">
+        <!-- Logo 1 (NAT-TEST) -->
+        <img id="header-logo-1" src="/images/logo-nat-test.svg" alt="NAT-TEST Official Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+        <!-- Divider (Hidden if only 1 logo is enabled) -->
+        <div id="header-logo-divider" class="h-7 w-[1px] bg-slate-300"></div>
+        <!-- Logo 2 (UKK CSGS UI) -->
+        <img id="header-logo-2" src="/images/logo-csgs-ui.svg" alt="UKK CSGS UI Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105" />
+      </a>
+
+      <!-- Desktop Nav Menu -->
+      <nav id="main-header-nav" class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-700">
+        <a href="#jadwal" class="hover:text-red-600 transition-colors">Jadwal Ujian</a>
+        <a href="#lokasi" class="hover:text-red-600 transition-colors">Akses Lokasi</a>
+        <a href="#aturan-pakaian" class="hover:text-red-600 transition-colors">Aturan Pakaian</a>
+        <a href="#atk-wajib" class="hover:text-red-600 transition-colors">ATK Wajib</a>
+        <a href="#pembayaran" class="hover:text-red-600 transition-colors">Biaya & Pembayaran</a>
+        <a href="#faq" class="hover:text-red-600 transition-colors">FAQ</a>
+      </nav>
+
+      <!-- Auth Section (Peserta Login & Daftar) + Mobile Menu Toggle -->
+      <div class="flex items-center gap-2">
+        <div id="nav-auth-section" class="flex items-center gap-2 sm:gap-3">
+          <!-- Populated dynamically by app.js (Login Peserta & Daftar Sekarang) -->
+          <button onclick="openLoginModal()" class="px-3.5 py-2 text-xs font-bold text-slate-700 hover:text-red-600 transition-colors">
+            Masuk Peserta
+          </button>
+          <button onclick="openRegisterModal()" class="px-4 py-2 text-xs font-bold rounded-xl btn-japan">
+            Daftar Sekarang
+          </button>
+        </div>
+
+        <!-- Mobile hamburger toggle button -->
+        <button id="mobile-menu-btn" onclick="toggleMobileNav()" class="lg:hidden p-2 text-slate-600 hover:text-red-600 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Toggle Navigation Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-drawer" class="hidden lg:hidden border-t border-slate-200 bg-white/98 backdrop-blur px-5 py-4 shadow-lg">
+      <nav id="mobile-header-nav" class="flex flex-col space-y-3 text-sm font-semibold text-slate-700">
+        <!-- Rendered dynamically by app.js -->
+        <a href="#jadwal" class="hover:text-red-600 transition-colors py-1">Jadwal Ujian</a>
+        <a href="#lokasi" class="hover:text-red-600 transition-colors py-1">Akses Lokasi</a>
+        <a href="#aturan-pakaian" class="hover:text-red-600 transition-colors py-1">Aturan Pakaian</a>
+        <a href="#atk-wajib" class="hover:text-red-600 transition-colors py-1">ATK Wajib</a>
+        <a href="#pembayaran" class="hover:text-red-600 transition-colors py-1">Biaya & Pembayaran</a>
+        <a href="#faq" class="hover:text-red-600 transition-colors py-1">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- 2B. BANNER IMAGE SLIDER HALAMAN DEPAN (MAKSIMAL 3 GAMBAR)     -->
+  <!-- ============================================================ -->
+  <section id="landing-slider-section" class="relative max-w-7xl mx-auto px-4 sm:px-6 pt-5 pb-2">
+    <div class="relative overflow-hidden rounded-3xl border border-slate-200/90 shadow-xl bg-slate-950 group">
+      
+      <!-- Slides Container (Fades smoothly between up to 3 slides) -->
+      <div id="slider-track" class="relative w-full h-[260px] sm:h-[340px] md:h-[400px] lg:h-[440px] overflow-hidden">
+        <!-- Slide 1 (Default / Static Fallback) -->
+        <div class="slider-slide absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out opacity-100 z-10">
+          <img src="/images/slider-1.svg" alt="Pusat Ujian Resmi NAT-TEST UI Depok" class="w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent sm:hidden"></div>
+          <div class="absolute bottom-6 sm:bottom-10 left-5 sm:left-12 right-5 sm:right-12 max-w-2xl text-white space-y-2 sm:hidden">
+            <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold bg-red-600 text-white uppercase tracking-wider">RESMI • 2026</span>
+            <h3 class="text-lg font-extrabold text-white leading-tight drop-shadow-md">Pusat Ujian Resmi NAT-TEST UI Depok</h3>
+            <p class="text-xs text-slate-200 line-clamp-2">Ujian bahasa Jepang berstandar Tokyo di Kampus Universitas Indonesia.</p>
+          </div>
+        </div>
+
+        <!-- Slide 2 (Fallback) -->
+        <div class="slider-slide absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0">
+          <img src="/images/slider-2.svg" alt="Gedung Pusat Studi Jepang PSJ UI" class="w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent sm:hidden"></div>
+          <div class="absolute bottom-6 sm:bottom-10 left-5 sm:left-12 right-5 sm:right-12 max-w-2xl text-white space-y-2 sm:hidden">
+            <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-600 text-white uppercase tracking-wider">LOKASI & FASILITAS</span>
+            <h3 class="text-lg font-extrabold text-white leading-tight drop-shadow-md">Gedung Pusat Studi Jepang (PSJ) UI Depok</h3>
+            <p class="text-xs text-slate-200 line-clamp-2">Ruang ber-AC akustik dan akses 5 menit dari Stasiun Pondok Cina UI.</p>
+          </div>
+        </div>
+
+        <!-- Slide 3 (Fallback) -->
+        <div class="slider-slide absolute inset-0 w-full h-full transition-opacity duration-700 ease-in-out opacity-0 pointer-events-none z-0">
+          <img src="/images/slider-3.svg" alt="Sertifikasi Resmi Diakui Imigrasi Jepang" class="w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent sm:hidden"></div>
+          <div class="absolute bottom-6 sm:bottom-10 left-5 sm:left-12 right-5 sm:right-12 max-w-2xl text-white space-y-2 sm:hidden">
+            <span class="inline-block px-3 py-1 rounded-full text-[10px] font-bold bg-blue-600 text-white uppercase tracking-wider">STANDAR MOJ TOKYO</span>
+            <h3 class="text-lg font-extrabold text-white leading-tight drop-shadow-md">Sertifikasi Resmi Diakui Imigrasi (MOJ)</h3>
+            <p class="text-xs text-slate-200 line-clamp-2">Syarat sah COE, visa studi Ryugaku, visa kerja SSW, dan beasiswa Jepang.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Arrows (Left / Right) -->
+      <button type="button" id="slider-btn-prev" onclick="sliderPrev()" class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-10 sm:w-11 h-10 sm:h-11 rounded-2xl bg-slate-950/65 hover:bg-red-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all opacity-85 hover:opacity-100 hover:scale-105 shadow-lg z-20" aria-label="Slide Sebelumnya">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <button type="button" id="slider-btn-next" onclick="sliderNext()" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-10 sm:w-11 h-10 sm:h-11 rounded-2xl bg-slate-950/65 hover:bg-red-600 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all opacity-85 hover:opacity-100 hover:scale-105 shadow-lg z-20" aria-label="Slide Berikutnya">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+      </button>
+
+      <!-- Bottom Controls Bar (Indicator Dots & Slide Counter Badge & Autoplay Control) -->
+      <div class="absolute bottom-3 sm:bottom-4 left-0 right-0 px-4 sm:px-6 flex items-center justify-between z-20 pointer-events-none">
+        <!-- Slide Counter Badge -->
+        <div class="pointer-events-auto px-3 py-1 rounded-full bg-slate-950/70 backdrop-blur-md text-[10px] sm:text-[11px] font-mono font-bold text-white border border-white/15 flex items-center gap-1.5 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          <span id="slider-counter">1 / 3</span>
+        </div>
+
+        <!-- Dot Indicators -->
+        <div id="slider-dots" class="pointer-events-auto flex items-center gap-2 bg-slate-950/70 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 shadow-sm">
+          <button type="button" onclick="goToSlide(0)" class="w-2.5 h-2.5 rounded-full bg-red-500 transition-all scale-125" aria-label="Slide 1"></button>
+          <button type="button" onclick="goToSlide(1)" class="w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white/80 transition-all" aria-label="Slide 2"></button>
+          <button type="button" onclick="goToSlide(2)" class="w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white/80 transition-all" aria-label="Slide 3"></button>
+        </div>
+
+        <!-- Autoplay Pause / Play Toggle -->
+        <button type="button" id="slider-toggle-play" onclick="toggleSliderAutoplay()" class="pointer-events-auto px-2.5 py-1 rounded-full bg-slate-950/70 hover:bg-slate-900 text-white text-[10px] font-bold backdrop-blur-md border border-white/15 transition-all flex items-center gap-1 shadow-sm" title="Jeda / Lanjutkan Putar Otomatis">
+          <span id="slider-play-icon">⏸️</span>
+          <span id="slider-play-label" class="hidden sm:inline">Auto</span>
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3. Japanese-Themed Hero Section -->
+  <section class="relative bg-hero-pattern pt-12 pb-20 px-4 sm:px-6 overflow-hidden border-b border-red-100">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <!-- Left Content -->
+      <div class="lg:col-span-7 space-y-6">
+        <!-- Japanese Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 border border-red-200 shadow-sm">
+          <span class="hanko-circle text-[11px] w-6 h-6 border-red-600 text-red-600">公</span>
+          <span id="hero-badge-text" class="text-xs font-bold text-red-700 uppercase tracking-wider">PENDAFTARAN RESMI 2026 / 2027 TERBUKA</span>
+        </div>
+
+        <div class="space-y-3">
+          <div class="text-sm font-jp font-bold text-red-800 tracking-widest uppercase">日本語学力テスト・公式試験</div>
+          <h1 id="hero-title-text" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-950 tracking-tight leading-tight">
+            Ujian Standar Kemampuan Bahasa Jepang NAT-TEST
+          </h1>
+          <p id="hero-subtitle-text" class="text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-2xl">
+            Diselenggarakan secara resmi oleh NAT-TEST Komite Pusat Jepang bekerjasama dengan Unit Kerja Khusus Center for Strategic and Global Studies (UKK CSGS) Universitas Indonesia di Kampus UI Depok.
+          </p>
+        </div>
+
+        <!-- Action CTAs -->
+        <div class="flex flex-wrap items-center gap-4 pt-2">
+          <button onclick="openRegisterModal()" class="px-7 py-3.5 rounded-xl btn-japan font-bold text-sm flex items-center gap-2 shadow-lg hover:shadow-red-500/20">
+            <span>Daftar Ujian Sekarang</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+          <a href="#jadwal" class="px-6 py-3.5 rounded-xl bg-white border border-slate-300 text-slate-800 font-bold text-sm hover:border-red-500 hover:text-red-600 transition-all shadow-sm">
+            Lihat Jadwal & Panduan
+          </a>
+        </div>
+
+        <!-- Quality badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-200/80">
+          <div class="bg-white/80 p-3 rounded-xl border border-slate-200 shadow-xs">
+            <div class="text-lg font-black text-red-600">6x</div>
+            <div class="text-[11px] font-semibold text-slate-600">Ujian Setahun (Bulan Genap)</div>
+          </div>
+          <div class="bg-white/80 p-3 rounded-xl border border-slate-200 shadow-xs">
+            <div class="text-lg font-black text-slate-900">1Q - 5Q</div>
+            <div class="text-[11px] font-semibold text-slate-600">Setara Standar JLPT N1-N5</div>
+          </div>
+          <div class="bg-white/80 p-3 rounded-xl border border-slate-200 shadow-xs">
+            <div class="text-lg font-black text-emerald-600">MOJ</div>
+            <div class="text-[11px] font-semibold text-slate-600">Diakui Imigrasi Jepang</div>
+          </div>
+          <div class="bg-white/80 p-3 rounded-xl border border-slate-200 shadow-xs">
+            <div class="text-lg font-black text-amber-600">UI Depok</div>
+            <div class="text-[11px] font-semibold text-slate-600">Pusat Studi Jepang UI</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Card: Quick Exam Portal Info -->
+      <div class="lg:col-span-5">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl relative overflow-hidden">
+          <div class="absolute -right-12 -top-12 w-40 h-40 bg-red-100 rounded-full blur-2xl opacity-50"></div>
+          
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div>
+              <span class="text-xs font-bold text-red-600 tracking-wider font-mono">PERIODE TERDEKAT</span>
+              <h3 class="text-lg font-extrabold text-slate-900">Gelombang 3 - Juni 2026</h3>
+            </div>
+            <div class="hanko-circle">
+              合格
+            </div>
+          </div>
+
+          <div class="space-y-4 my-6 text-sm">
+            <div class="flex items-center justify-between py-2 border-b border-slate-100">
+              <span class="text-slate-600">Tanggal Pelaksanaan:</span>
+              <span class="font-bold text-red-600">Minggu, 14 Juni 2026</span>
+            </div>
+            <div class="flex items-center justify-between py-2 border-b border-slate-100">
+              <span class="text-slate-600">Batas Pendaftaran:</span>
+              <span class="font-bold text-slate-900">15 Mei 2026 (Pkl 23.59)</span>
+            </div>
+            <div class="flex items-center justify-between py-2 border-b border-slate-100">
+              <span class="text-slate-600">Lokasi:</span>
+              <span class="font-semibold text-slate-900">Pusat Studi Jepang UI</span>
+            </div>
+            <div class="flex items-center justify-between py-2">
+              <span class="text-slate-600">Biaya Pendaftaran:</span>
+              <span class="font-black text-slate-900">Mulai Rp 500.000,-</span>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <button onclick="openRegisterModal('Gelombang 3 - Juni 2026')" class="w-full py-3 rounded-xl btn-japan font-bold text-sm shadow-md">
+              Daftar Gelombang 3 Sekarang
+            </button>
+            <p class="text-center text-[11px] text-slate-500">
+              Sudah memiliki akun? <a href="javascript:void(0)" onclick="openLoginModal()" class="text-red-600 font-bold hover:underline">Masuk Peserta</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Section: Informasi Jadwal Ujian (Gelombang 1-6) -->
+  <section id="jadwal" class="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
+    <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
+        <span>開催日程</span> • JADWAL RESMI
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-950 tracking-tight">Jadwal Ujian NAT-TEST 2026 / 2027</h2>
+      <p id="schedule-desc-text" class="text-sm text-slate-600 leading-relaxed">
+        Ujian NAT-TEST dilaksanakan secara serentak 6 kali dalam setahun (setiap bulan genap). Hasil ujian diterbitkan dalam waktu 3 minggu pasca pelaksanaan.
+      </p>
+    </div>
+
+    <!-- Schedules Grid (Rendered dynamically from CMS) -->
+    <div id="schedule-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Fallback Skeleton / Pre-rendered items handled by app.js -->
+    </div>
+  </section>
+
+  <!-- 5. Section: Info Akses Lokasi Ujian (Venue & Transportasi) -->
+  <section id="lokasi" class="py-16 px-4 sm:px-6 bg-white border-y border-slate-200">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900">
+          <span>会場案内</span> • LOKASI UJIAN
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-950 tracking-tight">Info Akses & Denah Lokasi Ujian</h2>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          Seluruh rangkaian ujian NAT-TEST diselenggarakan di lingkungan Pusat Studi Jepang (PSJ) Universitas Indonesia, Kampus UI Depok.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left: Venue details & Routes -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+            <div class="flex items-center gap-2">
+              <span class="p-2 rounded-lg bg-red-600 text-white font-bold text-xs">PSJ UI</span>
+              <h3 id="location-venue-name" class="font-extrabold text-lg text-slate-900">Pusat Studi Jepang (PSJ) UI & CSGS UI</h3>
+            </div>
+            <p id="location-address" class="text-sm text-slate-600 leading-relaxed">
+              Gedung Pusat Studi Jepang (PSJ UI), Jl. Lingkar Kampus UI, Pondok Cina, Beji, Kota Depok, Jawa Barat 16424
+            </p>
+            <div class="pt-2">
+              <a id="location-direct-link" href="https://maps.app.goo.gl/kX72fUvQWkH9G2Ue8" target="_blank" class="inline-flex items-center gap-2 text-xs font-bold text-red-600 hover:text-red-700 underline">
+                <span>Buka Petunjuk Arah di Google Maps App ↗</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Dynamic Routes Container from CMS -->
+          <div class="space-y-3">
+            <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider">Rute Transportasi Menuju Lokasi:</h4>
+            <div id="location-routes-container" class="space-y-3">
+              <!-- Rendered by app.js -->
+            </div>
+          </div>
+
+          <!-- Important venue notices -->
+          <div class="p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800 space-y-1.5">
+            <div class="font-bold flex items-center gap-1.5 text-red-900">
+              <span>⚠️ Peringatan Waktu Kehadiran:</span>
+            </div>
+            <p>Pintu ruang ujian ditutup tepat 15 menit sebelum sesi ujian dimulai. Peserta yang terlambat dengan alasan apa pun TIDAK DIPERKENANKAN masuk dan ujian dinyatakan gugur.</p>
+          </div>
+        </div>
+
+        <!-- Right: Interactive Google Maps Embed -->
+        <div class="lg:col-span-6 space-y-4">
+          <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-md h-[400px] bg-slate-100">
+            <iframe id="location-map-iframe" class="w-full h-full border-0" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=Pusat+Studi+Jepang+Universitas+Indonesia&t=&z=15&ie=UTF8&iwloc=&output=embed"></iframe>
+          </div>
+          <div class="flex items-center justify-between text-xs text-slate-500 px-2">
+            <span>Koordinat: Gedung PSJ Kampus UI Depok</span>
+            <span class="font-semibold text-emerald-700">✓ Aksesibilitas Pejalan Kaki dari Stasiun POC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Section: Aturan Penggunaan Pakaian saat Ujian (Dress Code) -->
+  <section id="aturan-pakaian" class="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
+    <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-900">
+        <span>服装規定</span> • TATA TERTIB PAKAIAN
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-950 tracking-tight">Aturan Penggunaan Pakaian saat Ujian</h2>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        Seluruh peserta ujian NAT-TEST wajib mengenakan pakaian yang rapi, bersih, sopan, dan mematuhi etika akademik ujian resmi.
+      </p>
+    </div>
+
+    <!-- Visual Comparison Cards: Boleh vs Dilarang -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+      
+      <!-- Boleh / Wajib (Allowed) -->
+      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-emerald-200 shadow-sm relative overflow-hidden">
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-emerald-100">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black text-xl">
+            ✓
+          </div>
+          <div>
+            <h3 class="font-extrabold text-lg text-emerald-900">Pakaian yang Diwajibkan / Diperbolehkan</h3>
+            <span class="text-xs text-emerald-700 font-medium">Mematuhi etika berpakaian sopan & formal</span>
+          </div>
+        </div>
+
+        <ul id="dresscode-allowed-list" class="space-y-4">
+          <!-- Rendered from CMS -->
+        </ul>
+      </div>
+
+      <!-- Dilarang (Prohibited) -->
+      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-red-200 shadow-sm relative overflow-hidden">
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-red-100">
+          <div class="w-10 h-10 rounded-xl bg-red-100 text-red-800 flex items-center justify-center font-black text-xl">
+            ✕
+          </div>
+          <div>
+            <h3 class="font-extrabold text-lg text-red-900">Pakaian yang DILARANG</h3>
+            <span class="text-xs text-red-700 font-medium">Dilarang keras memasuki gedung ujian</span>
+          </div>
+        </div>
+
+        <ul id="dresscode-prohibited-list" class="space-y-4">
+          <!-- Rendered from CMS -->
+        </ul>
+      </div>
+    </div>
+
+    <!-- Sanksi Box -->
+    <div class="mt-8 p-4 rounded-xl bg-slate-900 text-white text-xs sm:text-sm text-center font-medium">
+      <span class="text-red-400 font-bold">⚠️ Sanksi Pelanggaran: </span>
+      <span id="dresscode-special-rule">Peserta yang tidak mematuhi tata tertib pakaian TIDAK AKAN DIIZINKAN memasuki ruang ujian dan biaya ujian dinyatakan hangus.</span>
+    </div>
+  </section>
+
+  <!-- 7. Section: ATK yang Wajib Dibawa & Barang Terlarang -->
+  <section id="atk-wajib" class="py-16 px-4 sm:px-6 bg-slate-50 border-y border-slate-200">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">
+          <span>持参品</span> • PERLENGKAPAN UJIAN
+        </div>
+        <h2 class="text-3xl font-extrabold text-slate-950 tracking-tight">ATK yang Wajib Dibawa ke Ruang Ujian</h2>
+        <p class="text-sm text-slate-600 leading-relaxed">
+          Pemeriksaan Lembar Jawaban Komputer (LJK) menggunakan mesin optik berstandar Jepang. Pastikan Anda membawa alat tulis yang sesuai spesifikasi.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Mandatory Stationery Cards (Left) -->
+        <div class="lg:col-span-7 space-y-4">
+          <h3 class="font-extrabold text-base text-slate-900 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-600"></span>
+            Daftar ATK & Dokumen Wajib:
+          </h3>
+          <div id="stationery-mandatory-list" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- Rendered from CMS -->
+          </div>
+        </div>
+
+        <!-- Prohibited Items on Desk (Right) -->
+        <div class="lg:col-span-5 bg-white p-6 sm:p-7 rounded-2xl border border-red-200 shadow-sm space-y-4">
+          <div class="flex items-center gap-2 pb-3 border-b border-red-100">
+            <span class="text-xl">🚫</span>
+            <div>
+              <h3 class="font-extrabold text-base text-red-950">DILARANG di Atas Meja Ujian</h3>
+              <p class="text-xs text-red-700">Wajib dimatikan dan dimasukkan ke dalam tas di depan kelas</p>
+            </div>
+          </div>
+
+          <ul id="stationery-prohibited-list" class="space-y-3">
+            <!-- Rendered from CMS -->
+          </ul>
+
+          <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-[11px] text-amber-900">
+            <strong>Catatan Jam Tangan:</strong> Smartwatch / Apple Watch dilarang digunakan. Jam dinding resmi disediakan dan disinkronisasi di setiap ruang ujian.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Section: Info Cara Pembayaran -->
+  <section id="pembayaran" class="py-16 px-4 sm:px-6 max-w-7xl mx-auto">
+    <div class="text-center max-w-3xl mx-auto mb-12 space-y-3">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900">
+        <span>受験料・支払</span> • METODE PEMBAYARAN
+      </div>
+      <h2 class="text-3xl font-extrabold text-slate-950 tracking-tight">Biaya & Tata Cara Pembayaran Ujian</h2>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        Pembayaran resmi dilakukan ke rekening giro UKK CSGS Universitas Indonesia melalui Virtual Account, Transfer Bank, atau QRIS resmi.
+      </p>
+    </div>
+
+    <!-- Fee cards per level -->
+    <div id="payment-fees-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <!-- Rendered from CMS -->
+    </div>
+
+    <!-- Payment Steps & Accounts -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- 5 Langkah Pembayaran (Left) -->
+      <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+        <h3 class="font-extrabold text-lg text-slate-900 border-b border-slate-100 pb-3">
+          5 Langkah Alur Pembayaran Pendaftaran:
+        </h3>
+        <div id="payment-steps-container" class="space-y-4">
+          <!-- Rendered from CMS -->
+        </div>
+      </div>
+
+      <!-- Bank Account Details (Right) -->
+      <div class="lg:col-span-5 space-y-4">
+        <h3 class="font-extrabold text-base text-slate-900">Kanal Rekening Resmi UKK CSGS UI:</h3>
+        <div id="payment-accounts-container" class="space-y-3">
+          <!-- Rendered from CMS -->
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-600">
+          <strong>Perhatian:</strong> Panitia TIDAK PERNAH meminta transfer ke rekening atas nama pribadi. Pastikan nama penerima adalah <em>UKK CSGS UNIVERSITAS INDONESIA</em>.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. Section: FAQ (Tanya Jawab) -->
+  <section id="faq" class="py-16 px-4 sm:px-6 bg-slate-50 border-t border-slate-200">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-10 space-y-2">
+        <h2 id="faq-section-title" class="text-2xl sm:text-3xl font-extrabold text-slate-950">Pertanyaan yang Sering Diajukan (FAQ)</h2>
+        <p id="faq-section-subtitle" class="text-xs sm:text-sm text-slate-600">Informasi penting seputar sertifikasi NAT-TEST, pengakuan imigrasi, dan teknis ujian</p>
+      </div>
+
+      <div id="faq-accordion-container" class="space-y-3">
+        <!-- Rendered from CMS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Footer Section with Japanese Theme & Discreet Hidden Admin Link -->
+  <footer class="bg-slate-950 text-slate-400 text-xs pt-14 pb-8 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-slate-800/80">
+        <!-- Col 1: About & Logos -->
+        <div class="md:col-span-4 space-y-4">
+          <div class="flex items-center gap-3">
+            <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-9 w-auto bg-white p-1 rounded-md" />
+            <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-9 w-auto bg-white p-1 rounded-md" />
+          </div>
+          <p id="footer-about-text" class="text-slate-400 leading-relaxed text-xs">
+            Penyelenggaraan resmi Ujian Standar Kemampuan Bahasa Jepang (NAT-TEST) Indonesia. Bekerjasama dengan Unit Kerja Khusus Center for Strategic and Global Studies (UKK CSGS) Universitas Indonesia di Pusat Studi Jepang Kampus UI Depok.
+          </p>
+          <div id="footer-accreditation-text" class="text-[11px] text-slate-500">
+            Terakreditasi resmi untuk COE & Visa Studi ke Jepang oleh MOJ (Ministry of Justice Japan).
+          </div>
+        </div>
+
+        <!-- Col 2: Nav Quick Links -->
+        <div class="md:col-span-2 space-y-3">
+          <h4 id="footer-col2-title" class="font-bold text-white text-xs uppercase tracking-wider">Halaman Utama</h4>
+          <ul class="space-y-2">
+            <li><a href="#jadwal" class="hover:text-white transition-colors">Jadwal Ujian</a></li>
+            <li><a href="#lokasi" class="hover:text-white transition-colors">Akses Lokasi</a></li>
+            <li><a href="#aturan-pakaian" class="hover:text-white transition-colors">Aturan Pakaian</a></li>
+            <li><a href="#atk-wajib" class="hover:text-white transition-colors">ATK Wajib</a></li>
+            <li><a href="#pembayaran" class="hover:text-white transition-colors">Pembayaran</a></li>
+            <li><a href="/cetak-kartu.html" class="hover:text-white transition-colors">Studio Cetak Kartu</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Halaman Statik Resmi -->
+        <div class="md:col-span-3 space-y-3">
+          <h4 id="footer-col3-title" class="font-bold text-white text-xs uppercase tracking-wider">Informasi Resmi</h4>
+          <ul class="space-y-2 text-slate-400">
+            <li><a href="/page/tentang-kami" class="hover:text-white transition-colors">Tentang NAT-TEST & UI</a></li>
+            <li><a href="/page/panduan-pendaftaran" class="hover:text-white transition-colors">Panduan Pendaftaran</a></li>
+            <li><a href="/page/syarat-ketentuan" class="hover:text-white transition-colors">Syarat & Tata Tertib</a></li>
+            <li><a href="/page/kebijakan-privasi" class="hover:text-white transition-colors">Kebijakan Privasi</a></li>
+            <li><a href="/page/kontak-layanan" class="hover:text-white transition-colors">Kontak Sekretariat</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Sekretariat Contact -->
+        <div class="md:col-span-3 space-y-3">
+          <h4 id="footer-col4-title" class="font-bold text-white text-xs uppercase tracking-wider">Sekretariat Pelaksana</h4>
+          <p id="footer-contact-office" class="text-slate-400 leading-relaxed">
+            Gedung Pusat Studi Jepang (PSJ UI) Lt. 1, Kampus Universitas Indonesia, Depok, Jawa Barat 16424
+          </p>
+          <div class="space-y-1 text-slate-400">
+            <div>📞 WhatsApp: <strong id="footer-contact-wa" class="text-slate-200">+62 812-8888-9999</strong></div>
+            <div>✉️ Email: <strong id="footer-contact-email" class="text-slate-200">nattest@csgs-ui.ac.id</strong></div>
+            <div>⏱️ Pelayanan: <span id="footer-contact-hours">Senin - Jumat (08.30 - 16.00 WIB)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Bar with HIDDEN / DISCREET Admin Portal Entrance -->
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px]">
+        <div id="footer-copyright-text" class="text-slate-500">
+          © 2026 NAT-TEST Committee Japan & UKK CSGS Universitas Indonesia. All rights reserved.
+        </div>
+
+        <!-- Requirement Fulfillment: "login admin pada halaman depan di hide" -->
+        <!-- Admin entrance is discreetly embedded in footer as an unassuming official lock icon link -->
+        <div class="flex items-center gap-4">
+          <a href="/admin-login.html" class="inline-flex items-center gap-1.5 text-slate-600 hover:text-slate-400 transition-colors py-1 px-2 rounded opacity-60 hover:opacity-100" title="Portal Pengawas Internal">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span class="text-[10px]">Portal Pengelola</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================= -->
+  <!-- MODALS: LOGIN & REGISTRASI PESERTA                            -->
+  <!-- ============================================================= -->
+
+  <!-- 1. Modal Login Peserta -->
+  <div id="login-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200 animate-in fade-in zoom-in-95 duration-200">
+      <button onclick="closeLoginModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="text-center mb-6 space-y-1">
+        <div class="inline-block p-2 rounded-2xl bg-red-50 text-red-600 mb-2">
+          <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        </div>
+        <h3 class="text-xl font-extrabold text-slate-900">Masuk Akun Peserta</h3>
+        <p class="text-xs text-slate-500">Akses dashboard pendaftaran dan cetak kartu ujian</p>
+      </div>
+
+      <div id="login_error_message" class="hidden p-3 mb-4 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-semibold"></div>
+
+      <form onsubmit="handleLoginSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Email:</label>
+          <input type="email" id="login_email" required placeholder="nama@email.com" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi:</label>
+          <input type="password" id="login_password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none" />
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl btn-japan font-bold text-sm shadow-md mt-2">
+          Masuk Sekarang
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 text-center text-xs text-slate-500 space-y-2">
+        <p>Belum memiliki akun? <a href="javascript:void(0)" onclick="closeLoginModal(); openRegisterModal();" class="text-red-600 font-bold hover:underline">Daftar Akun Baru</a></p>
+        <p class="text-[11px] text-slate-400">Akun demo peserta: <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">budi.santoso@gmail.com / peserta123</code></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Modal Registrasi Peserta (Lengkap dengan Setting Non-1970 & Limit Upload 2MB) -->
+  <div id="register-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative border border-slate-200 my-8 max-h-[90vh] overflow-y-auto">
+      <button onclick="closeRegisterModal()" class="absolute top-5 right-5 text-slate-400 hover:text-slate-700 p-1">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-6 space-y-1">
+        <span class="inline-block px-2.5 py-0.5 rounded text-[10px] font-bold bg-red-100 text-red-800 uppercase tracking-wider">FORMULIR PENDAFTARAN</span>
+        <h3 class="text-2xl font-extrabold text-slate-900">Pendaftaran Ujian NAT-TEST 2026</h3>
+        <p class="text-xs text-slate-500">Isi data pribadi Anda secara akurat sesuai dengan kartu identitas (KTP / Paspor).</p>
+      </div>
+
+      <div id="reg_error_message" class="hidden p-3 mb-4 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-semibold"></div>
+
+      <form onsubmit="handleRegisterSubmit(event)" class="space-y-5">
+        
+        <!-- Pilihan Gelombang & Level Ujian -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-2xl bg-red-50/50 border border-red-200">
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Pilih Gelombang Ujian: *</label>
+            <select id="reg_exam_period" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white font-semibold">
+              <option value="Gelombang 3 - Juni 2026">Gelombang 3 - Juni 2026 (Pendaftaran Buka)</option>
+              <option value="Gelombang 4 - Agustus 2026">Gelombang 4 - Agustus 2026</option>
+              <option value="Gelombang 5 - Oktober 2026">Gelombang 5 - Oktober 2026</option>
+              <option value="Gelombang 6 - Desember 2026">Gelombang 6 - Desember 2026</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-800 mb-1">Tingkat / Level Ujian: *</label>
+            <select id="reg_exam_level" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white font-semibold">
+              <option value="5Q">5Q (Dasar Pemula / Setara N5 - Rp 500.000)</option>
+              <option value="4Q">4Q (Dasar / Setara N4 - Rp 500.000)</option>
+              <option value="3Q">3Q (Menengah Bawah / Setara N3 - Rp 500.000)</option>
+              <option value="2Q">2Q (Menengah Atas / Setara N2 - Rp 600.000)</option>
+              <option value="1Q">1Q (Tingkat Mahir / Setara N1 - Rp 600.000)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Data Akun -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap (Sesuai KTP): *</label>
+            <input type="text" id="reg_name" required placeholder="Contoh: Budi Santoso" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor NIK KTP: *</label>
+            <input type="text" id="reg_nik" required maxlength="16" placeholder="16 Digit NIK KTP" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none font-mono" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Email Aktif: *</label>
+            <input type="email" id="reg_email" required placeholder="budi@example.com" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nomor WhatsApp / HP: *</label>
+            <input type="tel" id="reg_phone" required placeholder="0812XXXXXXXX" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+          </div>
+        </div>
+
+        <!-- Setting Penginputan Tanggal Lahir (Pencegahan 1/1/1970) -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Tempat Lahir: *</label>
+            <input type="text" id="reg_birth_place" required placeholder="Kota Kelahiran" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white" />
+          </div>
+          <div class="sm:col-span-2">
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-slate-700">Tanggal Lahir: *</label>
+              <span class="text-[11px] text-slate-400 font-mono">Format: HH/BB/TTTT</span>
+            </div>
+            <!-- Standard HTML5 date with empty default, strict bounds 1950 - 2018 (NO 1970 fallback!) -->
+            <input type="date" id="reg_birth_date" required min="1950-01-01" max="2018-12-31" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white focus:ring-2 focus:ring-red-500 font-sans" />
+            <div id="birth_date_preview" class="text-[11px] text-slate-600 mt-1 font-medium"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Jenis Kelamin: *</label>
+            <select id="reg_gender" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm bg-white">
+              <option value="L">Laki-laki (男性)</option>
+              <option value="P">Perempuan (女性)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi Akun: *</label>
+            <input type="password" id="reg_password" required minlength="6" placeholder="Minimal 6 karakter" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+          </div>
+        </div>
+
+        <!-- Alamat Domisili & Kode Pos Peserta -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 mb-1">Alamat Domisili Lengkap Peserta: *</label>
+            <input type="text" id="reg_address" required placeholder="Jalan, No. Rumah, RT/RW, Kelurahan, Kecamatan, Kota" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Kode Pos Peserta: *</label>
+            <input type="text" id="reg_postal_code" required maxlength="10" placeholder="Contoh: 16424" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none font-mono" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Institusi / Sekolah / Universitas / Perusahaan: *</label>
+          <input type="text" id="reg_institution" required placeholder="Contoh: Universitas Indonesia / SMA 1 Jakarta / PT ..." class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-red-500 outline-none" />
+        </div>
+
+        <!-- Alamat Pengiriman Sertifikat Resmi -->
+        <div class="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 space-y-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-1.5">
+              <span class="text-sm">📦</span>
+              <label class="block text-xs font-extrabold text-slate-900">Alamat Pengiriman Sertifikat Resmi: *</label>
+            </div>
+            <label class="inline-flex items-center gap-1.5 text-xs text-slate-600 cursor-pointer">
+              <input type="checkbox" id="reg_same_address" onchange="toggleSameAddressLanding()" class="rounded text-red-600 focus:ring-red-500" />
+              <span class="text-[11px] font-semibold text-slate-700">Sama dengan Domisili</span>
+            </label>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="sm:col-span-2">
+              <input type="text" id="reg_cert_address" required placeholder="Alamat lengkap penerima sertifikat (Jalan, RT/RW, Kota/Kabupaten)" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-red-500 outline-none" />
+            </div>
+            <div>
+              <input type="text" id="reg_cert_postal_code" required maxlength="10" placeholder="Kode Pos Pengiriman" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-red-500 outline-none font-mono" />
+            </div>
+          </div>
+          <p class="text-[11px] text-amber-800 leading-relaxed">
+            * Sertifikat asli kelulusan NAT-TEST dari Tokyo dan transkrip nilai akan dikirimkan langsung ke alamat ini via ekspedisi.
+          </p>
+        </div>
+
+        <!-- Requirement: Info max ukuran file yang diupload (KTP, Foto & Institusi) -->
+        <div class="border-t border-slate-200 pt-4 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="font-extrabold text-sm text-slate-900">Upload Dokumen Persyaratan:</h4>
+            <!-- Prominent file size limit badge -->
+            <span class="badge-file-limit">
+              ⚠️ Info: Maks. Ukuran File 2 MB (JPG/PNG)
+            </span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Upload KTP -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800">Scan / Foto KTP / Paspor: *</span>
+                <span class="text-[10px] text-slate-500">Max 2 MB</span>
+              </div>
+              <input type="file" id="upload_ktp_file" accept="image/jpeg,image/png,image/jpg,application/pdf" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer" />
+              <div id="ktp_upload_status" class="text-[11px] text-slate-500"></div>
+              <img id="ktp_preview_img" class="hidden w-24 h-16 object-cover rounded border border-slate-200 mt-2 shadow-xs" alt="Preview KTP" />
+            </div>
+
+            <!-- Upload Pasfoto -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-slate-800">Pasfoto Resmi (Latar Polos): *</span>
+                <span class="text-[10px] text-slate-500">Max 2 MB</span>
+              </div>
+              <input type="file" id="upload_pasfoto_file" accept="image/jpeg,image/png,image/jpg" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer" />
+              <div id="pasfoto_upload_status" class="text-[11px] text-slate-500"></div>
+              <img id="pasfoto_preview_img" class="hidden w-16 h-20 object-cover rounded border border-slate-200 mt-2 shadow-xs" alt="Preview Pasfoto" />
+            </div>
+
+            <!-- Upload Persyaratan Foto Institusi Peserta -->
+            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-2 sm:col-span-2">
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-xs font-bold text-slate-800">Persyaratan Foto / Identitas Institusi Peserta: *</span>
+                  <span class="text-[11px] text-slate-500 block">Scan Kartu Pelajar / Kartu Mahasiswa / ID Card Pegawai / Surat Keterangan Institusi</span>
+                </div>
+                <span class="text-[10px] text-slate-500">Max 2 MB</span>
+              </div>
+              <input type="file" id="upload_institution_file" accept="image/jpeg,image/png,image/jpg,application/pdf" class="block w-full text-xs text-slate-500 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer" />
+              <div id="institution_upload_status" class="text-[11px] text-slate-500"></div>
+              <img id="institution_preview_img" class="hidden w-24 h-16 object-cover rounded border border-slate-200 mt-2 shadow-xs" alt="Preview Dokumen Institusi" />
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pilihan Metode Pembayaran Pendaftaran -->
+        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+          <label class="block text-xs font-bold text-slate-800">Pilihan Saluran Pembayaran: *</label>
+          <select id="reg_payment_method" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm bg-white font-semibold outline-none focus:ring-2 focus:ring-red-500">
+            <option value="Virtual Account BNI46">Virtual Account BNI46 (Rekomendasi)</option>
+            <option value="Virtual Account Mandiri">Virtual Account Mandiri</option>
+            <option value="Virtual Account BRI (BRIVA)">Virtual Account BRI (BRIVA)</option>
+            <option value="QRIS">QRIS (GoPay, OVO, Dana, ShopeePay, BCA/m-Banking)</option>
+          </select>
+          <p class="text-[11px] text-slate-500">Nomor Virtual Account unik akan diterbitkan otomatis untuk Anda. Saluran pembayaran dapat diubah di dashboard.</p>
+        </div>
+
+        <div class="pt-2">
+          <button type="submit" class="w-full py-3.5 rounded-xl btn-japan font-bold text-sm shadow-lg flex items-center justify-center gap-2">
+            <span>Daftar & Lanjutkan ke Pembayaran</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/js/auth.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

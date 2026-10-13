@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" width="1200" height="500">
+  <defs>
+    <linearGradient id="bgGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B" />
+      <stop offset="50%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#450A0A" />
+    </linearGradient>
+    <radialGradient id="sunGrad" cx="75%" cy="40%" r="45%">
+      <stop offset="0%" stop-color="#EF4444" stop-opacity="0.85" />
+      <stop offset="60%" stop-color="#B91C1C" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#7F1D1D" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.04" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="500" fill="url(#bgGrad1)" />
+
+  <!-- Japanese Rising Sun Silhouette -->
+  <circle cx="880" cy="220" r="180" fill="url(#sunGrad)" />
+
+  <!-- Mount Fuji Silhouette in background -->
+  <path d="M 620 500 L 780 280 Q 820 270 860 280 L 1020 500 Z" fill="#1E1B4B" opacity="0.45" />
+  <!-- Fuji Snowcap -->
+  <path d="M 780 280 Q 820 270 860 280 L 890 330 Q 850 320 830 335 Q 810 320 770 330 Z" fill="#FFFFFF" opacity="0.25" />
+
+  <!-- Traditional Torii Gate Silhouette -->
+  <g transform="translate(930, 240)" opacity="0.45">
+    <path d="M -90 -10 Q 0 -22 90 -10 L 80 5 Q 0 -5 -80 5 Z" fill="#EF4444" />
+    <path d="M -70 15 L 70 15 L 70 25 L -70 25 Z" fill="#EF4444" />
+    <rect x="-50" y="5" width="16" height="230" fill="#DC2626" rx="3" />
+    <rect x="34" y="5" width="16" height="230" fill="#DC2626" rx="3" />
+    <rect x="-60" y="225" width="36" height="15" fill="#991B1B" rx="2" />
+    <rect x="24" y="225" width="36" height="15" fill="#991B1B" rx="2" />
+    <!-- Mini Plaque -->
+    <rect x="-14" y="5" width="28" height="35" fill="#1E293B" stroke="#FBBF24" stroke-width="1.5" rx="2" />
+    <text x="0" y="28" font-family="'Noto Serif JP', serif" font-size="14" font-weight="900" fill="#FBBF24" text-anchor="middle">公式</text>
+  </g>
+
+  <!-- Decorative Seigaiha wave elements on bottom -->
+  <g opacity="0.12" stroke="#FFFFFF" fill="none" stroke-width="1.5">
+    <circle cx="200" cy="480" r="40" /><circle cx="200" cy="480" r="30" /><circle cx="200" cy="480" r="20" /><circle cx="200" cy="480" r="10" />
+    <circle cx="280" cy="480" r="40" /><circle cx="280" cy="480" r="30" /><circle cx="280" cy="480" r="20" /><circle cx="280" cy="480" r="10" />
+    <circle cx="360" cy="480" r="40" /><circle cx="360" cy="480" r="30" /><circle cx="360" cy="480" r="20" /><circle cx="360" cy="480" r="10" />
+    <circle cx="240" cy="440" r="40" /><circle cx="240" cy="440" r="30" /><circle cx="240" cy="440" r="20" /><circle cx="240" cy="440" r="10" />
+    <circle cx="320" cy="440" r="40" /><circle cx="320" cy="440" r="30" /><circle cx="320" cy="440" r="20" /><circle cx="320" cy="440" r="10" />
+  </g>
+
+  <!-- Left Content Glass Panel -->
+  <rect x="60" y="60" width="600" height="380" rx="24" fill="url(#cardGrad)" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5" />
+
+  <!-- Badge Pill -->
+  <rect x="95" y="95" width="220" height="32" rx="16" fill="#DC2626" opacity="0.9" />
+  <circle cx="112" cy="111" r="7" fill="#FFFFFF" />
+  <text x="112" y="114" font-family="'Noto Sans JP', sans-serif" font-size="9" font-weight="900" fill="#DC2626" text-anchor="middle">公</text>
+  <text x="130" y="116" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" letter-spacing="1">RESMI • TAHUN 2026</text>
+
+  <!-- Kanji Overlay -->
+  <text x="95" y="165" font-family="'Noto Serif JP', serif" font-size="16" font-weight="900" fill="#F87171" letter-spacing="4">日本語学力テスト・公式試験会場</text>
+
+  <!-- Heading -->
+  <text x="95" y="215" font-family="'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF">Pusat Ujian Resmi NAT-TEST</text>
+  <text x="95" y="258" font-family="'Plus Jakarta Sans', sans-serif" font-size="30" font-weight="900" fill="#EF4444">Universitas Indonesia Depok</text>
+
+  <!-- Subtitle -->
+  <text x="95" y="305" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="400" fill="#CBD5E1">Diselenggarakan resmi oleh Komite NAT-TEST Tokyo bekerjasama dengan</text>
+  <text x="95" y="328" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="600" fill="#E2E8F0">UKK Center for Strategic and Global Studies (CSGS) UI di Kampus UI Depok.</text>
+
+  <!-- Features Strip -->
+  <g transform="translate(95, 360)">
+    <!-- Pill 1 -->
+    <rect x="0" y="0" width="150" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="15" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#F87171">6x Setahun</text>
+    <text x="92" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">Bulan Genap</text>
+    
+    <!-- Pill 2 -->
+    <rect x="165" y="0" width="165" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="180" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#34D399">1Q - 5Q</text>
+    <text x="238" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">Setara JLPT</text>
+
+    <!-- Pill 3 -->
+    <rect x="345" y="0" width="180" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="360" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#FBBF24">MOJ Diakui</text>
+    <text x="445" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">Imigrasi</text>
+  </g>
+</svg>

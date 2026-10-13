@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <defs>
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626" />
+      <stop offset="100%" stop-color="#991B1B" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-opacity="0.15" />
+    </filter>
+  </defs>
+  <!-- Background Badge -->
+  <rect x="2" y="2" width="316" height="76" rx="12" fill="#FFFFFF" stroke="#F1F5F9" stroke-width="2" filter="url(#shadow)"/>
+  
+  <!-- Japanese Sun / Hanko Seal -->
+  <circle cx="44" cy="40" r="26" fill="url(#redGrad)"/>
+  <circle cx="44" cy="40" r="23" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-dasharray="3,2"/>
+  
+  <!-- Kanji inside Seal: 日本 (Japan) -->
+  <text x="44" y="37" font-family="'Noto Serif JP', 'Yu Mincho', serif" font-size="14" font-weight="900" fill="#FFFFFF" text-anchor="middle">日本</text>
+  <text x="44" y="52" font-family="'Noto Serif JP', 'Yu Mincho', serif" font-size="13" font-weight="900" fill="#FFFFFF" text-anchor="middle">検定</text>
+  
+  <!-- Text NAT-TEST -->
+  <g transform="translate(82, 0)">
+    <text x="0" y="36" font-family="'Montserrat', 'Arial Black', sans-serif" font-size="24" font-weight="900" fill="#0F172A" letter-spacing="1">NAT-TEST</text>
+    <rect x="135" y="20" width="32" height="18" rx="4" fill="#DC2626" />
+    <text x="151" y="33" font-family="sans-serif" font-size="10" font-weight="bold" fill="#FFFFFF" text-anchor="middle">公式</text>
+    <text x="0" y="52" font-family="'Noto Sans JP', sans-serif" font-size="10" font-weight="600" fill="#64748B" letter-spacing="0.5">日本語学力テスト・JAPANESE TEST</text>
+    <text x="0" y="65" font-family="sans-serif" font-size="8.5" font-weight="500" fill="#94A3B8">Official Testing Committee Indonesia</text>
+  </g>
+</svg>

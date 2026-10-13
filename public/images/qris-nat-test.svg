@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 540" width="420" height="540">
+  <defs>
+    <linearGradient id="qrisHeaderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b91c1c"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <filter id="cardShadow" x="-5%" y="-3%" width="110%" height="110%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.12" />
+    </filter>
+  </defs>
+
+  <!-- Card Background -->
+  <rect x="10" y="10" width="400" height="520" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#cardShadow)"/>
+
+  <!-- Top Decorative Header Bar -->
+  <path d="M 10 34 Q 10 10 34 10 L 386 10 Q 410 10 410 34 L 410 82 L 10 82 Z" fill="url(#qrisHeaderGrad)"/>
+
+  <!-- Top Header Text: QRIS Logo Style -->
+  <text x="210" y="44" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="3">QRIS</text>
+  <text x="210" y="64" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="8.5" font-weight="700" fill="#fecaca" text-anchor="middle" letter-spacing="1">QUICK RESPONSE CODE INDONESIAN STANDARD</text>
+
+  <!-- Merchant Name Box -->
+  <rect x="25" y="94" width="370" height="66" rx="12" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="210" y="116" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="900" fill="#0f172a" text-anchor="middle" letter-spacing="0.5">NAT-TEST UKK CSGS UNIVERSITAS INDONESIA</text>
+  <text x="210" y="134" font-family="'Courier New', monospace" font-size="11" font-weight="700" fill="#dc2626" text-anchor="middle">NMID : ID1020261012345</text>
+  <text x="210" y="149" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="9" font-weight="600" fill="#64748b" text-anchor="middle">A01 • PUSAT STUDI JEPANG UI DEPOK</text>
+
+  <!-- QR Code Frame -->
+  <rect x="55" y="172" width="310" height="260" rx="16" fill="#ffffff" stroke="#cbd5e1" stroke-width="2"/>
+
+  <!-- QR Code Modules (Sharp Pattern) -->
+  <g fill="#0f172a">
+    <!-- Top-Left Finder Pattern -->
+    <rect x="75" y="192" width="60" height="60" rx="8" fill="#0f172a"/>
+    <rect x="85" y="202" width="40" height="40" rx="4" fill="#ffffff"/>
+    <rect x="93" y="210" width="24" height="24" rx="2" fill="#b91c1c"/>
+
+    <!-- Top-Right Finder Pattern -->
+    <rect x="285" y="192" width="60" height="60" rx="8" fill="#0f172a"/>
+    <rect x="295" y="202" width="40" height="40" rx="4" fill="#ffffff"/>
+    <rect x="303" y="210" width="24" height="24" rx="2" fill="#b91c1c"/>
+
+    <!-- Bottom-Left Finder Pattern -->
+    <rect x="75" y="352" width="60" height="60" rx="8" fill="#0f172a"/>
+    <rect x="85" y="362" width="40" height="40" rx="4" fill="#ffffff"/>
+    <rect x="93" y="370" width="24" height="24" rx="2" fill="#b91c1c"/>
+
+    <!-- QR Data Matrix Modules (Simulated Authentic QR Blocks) -->
+    <!-- Top Row Blocks -->
+    <rect x="145" y="192" width="10" height="10"/>
+    <rect x="165" y="192" width="10" height="20"/>
+    <rect x="185" y="192" width="20" height="10"/>
+    <rect x="215" y="192" width="10" height="10"/>
+    <rect x="235" y="192" width="20" height="10"/>
+    <rect x="265" y="192" width="10" height="20"/>
+
+    <rect x="145" y="212" width="20" height="10"/>
+    <rect x="175" y="212" width="10" height="20"/>
+    <rect x="195" y="212" width="20" height="10"/>
+    <rect x="225" y="212" width="30" height="10"/>
+
+    <rect x="145" y="232" width="10" height="20"/>
+    <rect x="165" y="232" width="20" height="10"/>
+    <rect x="205" y="232" width="10" height="20"/>
+    <rect x="225" y="232" width="20" height="20"/>
+    <rect x="255" y="232" width="20" height="10"/>
+
+    <!-- Middle Rows -->
+    <rect x="75" y="262" width="10" height="20"/>
+    <rect x="95" y="262" width="20" height="10"/>
+    <rect x="125" y="262" width="20" height="10"/>
+    <rect x="155" y="262" width="30" height="20"/>
+    <rect x="235" y="262" width="20" height="20"/>
+    <rect x="265" y="262" width="10" height="10"/>
+    <rect x="285" y="262" width="20" height="20"/>
+    <rect x="315" y="262" width="30" height="10"/>
+
+    <rect x="85" y="292" width="20" height="10"/>
+    <rect x="115" y="292" width="10" height="30"/>
+    <rect x="135" y="282" width="20" height="20"/>
+    <rect x="265" y="282" width="20" height="20"/>
+    <rect x="305" y="282" width="20" height="20"/>
+    <rect x="335" y="282" width="10" height="30"/>
+
+    <!-- Bottom Rows and Timing -->
+    <rect x="145" y="322" width="20" height="20"/>
+    <rect x="175" y="312" width="20" height="10"/>
+    <rect x="205" y="312" width="10" height="20"/>
+    <rect x="225" y="312" width="30" height="10"/>
+    <rect x="265" y="312" width="20" height="30"/>
+    <rect x="295" y="322" width="20" height="10"/>
+    <rect x="325" y="322" width="20" height="20"/>
+
+    <rect x="145" y="352" width="30" height="10"/>
+    <rect x="185" y="352" width="10" height="20"/>
+    <rect x="205" y="342" width="20" height="30"/>
+    <rect x="235" y="352" width="20" height="10"/>
+    <rect x="295" y="352" width="20" height="20"/>
+    <rect x="325" y="352" width="20" height="10"/>
+
+    <rect x="145" y="372" width="10" height="20"/>
+    <rect x="165" y="382" width="20" height="10"/>
+    <rect x="195" y="382" width="20" height="20"/>
+    <rect x="225" y="372" width="20" height="20"/>
+    <rect x="255" y="372" width="30" height="20"/>
+    <rect x="295" y="382" width="20" height="20"/>
+    <rect x="325" y="372" width="20" height="20"/>
+
+    <rect x="145" y="402" width="30" height="10"/>
+    <rect x="185" y="402" width="20" height="10"/>
+    <rect x="215" y="402" width="20" height="10"/>
+    <rect x="245" y="402" width="10" height="10"/>
+    <rect x="265" y="402" width="20" height="10"/>
+    <rect x="295" y="402" width="10" height="10"/>
+    <rect x="315" y="402" width="30" height="10"/>
+  </g>
+
+  <!-- Center Badge / Emblem in QR Code -->
+  <rect x="185" y="278" width="50" height="48" rx="8" fill="#ffffff" stroke="#b91c1c" stroke-width="2"/>
+  <text x="210" y="297" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="10" font-weight="900" fill="#b91c1c" text-anchor="middle">NAT</text>
+  <text x="210" y="313" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="8" font-weight="900" fill="#0f172a" text-anchor="middle">CSGS UI</text>
+
+  <!-- Payment Channels Ribbon at Bottom of Card -->
+  <rect x="25" y="444" width="370" height="42" rx="10" fill="#f1f5f9" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="210" y="462" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="9" font-weight="800" fill="#334155" text-anchor="middle" letter-spacing="0.5">TERIMA SELURUH PEMBAYARAN QRIS</text>
+  <text x="210" y="476" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="8" font-weight="700" fill="#64748b" text-anchor="middle">GoPay • OVO • DANA • ShopeePay • LinkAja • BCA • Mandiri • BNI • BRI</text>
+
+  <!-- Footer Legal & Official Note -->
+  <text x="210" y="506" font-family="'Segoe UI', Helvetica, Arial, sans-serif" font-size="8.5" font-weight="700" fill="#94a3b8" text-anchor="middle">
+    Standar Resmi Bank Indonesia &amp; ASPI • NAT-TEST UKK CSGS UI
+  </text>
+</svg>

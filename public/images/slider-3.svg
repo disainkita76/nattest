@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" width="1200" height="500">
+  <defs>
+    <linearGradient id="bgGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#1E1B4B" />
+      <stop offset="100%" stop-color="#312E81" />
+    </linearGradient>
+    <linearGradient id="bluePill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#4338CA" />
+    </linearGradient>
+    <linearGradient id="cardGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.04" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="500" fill="url(#bgGrad3)" />
+
+  <!-- Certificate Graphic Illustration on Right -->
+  <g transform="translate(860, 160)" opacity="0.4">
+    <!-- Certificate Paper -->
+    <rect x="-140" y="-30" width="280" height="340" rx="16" fill="#1E293B" stroke="#6366F1" stroke-width="2" />
+    <rect x="-120" y="-10" width="240" height="300" rx="8" fill="none" stroke="#FBBF24" stroke-width="1.5" stroke-dasharray="8 4" />
+    <!-- Gold Ribbon Seal -->
+    <circle cx="70" cy="220" r="32" fill="#F59E0B" stroke="#FDE68A" stroke-width="2" />
+    <polygon points="55,248 70,285 85,248" fill="#D97706" />
+    <polygon points="40,240 50,280 65,245" fill="#B45309" />
+    <text x="70" y="226" font-family="'Noto Serif JP', serif" font-size="14" font-weight="900" fill="#78350F" text-anchor="middle">合格</text>
+    <!-- Document Lines -->
+    <rect x="-95" y="25" width="130" height="12" rx="3" fill="#818CF8" />
+    <rect x="-95" y="55" width="170" height="8" rx="2" fill="#94A3B8" />
+    <rect x="-95" y="75" width="150" height="8" rx="2" fill="#94A3B8" />
+    <rect x="-95" y="95" width="165" height="8" rx="2" fill="#94A3B8" />
+    <rect x="-95" y="125" width="110" height="10" rx="2" fill="#34D399" />
+    <!-- Japanese Hanko Stamp -->
+    <rect x="-95" y="190" width="45" height="45" rx="6" fill="#DC2626" />
+    <text x="-72" y="218" font-family="'Noto Serif JP', serif" font-size="12" font-weight="900" fill="#FFFFFF" text-anchor="middle">検定</text>
+  </g>
+
+  <!-- Left Content Glass Panel -->
+  <rect x="60" y="60" width="600" height="380" rx="24" fill="url(#cardGrad3)" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5" />
+
+  <!-- Badge Pill -->
+  <rect x="95" y="95" width="250" height="32" rx="16" fill="url(#bluePill)" />
+  <circle cx="112" cy="111" r="7" fill="#FFFFFF" />
+  <text x="112" y="115" font-family="'Noto Sans JP', sans-serif" font-size="10" font-weight="900" fill="#4338CA" text-anchor="middle">証</text>
+  <text x="130" y="116" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" letter-spacing="1">STANDAR INTERNASIONAL MOJ</text>
+
+  <!-- Kanji Overlay -->
+  <text x="95" y="165" font-family="'Noto Serif JP', serif" font-size="16" font-weight="900" fill="#A5B4FC" letter-spacing="4">出入国在留管理庁・公式認定資格</text>
+
+  <!-- Heading -->
+  <text x="95" y="215" font-family="'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF">Sertifikasi Bahasa Jepang</text>
+  <text x="95" y="258" font-family="'Plus Jakarta Sans', sans-serif" font-size="30" font-weight="900" fill="#818CF8">Diakui Imigrasi Jepang (MOJ)</text>
+
+  <!-- Subtitle -->
+  <text x="95" y="305" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="400" fill="#CBD5E1">Sertifikat kelulusan dan lembar skor resmi diterbitkan langsung dari Tokyo</text>
+  <text x="95" y="328" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="600" fill="#E2E8F0">sebagai syarat COE, visa studi bahasa (Ryugaku), dan visa kerja SSW.</text>
+
+  <!-- Recognition Strip -->
+  <g transform="translate(95, 360)">
+    <rect x="0" y="0" width="165" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="15" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#34D399">🎓 Beasiswa & Studi</text>
+    <text x="130" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">COE</text>
+
+    <rect x="180" y="0" width="165" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="195" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#FBBF24">💼 SSW Tokutei</text>
+    <text x="280" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">Kerja</text>
+
+    <rect x="360" y="0" width="165" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="375" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#F472B6">⚡ 3 Minggu</text>
+    <text x="445" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">Hasil Rilis</text>
+  </g>
+</svg>

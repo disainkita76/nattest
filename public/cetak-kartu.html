@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio Cetak & Layout Kartu Ujian - NAT-TEST UKK CSGS UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
+  <style>
+    /* Print specific optimization */
+    @media print {
+      body {
+        background-color: #FFFFFF !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      #print-workspace {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+      }
+      .printable-card-item {
+        box-shadow: none !important;
+        border-width: 2px !important;
+        margin: 0 auto 20mm auto !important;
+        page-break-after: always;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-red-500 selection:text-white">
+
+  <!-- Top Action Header (Hidden during print) -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-8 w-auto" />
+          <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-8 w-auto hidden sm:block" />
+        </a>
+        <div class="h-5 w-[1px] bg-slate-300 hidden sm:block"></div>
+        <div>
+          <h1 class="text-xs sm:text-sm font-extrabold text-slate-900 leading-tight">Studio Layout & Cetak Kartu Ujian</h1>
+          <span class="text-[10px] text-slate-500 font-mono">NAT-TEST UKK CSGS UNIVERSITAS INDONESIA</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5">
+        
+        <!-- Back button (dynamically links to appropriate dashboard) -->
+        <a href="javascript:history.back()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+          ← Kembali
+        </a>
+
+        <!-- Reset Button -->
+        <button onclick="resetCardLayout()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:text-red-600 hover:border-red-200 transition-colors" title="Kembalikan layout ke standar">
+          🔄 Reset
+        </button>
+
+        <!-- Save Template (Admin only) -->
+        <div id="admin-actions-bar" class="hidden">
+          <button onclick="saveCardLayoutTemplate()" class="px-3.5 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition-colors shadow-sm flex items-center gap-1.5" title="Simpan sebagai standar resmi">
+            <span>💾 Simpan Template</span>
+          </button>
+        </div>
+
+        <!-- Primary Print Button -->
+        <button onclick="triggerPrintCard()" class="px-5 py-2 rounded-xl btn-japan text-xs font-bold shadow-md flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          <span>Cetak Kartu / Simpan PDF</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Work Area -->
+  <div class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    
+    <!-- ========================================================== -->
+    <!-- LEFT COLUMN: CONTROLS & LAYOUT CUSTOMIZER (no-print)       -->
+    <!-- ========================================================== -->
+    <div id="layout-sidebar" class="lg:col-span-5 space-y-4 no-print overflow-y-auto max-h-[calc(100vh-100px)] pr-1">
+      
+      <!-- Panel 1: Data Peserta & Mode Cetak -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">1. Data Peserta & Mode Cetak</h3>
+          <span class="text-[10px] bg-red-50 text-red-700 px-2 py-0.5 rounded font-mono font-bold">DATA</span>
+        </div>
+
+        <div id="select-participant-wrapper">
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Pilih Peserta yang Dicetak:</label>
+          <select id="select-participant" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-semibold bg-slate-50 focus:bg-white outline-none">
+            <!-- Populated dynamically by card-designer.js -->
+          </select>
+        </div>
+
+        <!-- Admin Batch Print Toggle -->
+        <div id="admin-batch-toggle" class="hidden pt-2 border-t border-slate-100">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="toggleBatchMode(this.checked)" class="w-4 h-4 text-red-600 rounded" />
+            <span class="text-xs font-bold text-slate-800">Cetak Semua Peserta Sekaligus (Batch Print)</span>
+          </label>
+          <p class="text-[10px] text-slate-400 pl-6 mt-0.5">Mencetak seluruh kartu peserta yang terdaftar berturut-turut dalam 1 dokumen cetak.</p>
+        </div>
+      </div>
+
+      <!-- Panel 2: Tema Visual & Orientasi -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">2. Tema Visual & Tata Letak</h3>
+          <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-mono font-bold">STYLE</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Preset Tema:</label>
+            <select id="layout-theme" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white font-medium">
+              <option value="red_classic">Hinomaru Red Classic (Resmi)</option>
+              <option value="navy_gold">UI Royal Navy & Gold (Makara)</option>
+              <option value="monochrome">Monokrom (Hemat Tinta)</option>
+              <option value="compact_badge">Format ID Card Badge</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Orientasi Kartu:</label>
+            <select id="layout-orientation" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white font-medium">
+              <option value="landscape">Landscape (Mendatar)</option>
+              <option value="portrait">Portrait (Tegak)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 3: Logo & Judul Kop Surat -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">3. Logo & Kop Judul Kartu</h3>
+          <span class="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-mono font-bold">HEADER</span>
+        </div>
+
+        <div class="flex items-center gap-4 text-xs font-semibold text-slate-700 py-1">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="check-nat-logo" checked class="w-4 h-4 text-red-600 rounded" />
+            <span>Logo NAT-TEST</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="check-ui-logo" checked class="w-4 h-4 text-red-600 rounded" />
+            <span>Logo UKK CSGS UI</span>
+          </label>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Teks Kanji Header:</label>
+            <input type="text" id="input-header-jp" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-jp" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Judul Utama Dokumen:</label>
+            <input type="text" id="input-header-id" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Nama Lembaga Penyelenggara:</label>
+            <input type="text" id="input-committee" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-mono text-[11px]" />
+          </div>
+        </div>
+
+        <!-- Fasilitas Edit & Ganti Logo Gambar -->
+        <div class="pt-3 border-t border-slate-100 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-slate-800">Fasilitas Ganti Gambar Logo:</span>
+            <span class="badge-file-limit text-[10px]">Maks. 2 MB</span>
+          </div>
+
+          <!-- Logo 1: NAT-TEST / Penyelenggara Utama -->
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800">Logo 1 (Penyelenggara Utama):</span>
+              <button type="button" onclick="resetNatLogo()" class="text-[10px] text-red-600 hover:underline font-semibold">Reset ke Bawaan</button>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-16 h-10 bg-white rounded border border-slate-200 p-1 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                <img id="preview-logo-nat" src="/images/logo-nat-test.svg" class="max-h-full max-w-full object-contain" alt="Logo 1 Preview" />
+              </div>
+              <div class="flex-1">
+                <input type="file" id="upload-logo-nat" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="block w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer" />
+                <span id="status-logo-nat" class="text-[10px] text-slate-500">Format: PNG transparan, SVG, JPG</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Logo 2: CSGS UI / Mitra Kampus -->
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-800">Logo 2 (Mitra / Universitas):</span>
+              <button type="button" onclick="resetUiLogo()" class="text-[10px] text-red-600 hover:underline font-semibold">Reset ke Bawaan</button>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="w-16 h-10 bg-white rounded border border-slate-200 p-1 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                <img id="preview-logo-ui" src="/images/logo-csgs-ui.svg" class="max-h-full max-w-full object-contain" alt="Logo 2 Preview" />
+              </div>
+              <div class="flex-1">
+                <input type="file" id="upload-logo-ui" accept="image/png,image/jpeg,image/svg+xml,image/webp" class="block w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-slate-200 file:text-slate-700 hover:file:bg-slate-300 cursor-pointer" />
+                <span id="status-logo-ui" class="text-[10px] text-slate-500">Format: PNG transparan, SVG, JPG</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 4: Pengaturan Pasfoto -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">4. Tata Letak Pasfoto</h3>
+          <span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-mono font-bold">PHOTO</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="check-photo" checked class="w-4 h-4 text-red-600 rounded" />
+          <label for="check-photo" class="text-xs font-bold text-slate-800 cursor-pointer">Tampilkan Pasfoto Peserta</label>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Posisi Foto:</label>
+            <select id="layout-photo-pos" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+              <option value="left">Sisi Kiri</option>
+              <option value="right">Sisi Kanan</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Ukuran Foto:</label>
+            <select id="layout-photo-size" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white">
+              <option value="small">Kecil (3x4 cm)</option>
+              <option value="medium" selected>Sedang (Proporsional)</option>
+              <option value="large">Besar (4x6 cm)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 5: Detail Kolom Data Peserta -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">5. Kolom Data & Ruang Ujian</h3>
+          <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded font-mono font-bold">FIELDS</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs text-slate-700">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="field-chk-reg_number" checked class="w-3.5 h-3.5 text-red-600 rounded" />
+            <span>No. Registrasi</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="field-chk-full_name" checked class="w-3.5 h-3.5 text-red-600 rounded" />
+            <span>Nama Lengkap</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="field-chk-nik" checked class="w-3.5 h-3.5 text-red-600 rounded" />
+            <span>NIK / KTP</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="field-chk-birth" checked class="w-3.5 h-3.5 text-red-600 rounded" />
+            <span>Tempat, Tgl Lahir</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="field-chk-level" checked class="w-3.5 h-3.5 text-red-600 rounded" />
+            <span>Level Ujian</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="field-chk-venue" checked class="w-3.5 h-3.5 text-red-600 rounded" />
+            <span>Lokasi Ujian</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer col-span-2">
+            <input type="checkbox" id="field-chk-room_time" checked class="w-3.5 h-3.5 text-red-600 rounded" />
+            <span>Ruang, Kursi & Jam Pelaksanaan</span>
+          </label>
+        </div>
+
+        <!-- Custom Room / Seat / Time inputs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2 text-xs">
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Ruang Ujian:</label>
+            <input type="text" id="input-default-room" class="w-full px-3 py-1.5 rounded-lg border border-slate-300" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block font-medium text-slate-600 mb-0.5">Nomor Kursi:</label>
+              <input type="text" id="input-default-seat" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-mono font-bold" />
+            </div>
+            <div>
+              <label class="block font-medium text-slate-600 mb-0.5">Jam Ujian:</label>
+              <input type="text" id="input-default-time" class="w-full px-3 py-1.5 rounded-lg border border-slate-300" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 6: Keamanan, Cap Stempel & Tanda Tangan -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">6. Barcode, Cap & Tanda Tangan</h3>
+          <span class="text-[10px] bg-red-50 text-red-700 px-2 py-0.5 rounded font-mono font-bold">SECURITY</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 text-xs font-semibold text-slate-700">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="check-barcode" checked class="w-4 h-4 text-red-600 rounded" />
+            <span>Barcode No. Ujian</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="check-qr" checked class="w-4 h-4 text-red-600 rounded" />
+            <span>QR Code Scan</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="check-stamp" checked class="w-4 h-4 text-red-600 rounded" />
+            <span>Cap Stempel Hanko</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="check-signature" checked class="w-4 h-4 text-red-600 rounded" />
+            <span>Tanda Tangan Pejabat</span>
+          </label>
+        </div>
+
+        <div class="space-y-2 text-xs pt-1">
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Teks Cap Stempel:</label>
+            <input type="text" id="input-stamp-text" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-jp" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Jabatan Penandatangan:</label>
+            <input type="text" id="input-sign-title" class="w-full px-3 py-1.5 rounded-lg border border-slate-300" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Nama Pejabat:</label>
+            <input type="text" id="input-sign-name" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">NIP Pejabat:</label>
+            <input type="text" id="input-sign-nip" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-mono text-[11px]" />
+          </div>
+        </div>
+
+        <!-- Fasilitas Edit Image Tanda Tangan -->
+        <div class="pt-3 border-t border-slate-100 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-800">Fasilitas Gambar Tanda Tangan:</span>
+            <button type="button" onclick="resetSignatureImg()" class="text-[10px] text-red-600 hover:underline font-semibold">Reset ke Default</button>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+            <div class="flex items-center gap-3">
+              <div class="w-24 h-12 bg-white rounded border border-slate-200 p-1 flex items-center justify-center shrink-0 overflow-hidden shadow-xs">
+                <img id="preview-signature-img" src="" class="hidden max-h-full max-w-full object-contain" alt="Preview Tanda Tangan" />
+                <span id="preview-signature-empty" class="text-[10px] text-slate-400 text-center font-mono">Grafis Default</span>
+              </div>
+              <div class="flex-1">
+                <input type="file" id="upload-signature-img" accept="image/png,image/jpeg,image/webp" class="block w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer" />
+                <span id="status-signature-img" class="text-[10px] text-slate-500">Scan Tanda Tangan Asli (Disarankan PNG Transparan, Max 2 MB)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 7: Tata Tertib Ujian -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+          <h3 class="font-bold text-xs uppercase tracking-wider text-slate-800">7. Tata Tertib & Aturan Ujian</h3>
+          <span class="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono font-bold">RULES</span>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="check-rules" checked class="w-4 h-4 text-red-600 rounded" />
+          <label for="check-rules" class="text-xs font-bold text-slate-800 cursor-pointer">Tampilkan Kotak Tata Tertib di Bawah Kartu</label>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Judul Tata Tertib:</label>
+            <input type="text" id="input-rules-title" class="w-full px-3 py-1.5 rounded-lg border border-slate-300 font-bold" />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-600 mb-0.5">Daftar Poin Tata Tertib (1 baris per poin):</label>
+            <textarea id="input-rules-list" rows="5" class="w-full p-2.5 rounded-xl border border-slate-300 text-xs"></textarea>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- RIGHT COLUMN: LIVE WYSIWYG PREVIEW CANVAS                  -->
+    <!-- ========================================================== -->
+    <div id="print-workspace" class="lg:col-span-7 space-y-4">
+      
+      <!-- Preview Canvas Controls Header (no-print) -->
+      <div class="flex items-center justify-between no-print bg-white px-5 py-3 rounded-2xl border border-slate-200 shadow-xs">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-xs font-bold text-slate-800">Pratinjau Live Kartu Ujian (WYSIWYG)</span>
+        </div>
+        <div class="text-[11px] text-slate-500">
+          Skala Cetak: Standar A4 Fisik
+        </div>
+      </div>
+
+      <!-- Paper Preview Container -->
+      <div class="bg-white rounded-3xl p-4 sm:p-8 border border-slate-200 shadow-md min-h-[600px] flex flex-col justify-start">
+        <div id="print-preview-container" class="w-full space-y-6">
+          <!-- Dynamically rendered card items -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/card-designer.js"></script>
+</body>
+</html>

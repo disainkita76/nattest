@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" width="1200" height="500">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#1E293B" />
+      <stop offset="100%" stop-color="#064E3B" />
+    </linearGradient>
+    <linearGradient id="emeraldPill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#059669" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="cardGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.04" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="500" fill="url(#bgGrad2)" />
+
+  <!-- Modern Academic Campus & Audio Visual Graphics -->
+  <g transform="translate(850, 160)" opacity="0.35">
+    <!-- Academic Building Outline -->
+    <rect x="-160" y="40" width="320" height="240" fill="#022C22" stroke="#10B981" stroke-width="2" rx="12" />
+    <polygon points="-180,40 0,-40 180,40" fill="#047857" stroke="#34D399" stroke-width="2" />
+    <!-- Pillars -->
+    <rect x="-120" y="70" width="24" height="210" fill="#065F46" />
+    <rect x="-40" y="70" width="24" height="210" fill="#065F46" />
+    <rect x="40" y="70" width="24" height="210" fill="#065F46" />
+    <rect x="120" y="70" width="24" height="210" fill="#065F46" />
+    <!-- Audio waves / Headphones symbol -->
+    <circle cx="0" cy="140" r="45" fill="none" stroke="#FBBF24" stroke-width="4" stroke-dasharray="12 6" />
+    <circle cx="0" cy="140" r="30" fill="#064E3B" stroke="#34D399" stroke-width="3" />
+    <!-- Headphone Arc -->
+    <path d="M -20 145 C -20 120 20 120 20 145" fill="none" stroke="#FBBF24" stroke-width="4" stroke-linecap="round" />
+    <rect x="-24" y="140" width="8" height="16" fill="#FBBF24" rx="3" />
+    <rect x="16" y="140" width="8" height="16" fill="#FBBF24" rx="3" />
+  </g>
+
+  <!-- Left Content Glass Panel -->
+  <rect x="60" y="60" width="600" height="380" rx="24" fill="url(#cardGrad2)" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="1.5" />
+
+  <!-- Badge Pill -->
+  <rect x="95" y="95" width="240" height="32" rx="16" fill="url(#emeraldPill)" />
+  <circle cx="112" cy="111" r="7" fill="#FFFFFF" />
+  <text x="112" y="115" font-family="'Noto Sans JP', sans-serif" font-size="10" font-weight="900" fill="#047857" text-anchor="middle">場</text>
+  <text x="130" y="116" font-family="'Plus Jakarta Sans', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" letter-spacing="1">LOKASI & FASILITAS STANDAR</text>
+
+  <!-- Kanji Overlay -->
+  <text x="95" y="165" font-family="'Noto Serif JP', serif" font-size="16" font-weight="900" fill="#34D399" letter-spacing="4">日本研究センター・PSJ UI</text>
+
+  <!-- Heading -->
+  <text x="95" y="215" font-family="'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="900" fill="#FFFFFF">Gedung Pusat Studi Jepang</text>
+  <text x="95" y="258" font-family="'Plus Jakarta Sans', sans-serif" font-size="30" font-weight="900" fill="#34D399">(PSJ) Universitas Indonesia</text>
+
+  <!-- Subtitle -->
+  <text x="95" y="305" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="400" fill="#CBD5E1">Dilengkapi ruang ujian berpendingin udara, sound system listening akustik</text>
+  <text x="95" y="328" font-family="'Plus Jakarta Sans', sans-serif" font-size="14" font-weight="600" fill="#E2E8F0">dan berjarak hanya 5 menit jalan kaki dari Stasiun KRL Pondok Cina UI.</text>
+
+  <!-- Access Pills -->
+  <g transform="translate(95, 360)">
+    <rect x="0" y="0" width="160" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="15" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#38BDF8">🚆 KRL Commuter</text>
+    <text x="115" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">POC / UI</text>
+
+    <rect x="175" y="0" width="165" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="190" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#FBBF24">🎧 Audio HQ</text>
+    <text x="265" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">Choukai Clear</text>
+
+    <rect x="355" y="0" width="170" height="42" rx="12" fill="#0F172A" stroke="#334155" stroke-width="1" />
+    <text x="370" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="12" font-weight="800" fill="#A78BFA">🅿️ Parkir Luas</text>
+    <text x="445" y="26" font-family="'Plus Jakarta Sans', sans-serif" font-size="10" font-weight="500" fill="#94A3B8">Pusgiwa UI</text>
+  </g>
+</svg>

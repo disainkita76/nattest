@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Administrator - NAT-TEST UKK CSGS UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-md w-full bg-slate-800/90 backdrop-blur-md rounded-3xl p-8 border border-slate-700 shadow-2xl relative overflow-hidden">
+    <!-- Japanese decorative red top border -->
+    <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-600 via-red-500 to-amber-500"></div>
+
+    <div class="text-center mb-8 space-y-3">
+      <div class="flex items-center justify-center gap-3 mb-2">
+        <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-8 w-auto bg-white p-1 rounded-md" />
+        <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-8 w-auto bg-white p-1 rounded-md" />
+      </div>
+      
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-red-950/80 text-red-400 border border-red-800/60 font-mono">
+        <span>管理ポータル</span> • PORTAL ADMINISTRATOR
+      </div>
+
+      <h1 class="text-2xl font-black text-white tracking-tight">Login Pengelola Ujian</h1>
+      <p class="text-xs text-slate-400">Khusus Administrator & Panitia Pelaksana UKK CSGS Universitas Indonesia</p>
+    </div>
+
+    <div id="admin-login-error" class="hidden p-3 mb-5 rounded-xl bg-red-900/60 text-red-200 border border-red-700 text-xs font-semibold"></div>
+
+    <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-300 mb-1">Email Administrator:</label>
+        <input type="email" id="admin_email" required value="admin@csgs-ui.ac.id" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-300 mb-1">Kata Sandi:</label>
+        <input type="password" id="admin_password" required value="admin123" class="w-full px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none" />
+      </div>
+
+      <button type="submit" class="w-full py-3 rounded-xl btn-japan font-bold text-sm shadow-lg mt-2 flex items-center justify-center gap-2">
+        <span>Masuk ke Dashboard Admin</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/></svg>
+      </button>
+    </form>
+
+    <div class="mt-8 pt-4 border-t border-slate-700/80 text-center space-y-2">
+      <div class="text-[11px] text-slate-400">
+        Demo Kredensial: <code class="bg-slate-900 text-amber-300 px-2 py-0.5 rounded font-mono">admin@csgs-ui.ac.id / admin123</code>
+      </div>
+      <div>
+        <a href="/" class="text-xs text-slate-400 hover:text-white transition-colors">← Kembali ke Halaman Depan</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    async function handleAdminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('admin_email').value;
+      const password = document.getElementById('admin_password').value;
+      const errEl = document.getElementById('admin-login-error');
+
+      errEl.classList.add('hidden');
+
+      try {
+        const res = await Auth.login(email, password, 'ADMIN');
+        if (res.success) {
+          window.location.href = '/admin-dashboard.html';
+        } else {
+          errEl.textContent = res.message || 'Login admin gagal';
+          errEl.classList.remove('hidden');
+        }
+      } catch (err) {
+        errEl.textContent = 'Terjadi kesalahan sistem';
+        errEl.classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
