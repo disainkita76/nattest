@@ -764,6 +764,9 @@ async function loadCmsEditorData() {
     // Populate Footer Editor
     populateFooterForm(result.cms.footer?.data);
 
+    // Populate Theme & Typography Editor
+    populateThemeForm(result.cms.theme?.data);
+
     // Render Navigation Menu Table
     if (result.cms.navigation?.data?.menus) {
       currentNavMenus = JSON.parse(JSON.stringify(result.cms.navigation.data.menus));
@@ -2101,7 +2104,7 @@ window.saveCmsFaqAll = async function(showAlert = true) {
 };
 
 // -------------------------------------------------------------
-// 4E. FOOTER CMS MANAGEMENT
+// 4E. FOOTER CMS MANAGEMENT (TEKS & GAMBAR LOGO)
 // -------------------------------------------------------------
 function populateFooterForm(footerData) {
   const d = footerData || {
@@ -2114,7 +2117,10 @@ function populateFooterForm(footerData) {
     contact_wa: '+62 812-8888-9999',
     contact_email: 'nattest@csgs-ui.ac.id',
     contact_hours: 'Senin - Jumat (08.30 - 16.00 WIB)',
-    copyright_text: '© 2026 NAT-TEST Committee Japan & UKK CSGS Universitas Indonesia. All rights reserved.'
+    copyright_text: '© 2026 NAT-TEST Committee Japan & UKK CSGS Universitas Indonesia. All rights reserved.',
+    logo_1: { enabled: true, url: '/images/logo-nat-test.svg', alt: 'NAT-TEST' },
+    logo_2: { enabled: true, url: '/images/logo-csgs-ui.svg', alt: 'CSGS UI' },
+    logo_3: { enabled: false, url: '', alt: '' }
   };
 
   const aboutEl = document.getElementById('cms_footer_about');
@@ -2138,11 +2144,150 @@ function populateFooterForm(footerData) {
   if (emailEl) emailEl.value = d.contact_email || '';
   if (hoursEl) hoursEl.value = d.contact_hours || '';
   if (copyEl) copyEl.value = d.copyright_text || '';
+
+  // Populate Logos (Ubah & Kurangi Image)
+  const l1 = d.logo_1 || (Array.isArray(d.logos) ? d.logos[0] : null) || { enabled: true, url: '/images/logo-nat-test.svg', alt: 'NAT-TEST' };
+  const l2 = d.logo_2 || (Array.isArray(d.logos) ? d.logos[1] : null) || { enabled: true, url: '/images/logo-csgs-ui.svg', alt: 'CSGS UI' };
+  const l3 = d.logo_3 || (Array.isArray(d.logos) ? d.logos[2] : null) || { enabled: false, url: '', alt: '' };
+
+  const l1Check = document.getElementById('cms_footer_logo1_enabled');
+  const l1Url = document.getElementById('cms_footer_logo1_url');
+  const l1Alt = document.getElementById('cms_footer_logo1_alt');
+
+  const l2Check = document.getElementById('cms_footer_logo2_enabled');
+  const l2Url = document.getElementById('cms_footer_logo2_url');
+  const l2Alt = document.getElementById('cms_footer_logo2_alt');
+
+  const l3Check = document.getElementById('cms_footer_logo3_enabled');
+  const l3Url = document.getElementById('cms_footer_logo3_url');
+  const l3Alt = document.getElementById('cms_footer_logo3_alt');
+
+  if (l1Check) l1Check.checked = l1.enabled !== false;
+  if (l1Url) l1Url.value = l1.url || '/images/logo-nat-test.svg';
+  if (l1Alt) l1Alt.value = l1.alt || 'NAT-TEST';
+
+  if (l2Check) l2Check.checked = l2.enabled !== false;
+  if (l2Url) l2Url.value = l2.url || '/images/logo-csgs-ui.svg';
+  if (l2Alt) l2Alt.value = l2.alt || 'CSGS UI';
+
+  if (l3Check) l3Check.checked = l3.enabled === true;
+  if (l3Url) l3Url.value = l3.url || '';
+  if (l3Alt) l3Alt.value = l3.alt || '';
+
+  updateFooterLogosPreview();
 }
 
 window.populateFooterForm = populateFooterForm;
 
+window.updateFooterLogosPreview = function() {
+  const pContainer = document.getElementById('admin_preview_footer_logos');
+  if (!pContainer) return;
+
+  const l1Check = document.getElementById('cms_footer_logo1_enabled');
+  const l1Url = document.getElementById('cms_footer_logo1_url');
+  const l1Alt = document.getElementById('cms_footer_logo1_alt');
+
+  const l2Check = document.getElementById('cms_footer_logo2_enabled');
+  const l2Url = document.getElementById('cms_footer_logo2_url');
+  const l2Alt = document.getElementById('cms_footer_logo2_alt');
+
+  const l3Check = document.getElementById('cms_footer_logo3_enabled');
+  const l3Url = document.getElementById('cms_footer_logo3_url');
+  const l3Alt = document.getElementById('cms_footer_logo3_alt');
+
+  const items = [
+    { enabled: l1Check?.checked, url: l1Url?.value.trim(), alt: l1Alt?.value.trim() || 'Logo 1' },
+    { enabled: l2Check?.checked, url: l2Url?.value.trim(), alt: l2Alt?.value.trim() || 'Logo 2' },
+    { enabled: l3Check?.checked, url: l3Url?.value.trim(), alt: l3Alt?.value.trim() || 'Logo 3' }
+  ];
+
+  const active = items.filter(it => it.enabled && it.url);
+
+  if (active.length === 0) {
+    pContainer.innerHTML = '<span class="text-xs text-slate-500 italic">Seluruh logo footer dinonaktifkan (kosong).</span>';
+    return;
+  }
+
+  pContainer.innerHTML = active.map(it => `
+    <img src="${it.url}" alt="${it.alt}" class="h-9 w-auto bg-white p-1 rounded-md object-contain shadow-xs border border-slate-200" />
+  `).join('');
+};
+
+window.handleUploadFooterLogo = function(event, logoNum) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    alert(`Ukuran file logo terlalu besar (${(file.size / (1024 * 1024)).toFixed(2)} MB). Maksimal 5 MB.`);
+    event.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    const input = document.getElementById(`cms_footer_logo${logoNum}_url`);
+    if (input) {
+      input.value = dataUrl;
+      const check = document.getElementById(`cms_footer_logo${logoNum}_enabled`);
+      if (check) check.checked = true;
+      updateFooterLogosPreview();
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+window.removeFooterLogo = function(logoNum) {
+  const check = document.getElementById(`cms_footer_logo${logoNum}_enabled`);
+  if (check) {
+    check.checked = false;
+    updateFooterLogosPreview();
+  }
+};
+
+window.resetDefaultFooterLogos = function() {
+  if (!confirm('Kembalikan logo footer ke pengaturan standar (Logo 1 NAT-TEST & Logo 2 CSGS UI aktif)?')) return;
+
+  const l1Check = document.getElementById('cms_footer_logo1_enabled');
+  const l1Url = document.getElementById('cms_footer_logo1_url');
+  const l1Alt = document.getElementById('cms_footer_logo1_alt');
+
+  const l2Check = document.getElementById('cms_footer_logo2_enabled');
+  const l2Url = document.getElementById('cms_footer_logo2_url');
+  const l2Alt = document.getElementById('cms_footer_logo2_alt');
+
+  const l3Check = document.getElementById('cms_footer_logo3_enabled');
+  const l3Url = document.getElementById('cms_footer_logo3_url');
+  const l3Alt = document.getElementById('cms_footer_logo3_alt');
+
+  if (l1Check) l1Check.checked = true;
+  if (l1Url) l1Url.value = '/images/logo-nat-test.svg';
+  if (l1Alt) l1Alt.value = 'NAT-TEST';
+
+  if (l2Check) l2Check.checked = true;
+  if (l2Url) l2Url.value = '/images/logo-csgs-ui.svg';
+  if (l2Alt) l2Alt.value = 'CSGS UI';
+
+  if (l3Check) l3Check.checked = false;
+  if (l3Url) l3Url.value = '';
+  if (l3Alt) l3Alt.value = '';
+
+  updateFooterLogosPreview();
+};
+
 window.saveCmsFooter = async function() {
+  const l1Enabled = document.getElementById('cms_footer_logo1_enabled')?.checked ?? true;
+  const l1Url = document.getElementById('cms_footer_logo1_url')?.value.trim() || '/images/logo-nat-test.svg';
+  const l1Alt = document.getElementById('cms_footer_logo1_alt')?.value.trim() || 'NAT-TEST';
+
+  const l2Enabled = document.getElementById('cms_footer_logo2_enabled')?.checked ?? true;
+  const l2Url = document.getElementById('cms_footer_logo2_url')?.value.trim() || '/images/logo-csgs-ui.svg';
+  const l2Alt = document.getElementById('cms_footer_logo2_alt')?.value.trim() || 'CSGS UI';
+
+  const l3Enabled = document.getElementById('cms_footer_logo3_enabled')?.checked ?? false;
+  const l3Url = document.getElementById('cms_footer_logo3_url')?.value.trim() || '';
+  const l3Alt = document.getElementById('cms_footer_logo3_alt')?.value.trim() || 'Logo Tambahan';
+
   const payload = {
     about_text: document.getElementById('cms_footer_about')?.value.trim() || '',
     accreditation_text: document.getElementById('cms_footer_accreditation')?.value.trim() || '',
@@ -2153,10 +2298,308 @@ window.saveCmsFooter = async function() {
     contact_wa: document.getElementById('cms_footer_contact_wa')?.value.trim() || '',
     contact_email: document.getElementById('cms_footer_contact_email')?.value.trim() || '',
     contact_hours: document.getElementById('cms_footer_contact_hours')?.value.trim() || '',
-    copyright_text: document.getElementById('cms_footer_copyright')?.value.trim() || ''
+    copyright_text: document.getElementById('cms_footer_copyright')?.value.trim() || '',
+    logo_1: { enabled: l1Enabled, url: l1Url, alt: l1Alt },
+    logo_2: { enabled: l2Enabled, url: l2Url, alt: l2Alt },
+    logo_3: { enabled: l3Enabled, url: l3Url, alt: l3Alt },
+    logos: [
+      { id: 1, enabled: l1Enabled, url: l1Url, alt: l1Alt },
+      { id: 2, enabled: l2Enabled, url: l2Url, alt: l2Alt },
+      ...(l3Url ? [{ id: 3, enabled: l3Enabled, url: l3Url, alt: l3Alt }] : [])
+    ]
   };
 
-  await saveCmsSection('footer', 'Pengaturan & Teks Footer Website', 'Informasi profil, kontak sekretariat, dan hak cipta di bagian bawah website', payload);
+  await saveCmsSection('footer', 'Pengaturan & Teks Footer Website', 'Informasi profil, kontak sekretariat, gambar logo, dan hak cipta di bagian bawah website', payload);
+};
+
+// -------------------------------------------------------------
+// 4F. THEME & TYPOGRAPHY CMS MANAGEMENT (FONT & COLOR THEMES)
+// -------------------------------------------------------------
+let currentThemeState = {
+  preset: 'japan-red',
+  font_family: 'Plus Jakarta Sans',
+  font_url: '',
+  primary_color: '#DC2626',
+  primary_hover: '#B91C1C',
+  primary_light: '#FEF2F2',
+  primary_border: 'rgba(220, 38, 38, 0.25)',
+  accent_color: '#D97706',
+  radius_style: 'rounded-xl'
+};
+
+function populateThemeForm(themeData) {
+  if (themeData) {
+    currentThemeState = {
+      preset: themeData.preset || 'japan-red',
+      font_family: themeData.font_family || 'Plus Jakarta Sans',
+      font_url: themeData.font_url || '',
+      primary_color: themeData.primary_color || '#DC2626',
+      primary_hover: themeData.primary_hover || '#B91C1C',
+      primary_light: themeData.primary_light || '#FEF2F2',
+      primary_border: themeData.primary_border || 'rgba(220, 38, 38, 0.25)',
+      accent_color: themeData.accent_color || '#D97706',
+      radius_style: themeData.radius_style || 'rounded-xl'
+    };
+  }
+
+  // Populate Color Inputs
+  const pInput = document.getElementById('cms_theme_color_primary');
+  const pPicker = document.getElementById('cms_theme_color_primary_picker');
+  const hInput = document.getElementById('cms_theme_color_hover');
+  const hPicker = document.getElementById('cms_theme_color_hover_picker');
+  const aInput = document.getElementById('cms_theme_color_accent');
+  const aPicker = document.getElementById('cms_theme_color_accent_picker');
+  const lInput = document.getElementById('cms_theme_color_light');
+  const lPicker = document.getElementById('cms_theme_color_light_picker');
+
+  if (pInput) pInput.value = currentThemeState.primary_color;
+  if (pPicker) pPicker.value = currentThemeState.primary_color;
+  if (hInput) hInput.value = currentThemeState.primary_hover;
+  if (hPicker) hPicker.value = currentThemeState.primary_hover;
+  if (aInput) aInput.value = currentThemeState.accent_color;
+  if (aPicker) aPicker.value = currentThemeState.accent_color;
+  if (lInput) lInput.value = currentThemeState.primary_light;
+  if (lPicker) lPicker.value = currentThemeState.primary_light;
+
+  // Populate Font Select
+  const fontSelect = document.getElementById('cms_theme_font_select');
+  const customWrap = document.getElementById('cms_theme_custom_font_wrap');
+  const customInput = document.getElementById('cms_theme_custom_font_input');
+
+  if (fontSelect) {
+    const knownFonts = ['Plus Jakarta Sans', 'Inter', 'Poppins', 'Roboto', 'Outfit', 'Montserrat', 'Noto Sans JP', 'Noto Serif JP', 'Shippori Mincho', 'Playfair Display'];
+    if (knownFonts.includes(currentThemeState.font_family)) {
+      fontSelect.value = currentThemeState.font_family;
+      if (customWrap) customWrap.classList.add('hidden');
+    } else {
+      fontSelect.value = '__custom__';
+      if (customWrap) customWrap.classList.remove('hidden');
+      if (customInput) customInput.value = currentThemeState.font_family;
+    }
+  }
+
+  // Populate Radius Select
+  const radiusSelect = document.getElementById('cms_theme_radius_select');
+  if (radiusSelect) radiusSelect.value = currentThemeState.radius_style;
+
+  highlightActivePresetButton(currentThemeState.preset);
+  updateThemeLivePreview();
+}
+
+window.populateThemeForm = populateThemeForm;
+
+function highlightActivePresetButton(presetKey) {
+  const buttons = document.querySelectorAll('.theme-preset-btn');
+  buttons.forEach(btn => {
+    const p = btn.getAttribute('data-preset');
+    if (p === presetKey) {
+      btn.classList.add('border-2', 'border-purple-600', 'ring-2', 'ring-purple-200');
+      btn.classList.remove('border-slate-200', 'border-dashed');
+    } else {
+      btn.classList.remove('border-2', 'border-purple-600', 'ring-2', 'ring-purple-200');
+      if (p === 'custom') {
+        btn.classList.add('border-dashed', 'border-slate-300');
+      } else {
+        btn.classList.add('border-slate-200');
+      }
+    }
+  });
+}
+
+window.selectThemePreset = function(presetKey) {
+  currentThemeState.preset = presetKey;
+
+  if (presetKey !== 'custom' && window.ThemeManager?.PRESETS[presetKey]) {
+    const p = window.ThemeManager.PRESETS[presetKey];
+    currentThemeState.primary_color = p.primary_color;
+    currentThemeState.primary_hover = p.primary_hover;
+    currentThemeState.primary_light = p.primary_light;
+    currentThemeState.primary_border = p.primary_border;
+    currentThemeState.accent_color = p.accent_color;
+
+    // Update inputs
+    const pInput = document.getElementById('cms_theme_color_primary');
+    const pPicker = document.getElementById('cms_theme_color_primary_picker');
+    const hInput = document.getElementById('cms_theme_color_hover');
+    const hPicker = document.getElementById('cms_theme_color_hover_picker');
+    const aInput = document.getElementById('cms_theme_color_accent');
+    const aPicker = document.getElementById('cms_theme_color_accent_picker');
+    const lInput = document.getElementById('cms_theme_color_light');
+    const lPicker = document.getElementById('cms_theme_color_light_picker');
+
+    if (pInput) pInput.value = p.primary_color;
+    if (pPicker) pPicker.value = p.primary_color;
+    if (hInput) hInput.value = p.primary_hover;
+    if (hPicker) hPicker.value = p.primary_hover;
+    if (aInput) aInput.value = p.accent_color;
+    if (aPicker) aPicker.value = p.accent_color;
+    if (lInput) lInput.value = p.primary_light;
+    if (lPicker) lPicker.value = p.primary_light;
+  }
+
+  highlightActivePresetButton(presetKey);
+  updateThemeLivePreview();
+  if (window.ThemeManager) {
+    window.ThemeManager.applyTheme(currentThemeState, false);
+  }
+};
+
+window.syncThemeColor = function(colorType, val) {
+  if (!val) return;
+  val = val.trim();
+
+  if (colorType === 'primary') {
+    currentThemeState.primary_color = val;
+    const pInput = document.getElementById('cms_theme_color_primary');
+    const pPicker = document.getElementById('cms_theme_color_primary_picker');
+    if (pInput && pInput.value !== val) pInput.value = val;
+    if (pPicker && pPicker.value !== val && val.startsWith('#')) pPicker.value = val;
+  } else if (colorType === 'hover') {
+    currentThemeState.primary_hover = val;
+    const hInput = document.getElementById('cms_theme_color_hover');
+    const hPicker = document.getElementById('cms_theme_color_hover_picker');
+    if (hInput && hInput.value !== val) hInput.value = val;
+    if (hPicker && hPicker.value !== val && val.startsWith('#')) hPicker.value = val;
+  } else if (colorType === 'accent') {
+    currentThemeState.accent_color = val;
+    const aInput = document.getElementById('cms_theme_color_accent');
+    const aPicker = document.getElementById('cms_theme_color_accent_picker');
+    if (aInput && aInput.value !== val) aInput.value = val;
+    if (aPicker && aPicker.value !== val && val.startsWith('#')) aPicker.value = val;
+  } else if (colorType === 'light') {
+    currentThemeState.primary_light = val;
+    const lInput = document.getElementById('cms_theme_color_light');
+    const lPicker = document.getElementById('cms_theme_color_light_picker');
+    if (lInput && lInput.value !== val) lInput.value = val;
+    if (lPicker && lPicker.value !== val && val.startsWith('#')) lPicker.value = val;
+  }
+
+  currentThemeState.preset = 'custom';
+  highlightActivePresetButton('custom');
+  updateThemeLivePreview();
+  if (window.ThemeManager) {
+    window.ThemeManager.applyTheme(currentThemeState, false);
+  }
+};
+
+window.handleThemeFontSelect = function(val) {
+  const customWrap = document.getElementById('cms_theme_custom_font_wrap');
+  if (val === '__custom__') {
+    if (customWrap) customWrap.classList.remove('hidden');
+    const input = document.getElementById('cms_theme_custom_font_input');
+    if (input && input.value.trim()) {
+      currentThemeState.font_family = input.value.trim();
+    }
+  } else {
+    if (customWrap) customWrap.classList.add('hidden');
+    currentThemeState.font_family = val;
+  }
+
+  if (window.ThemeManager) {
+    window.ThemeManager.loadFont(currentThemeState.font_family);
+    window.ThemeManager.applyTheme(currentThemeState, false);
+  }
+  updateThemeLivePreview();
+};
+
+window.applyCustomFontDirect = function() {
+  const input = document.getElementById('cms_theme_custom_font_input');
+  if (!input || !input.value.trim()) {
+    alert('Silakan ketik nama font dari Google Fonts (misal: Nunito, Cinzel, Raleway).');
+    return;
+  }
+
+  const fontName = input.value.trim();
+  currentThemeState.font_family = fontName;
+
+  if (window.ThemeManager) {
+    window.ThemeManager.loadFont(fontName);
+    window.ThemeManager.applyTheme(currentThemeState, false);
+  }
+  updateThemeLivePreview();
+};
+
+window.handleThemeRadiusSelect = function(val) {
+  currentThemeState.radius_style = val;
+  updateThemeLivePreview();
+};
+
+function updateThemeLivePreview() {
+  const labelEl = document.getElementById('theme-preview-font-label');
+  if (labelEl) labelEl.textContent = `Font: ${currentThemeState.font_family}`;
+
+  const boxEl = document.getElementById('theme-live-preview-box');
+  if (boxEl) {
+    boxEl.style.fontFamily = `"${currentThemeState.font_family}", sans-serif`;
+  }
+
+  // Update swatches
+  const sP = document.getElementById('swatch-primary');
+  const sH = document.getElementById('swatch-hover');
+  const sA = document.getElementById('swatch-accent');
+  const sL = document.getElementById('swatch-light');
+
+  if (sP) sP.style.backgroundColor = currentThemeState.primary_color;
+  if (sH) sH.style.backgroundColor = currentThemeState.primary_hover;
+  if (sA) sA.style.backgroundColor = currentThemeState.accent_color;
+  if (sL) sL.style.backgroundColor = currentThemeState.primary_light;
+
+  // Update preview badge & buttons
+  const badgeEl = document.getElementById('theme-preview-badge');
+  if (badgeEl) badgeEl.style.backgroundColor = currentThemeState.primary_color;
+
+  const btnP = document.getElementById('theme-preview-btn-primary');
+  if (btnP) {
+    btnP.style.background = `linear-gradient(135deg, ${currentThemeState.primary_color} 0%, ${currentThemeState.primary_hover} 100%)`;
+  }
+
+  const calloutEl = document.getElementById('theme-preview-callout');
+  if (calloutEl) {
+    calloutEl.style.backgroundColor = currentThemeState.primary_light;
+    calloutEl.style.color = currentThemeState.primary_hover;
+    calloutEl.style.borderColor = currentThemeState.primary_border;
+  }
+}
+
+window.resetDefaultTheme = function() {
+  if (!confirm('Kembalikan tema ke pengaturan standar (Merah Torii & Plus Jakarta Sans)?')) return;
+
+  const defaultTheme = {
+    preset: 'japan-red',
+    font_family: 'Plus Jakarta Sans',
+    font_url: '',
+    primary_color: '#DC2626',
+    primary_hover: '#B91C1C',
+    primary_light: '#FEF2F2',
+    primary_border: 'rgba(220, 38, 38, 0.25)',
+    accent_color: '#D97706',
+    radius_style: 'rounded-xl'
+  };
+
+  populateThemeForm(defaultTheme);
+  if (window.ThemeManager) {
+    window.ThemeManager.applyTheme(defaultTheme, false);
+  }
+};
+
+window.saveCmsTheme = async function() {
+  const payload = {
+    preset: currentThemeState.preset || 'japan-red',
+    font_family: currentThemeState.font_family || 'Plus Jakarta Sans',
+    font_url: currentThemeState.font_url || '',
+    primary_color: document.getElementById('cms_theme_color_primary')?.value.trim() || currentThemeState.primary_color,
+    primary_hover: document.getElementById('cms_theme_color_hover')?.value.trim() || currentThemeState.primary_hover,
+    primary_light: document.getElementById('cms_theme_color_light')?.value.trim() || currentThemeState.primary_light,
+    primary_border: `rgba(0,0,0,0.15)`,
+    accent_color: document.getElementById('cms_theme_color_accent')?.value.trim() || currentThemeState.accent_color,
+    radius_style: document.getElementById('cms_theme_radius_select')?.value || currentThemeState.radius_style
+  };
+
+  if (window.ThemeManager) {
+    window.ThemeManager.applyTheme(payload, true);
+  }
+
+  await saveCmsSection('theme', 'Pengaturan Font & Tema Warna (Color Theme)', 'Kustomisasi tipografi, skema warna, dan tampilan visual website', payload);
 };
 
 // -------------------------------------------------------------

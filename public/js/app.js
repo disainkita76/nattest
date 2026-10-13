@@ -674,6 +674,47 @@ function renderFooterSection(footerCms) {
 
   const copyEl = document.getElementById('footer-copyright-text');
   if (copyEl && data.copyright_text) copyEl.textContent = data.copyright_text;
+
+  // Render Footer Logos (Ubah & Kurangi Image)
+  renderFooterLogos(data);
+}
+
+function renderFooterLogos(data) {
+  const container = document.getElementById('footer-logos-container');
+  if (!container) return;
+
+  const logos = [];
+
+  // If specific logo_1/logo_2/logo_3 properties are provided
+  if (data.logo_1 !== undefined || data.logo_2 !== undefined || data.logo_3 !== undefined) {
+    if (data.logo_1 && data.logo_1.enabled !== false && data.logo_1.url) {
+      logos.push(data.logo_1);
+    }
+    if (data.logo_2 && data.logo_2.enabled !== false && data.logo_2.url) {
+      logos.push(data.logo_2);
+    }
+    if (data.logo_3 && data.logo_3.enabled === true && data.logo_3.url) {
+      logos.push(data.logo_3);
+    }
+  } else if (Array.isArray(data.logos)) {
+    data.logos.forEach(l => {
+      if (l.enabled !== false && l.url) logos.push(l);
+    });
+  } else {
+    // Default fallback - keep existing logos visible
+    return;
+  }
+
+  if (logos.length === 0) {
+    container.innerHTML = '';
+    container.classList.add('hidden');
+    return;
+  }
+
+  container.classList.remove('hidden');
+  container.innerHTML = logos.map((l, idx) => `
+    <img src="${l.url}" alt="${l.alt || 'Logo ' + (idx + 1)}" class="h-9 w-auto bg-white p-1 rounded-md object-contain shadow-2xs" />
+  `).join('');
 }
 
 // -------------------------------------------------------------

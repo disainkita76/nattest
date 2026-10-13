@@ -6,6 +6,7 @@
   <title>Admin Dashboard & CMS - NAT-TEST UKK CSGS UI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/theme.js"></script>
   <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col">
@@ -772,6 +773,139 @@
           </div>
 
           <div class="space-y-4 text-xs">
+            <!-- Bagian: Manajemen Gambar / Logo Footer (Ubah & Kurangi Image) -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h4 class="font-extrabold text-slate-900 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                    <span>🖼️</span> Manajemen Gambar / Logo Footer (Ubah & Kurangi Image)
+                  </h4>
+                  <p class="text-[11px] text-slate-500 mt-0.5">Atur logo lembaga di footer: ubah gambar via upload/URL, atau kurangi/sembunyikan logo dengan mematikan centang.</p>
+                </div>
+                <button type="button" onclick="resetDefaultFooterLogos()" class="px-3 py-1 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold text-[11px] flex items-center gap-1 transition-colors shadow-2xs">
+                  <span>🔄 Pulihkan Logo Standar</span>
+                </button>
+              </div>
+
+              <!-- Live Preview on Dark Background matching Footer -->
+              <div class="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <span class="font-bold text-[11px] text-slate-400 flex items-center gap-1.5">
+                  <span>👁️</span> Pratinjau Tampilan Logo Footer (Latar Gelap):
+                </span>
+                <div id="admin_preview_footer_logos" class="flex items-center gap-3 p-1 min-h-[44px]">
+                  <!-- Rendered dynamically by admin.js -->
+                </div>
+                <p class="text-[10px] text-slate-500">Logo ditampilkan dengan bantalan putih persegi (bg-white rounded) agar kontras di latar footer.</p>
+              </div>
+
+              <!-- 3 Logo Cards: Logo 1, Logo 2, Logo 3 -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <!-- Logo 1 Config (NAT-TEST) -->
+                <div class="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-800 text-xs">Gambar 1 (NAT-TEST)</span>
+                    <label class="inline-flex items-center gap-1 cursor-pointer">
+                      <input type="checkbox" id="cms_footer_logo1_enabled" onchange="updateFooterLogosPreview()" class="rounded text-red-600 focus:ring-red-500 w-3.5 h-3.5" checked />
+                      <span class="font-bold text-[11px] text-slate-700">Tampilkan</span>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-600 text-[11px] mb-1">Path / URL Gambar 1:</label>
+                    <div class="flex gap-1.5">
+                      <input type="text" id="cms_footer_logo1_url" oninput="updateFooterLogosPreview()" class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono text-[11px] outline-none focus:ring-2 focus:ring-red-500" value="/images/logo-nat-test.svg" />
+                      <label class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] cursor-pointer shrink-0 transition-colors flex items-center gap-1 shadow-2xs">
+                        <span>📁 Upload</span>
+                        <input type="file" accept="image/*" onchange="handleUploadFooterLogo(event, 1)" class="hidden" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-600 text-[11px] mb-1">Alt Teks / Keterangan:</label>
+                    <input type="text" id="cms_footer_logo1_alt" oninput="updateFooterLogosPreview()" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-[11px] outline-none focus:ring-2 focus:ring-red-500" value="NAT-TEST" />
+                  </div>
+
+                  <div class="pt-1 flex items-center justify-between">
+                    <button type="button" onclick="removeFooterLogo(1)" class="text-rose-600 hover:text-rose-800 text-[10px] font-bold">
+                      ✕ Kurangi / Matikan
+                    </button>
+                    <span class="text-[10px] text-slate-400">Maks. 5MB</span>
+                  </div>
+                </div>
+
+                <!-- Logo 2 Config (CSGS UI) -->
+                <div class="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-800 text-xs">Gambar 2 (CSGS UI)</span>
+                    <label class="inline-flex items-center gap-1 cursor-pointer">
+                      <input type="checkbox" id="cms_footer_logo2_enabled" onchange="updateFooterLogosPreview()" class="rounded text-red-600 focus:ring-red-500 w-3.5 h-3.5" checked />
+                      <span class="font-bold text-[11px] text-slate-700">Tampilkan</span>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-600 text-[11px] mb-1">Path / URL Gambar 2:</label>
+                    <div class="flex gap-1.5">
+                      <input type="text" id="cms_footer_logo2_url" oninput="updateFooterLogosPreview()" class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono text-[11px] outline-none focus:ring-2 focus:ring-red-500" value="/images/logo-csgs-ui.svg" />
+                      <label class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] cursor-pointer shrink-0 transition-colors flex items-center gap-1 shadow-2xs">
+                        <span>📁 Upload</span>
+                        <input type="file" accept="image/*" onchange="handleUploadFooterLogo(event, 2)" class="hidden" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-600 text-[11px] mb-1">Alt Teks / Keterangan:</label>
+                    <input type="text" id="cms_footer_logo2_alt" oninput="updateFooterLogosPreview()" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-[11px] outline-none focus:ring-2 focus:ring-red-500" value="CSGS UI" />
+                  </div>
+
+                  <div class="pt-1 flex items-center justify-between">
+                    <button type="button" onclick="removeFooterLogo(2)" class="text-rose-600 hover:text-rose-800 text-[10px] font-bold">
+                      ✕ Kurangi / Matikan
+                    </button>
+                    <span class="text-[10px] text-slate-400">Maks. 5MB</span>
+                  </div>
+                </div>
+
+                <!-- Logo 3 Config (Mitra Tambahan - Opsional) -->
+                <div class="p-3.5 rounded-xl bg-white border border-slate-200 space-y-2.5 shadow-2xs">
+                  <div class="flex items-center justify-between">
+                    <span class="font-bold text-slate-800 text-xs">Gambar 3 (Logo Tambahan)</span>
+                    <label class="inline-flex items-center gap-1 cursor-pointer">
+                      <input type="checkbox" id="cms_footer_logo3_enabled" onchange="updateFooterLogosPreview()" class="rounded text-red-600 focus:ring-red-500 w-3.5 h-3.5" />
+                      <span class="font-bold text-[11px] text-slate-700">Tampilkan</span>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-600 text-[11px] mb-1">Path / URL Gambar 3:</label>
+                    <div class="flex gap-1.5">
+                      <input type="text" id="cms_footer_logo3_url" oninput="updateFooterLogosPreview()" placeholder="Kosong atau URL..." class="flex-1 px-2.5 py-1.5 rounded-lg border border-slate-300 font-mono text-[11px] outline-none focus:ring-2 focus:ring-red-500" />
+                      <label class="px-2.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] cursor-pointer shrink-0 transition-colors flex items-center gap-1 shadow-2xs">
+                        <span>📁 Upload</span>
+                        <input type="file" accept="image/*" onchange="handleUploadFooterLogo(event, 3)" class="hidden" />
+                      </label>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-600 text-[11px] mb-1">Alt Teks / Keterangan:</label>
+                    <input type="text" id="cms_footer_logo3_alt" oninput="updateFooterLogosPreview()" placeholder="Nama Logo / Lembaga 3" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-300 text-[11px] outline-none focus:ring-2 focus:ring-red-500" />
+                  </div>
+
+                  <div class="pt-1 flex items-center justify-between">
+                    <button type="button" onclick="removeFooterLogo(3)" class="text-rose-600 hover:text-rose-800 text-[10px] font-bold">
+                      ✕ Kurangi / Matikan
+                    </button>
+                    <span class="text-[10px] text-slate-400">Opsional</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
             <!-- Kolom 1: Profil Lembaga & Akreditasi -->
             <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
               <h4 class="font-bold text-slate-800 text-xs uppercase tracking-wider flex items-center gap-1.5">
@@ -854,6 +988,289 @@
                 <span>💾 Simpan Seluruh Pengaturan Footer</span>
               </button>
             </div>
+          </div>
+        </div>
+
+        <!-- CMS 9: Pengaturan Tipografi (Font) & Tema Warna (Color Theme) -->
+        <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-5 shadow-xs lg:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 text-xs font-black">THEME & TYPOGRAPHY</span>
+                <h3 class="font-extrabold text-base text-slate-900">9. Pengaturan Tipografi (Font) & Tema Warna Website</h3>
+              </div>
+              <p class="text-xs text-slate-500 mt-0.5">Kustomisasi jenis huruf (Google Fonts) dan palet warna brand website secara instan dan menyeluruh.</p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="resetDefaultTheme()" class="px-3.5 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors">
+                <span>🔄 Pulihkan Tema Standar</span>
+              </button>
+              <button type="button" onclick="saveCmsTheme()" class="px-5 py-2 rounded-xl btn-japan font-bold text-xs flex items-center gap-1.5 shadow-sm">
+                <span>💾 Simpan Font & Tema Warna</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Live Interactive Theme Preview Box -->
+          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="font-extrabold text-xs text-slate-800 flex items-center gap-1.5">
+                <span>👁️</span> Pratinjau Tampilan Tipografi & Warna Real-Time:
+              </span>
+              <span class="text-[11px] text-slate-500 font-mono" id="theme-preview-font-label">Font: Plus Jakarta Sans</span>
+            </div>
+
+            <!-- Preview Card -->
+            <div id="theme-live-preview-box" class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-4 transition-all">
+              <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                <div>
+                  <span id="theme-preview-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-600 text-white uppercase tracking-wider">RESMI • 2026/2027</span>
+                  <h4 id="theme-preview-title" class="text-lg font-black text-slate-900 mt-1">Ujian Standar Kemampuan Bahasa Jepang NAT-TEST</h4>
+                  <p id="theme-preview-desc" class="text-xs text-slate-600 mt-0.5">Penyelenggaraan resmi bekerjasama dengan UKK CSGS Universitas Indonesia di Pusat Studi Jepang Depok.</p>
+                </div>
+                <div class="flex items-center gap-1.5" id="theme-preview-swatches">
+                  <div id="swatch-primary" class="w-7 h-7 rounded-lg bg-red-600 shadow-2xs border border-white" title="Warna Utama (Primary)"></div>
+                  <div id="swatch-hover" class="w-7 h-7 rounded-lg bg-red-700 shadow-2xs border border-white" title="Warna Hover (Primary Dark)"></div>
+                  <div id="swatch-accent" class="w-7 h-7 rounded-lg bg-amber-600 shadow-2xs border border-white" title="Warna Aksen (Accent)"></div>
+                  <div id="swatch-light" class="w-7 h-7 rounded-lg bg-red-50 shadow-2xs border border-slate-200" title="Nuansa Terang (Light Tint)"></div>
+                </div>
+              </div>
+
+              <!-- Interactive Controls Preview -->
+              <div class="flex flex-wrap items-center gap-3">
+                <button type="button" id="theme-preview-btn-primary" class="px-4 py-2 rounded-xl btn-japan font-bold text-xs shadow-sm">
+                  Daftar Ujian Sekarang →
+                </button>
+                <button type="button" id="theme-preview-btn-secondary" class="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs transition-colors">
+                  Akses Lokasi Ujian
+                </button>
+                <div id="theme-preview-callout" class="px-3.5 py-1.5 rounded-xl bg-red-50 text-red-700 border border-red-200 text-xs font-semibold flex items-center gap-1.5">
+                  <span>✓</span> Terakreditasi Resmi MOJ Tokyo
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 1: Preset Palettes (1-Click) -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <label class="font-extrabold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🎨</span> Pilih Palet Tema Preset (1-Klik Terapkan):
+              </label>
+              <span class="text-[11px] text-slate-400">Klik salah satu tema untuk pratinjau instan</span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5" id="theme-presets-grid">
+              <!-- Preset 1: Merah Torii -->
+              <button type="button" onclick="selectThemePreset('japan-red')" class="theme-preset-btn p-3 rounded-2xl border-2 border-red-600 bg-red-50/50 hover:bg-red-50 text-left transition-all relative flex flex-col justify-between group" data-preset="japan-red">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-xs text-slate-900">Merah Torii</span>
+                  <span class="text-[9px] font-black px-1.5 py-0.5 rounded bg-red-600 text-white">Default</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-[#DC2626]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#B91C1C]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#D97706]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FEF2F2] border border-slate-300"></span>
+                </div>
+              </button>
+
+              <!-- Preset 2: Biru Samurai -->
+              <button type="button" onclick="selectThemePreset('samurai-blue')" class="theme-preset-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/30 text-left transition-all relative flex flex-col justify-between group" data-preset="samurai-blue">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-xs text-slate-900">Biru Samurai</span>
+                  <span class="text-[9px] font-bold text-blue-600">Royal</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-[#2563EB]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#1D4ED8]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#0284C7]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#EFF6FF] border border-slate-300"></span>
+                </div>
+              </button>
+
+              <!-- Preset 3: Hijau Matcha -->
+              <button type="button" onclick="selectThemePreset('matcha-green')" class="theme-preset-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-emerald-400 hover:bg-emerald-50/30 text-left transition-all relative flex flex-col justify-between group" data-preset="matcha-green">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-xs text-slate-900">Hijau Matcha</span>
+                  <span class="text-[9px] font-bold text-emerald-600">Zen</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-[#059669]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#047857]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#D97706]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#ECFDF5] border border-slate-300"></span>
+                </div>
+              </button>
+
+              <!-- Preset 4: Ungu Kekaisaran -->
+              <button type="button" onclick="selectThemePreset('imperial-purple')" class="theme-preset-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-purple-400 hover:bg-purple-50/30 text-left transition-all relative flex flex-col justify-between group" data-preset="imperial-purple">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-xs text-slate-900">Ungu Kekaisaran</span>
+                  <span class="text-[9px] font-bold text-purple-600">Imperial</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-[#7C3AED]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#6D28D9]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#EC4899]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#F5F3FF] border border-slate-300"></span>
+                </div>
+              </button>
+
+              <!-- Preset 5: Emas Musim Gugur -->
+              <button type="button" onclick="selectThemePreset('amber-gold')" class="theme-preset-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-amber-400 hover:bg-amber-50/30 text-left transition-all relative flex flex-col justify-between group" data-preset="amber-gold">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-xs text-slate-900">Emas Musim Gugur</span>
+                  <span class="text-[9px] font-bold text-amber-600">Gold</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-[#D97706]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#B45309]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#EA580C]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FFFBEB] border border-slate-300"></span>
+                </div>
+              </button>
+
+              <!-- Preset 6: Monokrom & Arang -->
+              <button type="button" onclick="selectThemePreset('monochrome-slate')" class="theme-preset-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-slate-500 hover:bg-slate-50 text-left transition-all relative flex flex-col justify-between group" data-preset="monochrome-slate">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-xs text-slate-900">Monokrom & Arang</span>
+                  <span class="text-[9px] font-bold text-slate-600">Slate</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-[#334155]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#1E293B]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#64748B]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#F8FAFC] border border-slate-300"></span>
+                </div>
+              </button>
+
+              <!-- Preset 7: Sakura Blossom -->
+              <button type="button" onclick="selectThemePreset('sakura-rose')" class="theme-preset-btn p-3 rounded-2xl border border-slate-200 bg-white hover:border-rose-400 hover:bg-rose-50/30 text-left transition-all relative flex flex-col justify-between group" data-preset="sakura-rose">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-xs text-slate-900">Sakura Blossom</span>
+                  <span class="text-[9px] font-bold text-rose-600">Rose</span>
+                </div>
+                <div class="flex items-center gap-1">
+                  <span class="w-4 h-4 rounded-full bg-[#E11D48]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#BE123C]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FB7185]"></span>
+                  <span class="w-4 h-4 rounded-full bg-[#FFF1F2] border border-slate-300"></span>
+                </div>
+              </button>
+
+              <!-- Preset 8: Kustom Bebas -->
+              <button type="button" onclick="selectThemePreset('custom')" class="theme-preset-btn p-3 rounded-2xl border border-dashed border-slate-300 bg-white hover:border-purple-400 hover:bg-purple-50/20 text-left transition-all relative flex flex-col justify-between group" data-preset="custom">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="font-bold text-xs text-slate-900">Palet Kustom</span>
+                  <span class="text-[9px] font-bold text-purple-600">Pick</span>
+                </div>
+                <div class="text-[10px] text-slate-500">Tentukan warna bebas di bawah ↴</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Section 2: Custom Color Pickers & Typography Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2 border-t border-slate-100">
+            
+            <!-- Left: Color Palette Controls -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+              <h4 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🎛️</span> Kustomisasi Warna Spesifik:
+              </h4>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <!-- Primary Color -->
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Warna Utama (Primary Brand):</label>
+                  <div class="flex items-center gap-2">
+                    <input type="color" id="cms_theme_color_primary_picker" onchange="syncThemeColor('primary', this.value)" class="w-9 h-9 rounded-xl border border-slate-300 cursor-pointer p-0.5 bg-white shrink-0" value="#DC2626" />
+                    <input type="text" id="cms_theme_color_primary" oninput="syncThemeColor('primary', this.value)" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs font-bold outline-none focus:ring-2 focus:ring-red-500" value="#DC2626" />
+                  </div>
+                </div>
+
+                <!-- Hover Color -->
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Warna Hover / Aksen Gelap:</label>
+                  <div class="flex items-center gap-2">
+                    <input type="color" id="cms_theme_color_hover_picker" onchange="syncThemeColor('hover', this.value)" class="w-9 h-9 rounded-xl border border-slate-300 cursor-pointer p-0.5 bg-white shrink-0" value="#B91C1C" />
+                    <input type="text" id="cms_theme_color_hover" oninput="syncThemeColor('hover', this.value)" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs font-bold outline-none focus:ring-2 focus:ring-red-500" value="#B91C1C" />
+                  </div>
+                </div>
+
+                <!-- Accent Color -->
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Warna Aksen Tambahan:</label>
+                  <div class="flex items-center gap-2">
+                    <input type="color" id="cms_theme_color_accent_picker" onchange="syncThemeColor('accent', this.value)" class="w-9 h-9 rounded-xl border border-slate-300 cursor-pointer p-0.5 bg-white shrink-0" value="#D97706" />
+                    <input type="text" id="cms_theme_color_accent" oninput="syncThemeColor('accent', this.value)" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs font-bold outline-none focus:ring-2 focus:ring-red-500" value="#D97706" />
+                  </div>
+                </div>
+
+                <!-- Light Tint -->
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Nuansa Latar Lembut (Light Tint):</label>
+                  <div class="flex items-center gap-2">
+                    <input type="color" id="cms_theme_color_light_picker" onchange="syncThemeColor('light', this.value)" class="w-9 h-9 rounded-xl border border-slate-300 cursor-pointer p-0.5 bg-white shrink-0" value="#FEF2F2" />
+                    <input type="text" id="cms_theme_color_light" oninput="syncThemeColor('light', this.value)" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs font-bold outline-none focus:ring-2 focus:ring-red-500" value="#FEF2F2" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Typography / Font Controls -->
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+              <h4 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🔤</span> Pengaturan Jenis Font (Tipografi):
+              </h4>
+
+              <div class="space-y-3 text-xs">
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Pilihan Google Fonts Resmi:</label>
+                  <select id="cms_theme_font_select" onchange="handleThemeFontSelect(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-xs outline-none focus:ring-2 focus:ring-red-500">
+                    <option value="Plus Jakarta Sans">Plus Jakarta Sans (Default - Modern Sans)</option>
+                    <option value="Inter">Inter (Clean & Tech UI)</option>
+                    <option value="Poppins">Poppins (Friendly & Rounded)</option>
+                    <option value="Roboto">Roboto (Classic & Balanced)</option>
+                    <option value="Outfit">Outfit (Contemporary & Elegant)</option>
+                    <option value="Montserrat">Montserrat (Prestigious & Bold)</option>
+                    <option value="Noto Sans JP">Noto Sans JP (Japanese Sans-Serif)</option>
+                    <option value="Noto Serif JP">Noto Serif JP (Japanese Traditional Serif)</option>
+                    <option value="Shippori Mincho">Shippori Mincho (Japanese Calligraphy)</option>
+                    <option value="Playfair Display">Playfair Display (Luxury & Editorial)</option>
+                    <option value="__custom__">-- Kustom (Ketik Nama Google Font Sendiri) --</option>
+                  </select>
+                </div>
+
+                <div id="cms_theme_custom_font_wrap" class="hidden">
+                  <label class="block font-bold text-slate-700 mb-1">Nama Google Font Kustom:</label>
+                  <div class="flex gap-2">
+                    <input type="text" id="cms_theme_custom_font_input" placeholder="Contoh: Nunito, Cinzel, Raleway..." class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium outline-none focus:ring-2 focus:ring-red-500" />
+                    <button type="button" onclick="applyCustomFontDirect()" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs">
+                      Terapkan
+                    </button>
+                  </div>
+                  <p class="text-[10px] text-slate-400 mt-1">Sistem otomatis mengambil berkas webfont dari fonts.google.com.</p>
+                </div>
+
+                <div>
+                  <label class="block font-bold text-slate-700 mb-1">Bentuk Sudut Elemen (Corner Radius):</label>
+                  <select id="cms_theme_radius_select" onchange="handleThemeRadiusSelect(this.value)" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white font-semibold text-xs outline-none focus:ring-2 focus:ring-red-500">
+                    <option value="rounded-xl">Standar Modern (12px / rounded-xl)</option>
+                    <option value="rounded-lg">Kompak Klasik (8px / rounded-lg)</option>
+                    <option value="rounded-2xl">Melengkung Halus (16px / rounded-2xl)</option>
+                    <option value="rounded-full">Pill Melengkung Maksimal (rounded-full)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="pt-2">
+            <button type="button" onclick="saveCmsTheme()" class="w-full py-2.5 rounded-xl btn-japan font-bold text-xs shadow-sm flex items-center justify-center gap-1.5">
+              <span>💾 Simpan & Terapkan Font & Tema Warna ke Seluruh Website</span>
+            </button>
           </div>
         </div>
 

@@ -685,12 +685,48 @@ function seedInitialCmsContent() {
       contact_wa: '+62 812-8888-9999',
       contact_email: 'nattest@csgs-ui.ac.id',
       contact_hours: 'Senin - Jumat (08.30 - 16.00 WIB)',
-      copyright_text: '© 2026 NAT-TEST Committee Japan & UKK CSGS Universitas Indonesia. All rights reserved.'
+      copyright_text: '© 2026 NAT-TEST Committee Japan & UKK CSGS Universitas Indonesia. All rights reserved.',
+      logo_1: {
+        enabled: true,
+        url: '/images/logo-nat-test.svg',
+        alt: 'NAT-TEST'
+      },
+      logo_2: {
+        enabled: true,
+        url: '/images/logo-csgs-ui.svg',
+        alt: 'CSGS UI'
+      },
+      logo_3: {
+        enabled: false,
+        url: '',
+        alt: ''
+      }
     };
     db.prepare(`
       INSERT INTO cms_content (section_key, title, subtitle, content_json, updated_at, updated_by)
       VALUES (?, ?, ?, ?, ?, ?)
     `).run('footer', 'Pengaturan & Teks Footer Website', 'Informasi profil, kontak sekretariat, dan hak cipta di bagian bawah website', JSON.stringify(footerData), new Date().toISOString(), 'System');
+  }
+
+  // 9E. Website Font & Color Theme Settings
+  if (!getCms.get('theme')) {
+    const themeData = {
+      preset: 'japan-red',
+      font_family: 'Plus Jakarta Sans',
+      font_url: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap',
+      primary_color: '#DC2626',
+      primary_hover: '#B91C1C',
+      primary_light: '#FEF2F2',
+      primary_border: 'rgba(220, 38, 38, 0.25)',
+      accent_color: '#D97706',
+      dark_color: '#0F172A',
+      radius_style: 'rounded-xl',
+      enable_japanese_accents: true
+    };
+    db.prepare(`
+      INSERT INTO cms_content (section_key, title, subtitle, content_json, updated_at, updated_by)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run('theme', 'Pengaturan Font & Tema Warna (Color Theme)', 'Kustomisasi tipografi, skema warna, dan tampilan visual website', JSON.stringify(themeData), new Date().toISOString(), 'System');
   }
 
   // 10. Seed Default Static Pages

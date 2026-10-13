@@ -8,6 +8,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Custom Japanese Theme CSS -->
   <link rel="stylesheet" href="/css/style.css">
+  <!-- Dynamic Theme & Typography Engine -->
+  <script src="/js/theme.js"></script>
   <link rel="icon" type="image/svg+xml" href="/images/logo-nat-test.svg">
 </head>
 <body class="bg-seigaiha text-slate-800 antialiased selection:bg-red-500 selection:text-white">
@@ -510,7 +512,7 @@
       <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-12 border-b border-slate-800/80">
         <!-- Col 1: About & Logos -->
         <div class="md:col-span-4 space-y-4">
-          <div class="flex items-center gap-3">
+          <div id="footer-logos-container" class="flex items-center gap-3">
             <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-9 w-auto bg-white p-1 rounded-md" />
             <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-9 w-auto bg-white p-1 rounded-md" />
           </div>
