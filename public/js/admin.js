@@ -1344,76 +1344,263 @@ window.deleteScheduleItem = async function(index) {
 };
 
 // -------------------------------------------------------------
-// 4B. HEADER LOGO CMS MANAGEMENT (UBAH & KURANGI LOGO)
+// 4B. HEADER LOGO CMS MANAGEMENT (TAMBAH, UBAH & KURANGI LOGO)
 // -------------------------------------------------------------
-function populateHeaderLogoForm(logoData) {
-  const d = logoData || {
-    logo_1: {
-      enabled: true,
-      url: '/images/logo-nat-test.svg',
-      alt: 'NAT-TEST Official Logo'
-    },
-    logo_2: {
-      enabled: true,
-      url: '/images/logo-csgs-ui.svg',
-      alt: 'UKK CSGS UI Logo'
-    },
-    show_divider: true
-  };
+let currentHeaderLogos = [];
 
-  const l1Check = document.getElementById('cms_logo1_enabled');
-  const l1Url = document.getElementById('cms_logo1_url');
-  const l1Alt = document.getElementById('cms_logo1_alt');
-  const l2Check = document.getElementById('cms_logo2_enabled');
-  const l2Url = document.getElementById('cms_logo2_url');
-  const l2Alt = document.getElementById('cms_logo2_alt');
-
-  if (l1Check) l1Check.checked = d.logo_1 ? d.logo_1.enabled !== false : true;
-  if (l1Url) l1Url.value = d.logo_1?.url || '/images/logo-nat-test.svg';
-  if (l1Alt) l1Alt.value = d.logo_1?.alt || 'NAT-TEST Official Logo';
-
-  if (l2Check) l2Check.checked = d.logo_2 ? d.logo_2.enabled !== false : true;
-  if (l2Url) l2Url.value = d.logo_2?.url || '/images/logo-csgs-ui.svg';
-  if (l2Alt) l2Alt.value = d.logo_2?.alt || 'UKK CSGS UI Logo';
-
-  updateHeaderLogoPreview();
+function escapeHtmlAttr(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
-window.updateHeaderLogoPreview = function() {
-  const l1Check = document.getElementById('cms_logo1_enabled');
-  const l1Url = document.getElementById('cms_logo1_url');
-  const l2Check = document.getElementById('cms_logo2_enabled');
-  const l2Url = document.getElementById('cms_logo2_url');
+function renderAdminTopBarLogos(logos) {
+  const topBar = document.getElementById('admin-top-logo-container');
+  if (!topBar) return;
+  const active = (logos || []).filter(l => l && l.enabled !== false && l.url);
+  if (active.length === 0) return;
+  topBar.innerHTML = active.map(l => 
+    `<img src="${escapeHtmlAttr(l.url)}" alt="${escapeHtmlAttr(l.alt || 'Logo')}" class="h-8 w-auto bg-white p-1 rounded-md object-contain" />`
+  ).join('');
+}
 
-  const p1 = document.getElementById('admin_preview_logo1');
-  const p2 = document.getElementById('admin_preview_logo2');
-  const div = document.getElementById('admin_preview_logo_divider');
-
-  const show1 = l1Check ? l1Check.checked : true;
-  const show2 = l2Check ? l2Check.checked : true;
-
-  if (p1) {
-    p1.style.display = show1 ? 'block' : 'none';
-    if (show1) p1.src = l1Url?.value.trim() || '/images/logo-nat-test.svg';
+function populateHeaderLogoForm(logoData) {
+  if (logoData && Array.isArray(logoData.logos)) {
+    currentHeaderLogos = JSON.parse(JSON.stringify(logoData.logos));
+  } else if (logoData && (logoData.logo_1 || logoData.logo_2)) {
+    currentHeaderLogos = [];
+    if (logoData.logo_1) {
+      currentHeaderLogos.push({
+        id: 'logo_1',
+        title: 'Logo 1 (Utama - NAT-TEST)',
+        enabled: logoData.logo_1.enabled !== false,
+        url: logoData.logo_1.url || '/images/logo-nat-test.svg',
+        alt: logoData.logo_1.alt || 'NAT-TEST Official Logo'
+      });
+    }
+    if (logoData.logo_2) {
+      currentHeaderLogos.push({
+        id: 'logo_2',
+        title: 'Logo 2 (Sekunder - CSGS UI)',
+        enabled: logoData.logo_2.enabled !== false,
+        url: logoData.logo_2.url || '/images/logo-csgs-ui.svg',
+        alt: logoData.logo_2.alt || 'UKK CSGS UI Logo'
+      });
+    }
+  } else {
+    currentHeaderLogos = [
+      {
+        id: 'logo_1',
+        title: 'Logo 1 (Utama - NAT-TEST)',
+        enabled: true,
+        url: '/images/logo-nat-test.svg',
+        alt: 'NAT-TEST Official Logo'
+      },
+      {
+        id: 'logo_2',
+        title: 'Logo 2 (Sekunder - CSGS UI)',
+        enabled: true,
+        url: '/images/logo-csgs-ui.svg',
+        alt: 'UKK CSGS UI Logo'
+      }
+    ];
   }
 
-  if (p2) {
-    p2.style.display = show2 ? 'block' : 'none';
-    if (show2) p2.src = l2Url?.value.trim() || '/images/logo-csgs-ui.svg';
+  const dividerCheckbox = document.getElementById('cms_logo_show_divider');
+  if (dividerCheckbox) {
+    dividerCheckbox.checked = logoData?.show_divider !== false;
   }
 
-  if (div) {
-    // Show divider only if both logos are visible
-    div.style.display = (show1 && show2) ? 'block' : 'none';
+  renderAdminHeaderLogosList();
+  updateHeaderLogoPreview();
+  renderAdminTopBarLogos(currentHeaderLogos);
+}
+
+function renderAdminHeaderLogosList() {
+  const container = document.getElementById('cms-header-logos-container');
+  if (!container) return;
+
+  const badge = document.getElementById('cms_logo_count_badge');
+  const activeCount = currentHeaderLogos.filter(l => l && l.enabled !== false && l.url).length;
+  if (badge) {
+    badge.textContent = `Total: ${currentHeaderLogos.length} Logo (${activeCount} Aktif)`;
+  }
+
+  if (currentHeaderLogos.length === 0) {
+    container.innerHTML = `
+      <div class="col-span-full p-8 text-center bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl space-y-2">
+        <p class="text-sm font-bold text-slate-600">Belum ada logo di header website.</p>
+        <p class="text-xs text-slate-400">Klik tombol <b>"+ Tambah Logo Baru"</b> di atas untuk menambahkan logo baru.</p>
+        <button type="button" onclick="addNewHeaderLogo()" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs inline-flex items-center gap-1.5 shadow-xs">
+          <span>➕ Tambah Logo Sekarang</span>
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = currentHeaderLogos.map((logo, index) => {
+    const isFirst = index === 0;
+    const isLast = index === currentHeaderLogos.length - 1;
+    const isEnabled = logo.enabled !== false;
+    const title = logo.title || (isFirst ? 'Logo 1 (Utama)' : `Logo #${index + 1}`);
+
+    return `
+      <div class="p-4 rounded-2xl border transition-all ${isEnabled ? 'bg-slate-50/70 border-slate-200 shadow-2xs' : 'bg-slate-100/60 border-slate-300 opacity-70'} space-y-3.5">
+        <!-- Top Toolbar -->
+        <div class="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-2.5">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-lg ${isFirst ? 'bg-red-600 text-white' : 'bg-slate-800 text-white'} text-[11px] font-black flex items-center justify-center shrink-0">
+              ${index + 1}
+            </span>
+            <span class="font-extrabold text-slate-900 text-xs truncate max-w-[140px]" title="${escapeHtmlAttr(title)}">
+              ${escapeHtmlAttr(title)}
+            </span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <!-- Order Buttons -->
+            <button type="button" onclick="moveHeaderLogo(${index}, -1)" ${isFirst ? 'disabled' : ''} class="w-6 h-6 rounded-md border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed text-[10px] flex items-center justify-center font-bold" title="Pindah ke kiri / atas">
+              ▲
+            </button>
+            <button type="button" onclick="moveHeaderLogo(${index}, 1)" ${isLast ? 'disabled' : ''} class="w-6 h-6 rounded-md border border-slate-200 bg-white hover:bg-slate-100 text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed text-[10px] flex items-center justify-center font-bold" title="Pindah ke kanan / bawah">
+              ▼
+            </button>
+            
+            <!-- Delete / Kurangi Logo Button -->
+            <button type="button" onclick="deleteHeaderLogo(${index})" class="px-2 py-1 rounded-md text-red-600 hover:bg-red-100 font-bold text-xs flex items-center gap-1 transition-colors" title="Kurangi / Hapus Logo Ini">
+              <span>✕ Hapus</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Visibility Toggle -->
+        <div class="flex items-center justify-between bg-white px-3 py-2 rounded-xl border border-slate-200">
+          <span class="font-bold text-slate-700 text-xs">Status Penayangan:</span>
+          <label class="inline-flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" onchange="toggleHeaderLogoEnabled(${index}, this.checked)" class="rounded text-red-600 focus:ring-red-500 w-4 h-4 cursor-pointer" ${isEnabled ? 'checked' : ''} />
+            <span class="font-bold text-xs ${isEnabled ? 'text-emerald-700' : 'text-slate-400'}">${isEnabled ? 'Tampil' : 'Sembunyi'}</span>
+          </label>
+        </div>
+
+        <!-- Image URL & Upload -->
+        <div class="space-y-1.5">
+          <label class="block font-bold text-slate-700 text-[11px]">Path / URL Gambar Logo:</label>
+          <div class="flex gap-2">
+            <!-- Thumbnail Box -->
+            <div class="w-10 h-10 rounded-lg border border-slate-200 bg-white flex items-center justify-center p-1 shrink-0 overflow-hidden shadow-2xs">
+              <img id="logo_thumb_${index}" src="${escapeHtmlAttr(logo.url || '')}" alt="Thumb" class="max-h-full max-w-full object-contain ${logo.url ? '' : 'hidden'}" onerror="this.classList.add('hidden')" />
+              <span id="logo_thumb_empty_${index}" class="text-[9px] text-slate-400 font-bold ${logo.url ? 'hidden' : ''}">KOSONG</span>
+            </div>
+            
+            <input type="text" id="cms_logo_url_${index}" value="${escapeHtmlAttr(logo.url || '')}" oninput="updateHeaderLogoField(${index}, 'url', this.value)" placeholder="/images/logo-... atau URL / Data URL" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs focus:ring-1 focus:ring-slate-400" />
+            
+            <label class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer shrink-0 transition-colors flex items-center gap-1 shadow-2xs">
+              <span>📁 Upload</span>
+              <input type="file" accept="image/*" onchange="handleUploadHeaderLogo(event, ${index})" class="hidden" />
+            </label>
+          </div>
+          <p class="text-[10px] text-slate-400">Maks. 5MB. Format SVG, PNG transparan, JPG direkomendasikan.</p>
+        </div>
+
+        <!-- Alt Text -->
+        <div class="space-y-1">
+          <label class="block font-bold text-slate-700 text-[11px]">Alt Teks / Keterangan Logo:</label>
+          <input type="text" id="cms_logo_alt_${index}" value="${escapeHtmlAttr(logo.alt || '')}" oninput="updateHeaderLogoField(${index}, 'alt', this.value)" placeholder="Contoh: NAT-TEST Official Logo / Logo Mitra UI" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-slate-400" />
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.addNewHeaderLogo = function() {
+  const newNum = currentHeaderLogos.length + 1;
+  currentHeaderLogos.push({
+    id: 'logo_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+    title: `Logo ${newNum} (Mitra/Sponsor)`,
+    enabled: true,
+    url: '',
+    alt: `Logo ${newNum}`
+  });
+  renderAdminHeaderLogosList();
+  updateHeaderLogoPreview();
+  
+  if (typeof showToast === 'function') {
+    showToast(`Logo #${newNum} berhasil ditambahkan! Silakan upload gambar logo.`, 'info');
   }
 };
 
-window.handleUploadHeaderLogo = function(event, logoNum) {
+window.deleteHeaderLogo = function(index) {
+  if (index < 0 || index >= currentHeaderLogos.length) return;
+  const target = currentHeaderLogos[index];
+  const name = target?.title || `Logo #${index + 1}`;
+  
+  if (!confirm(`Apakah Anda yakin ingin mengurangi / menghapus "${name}" dari header?`)) {
+    return;
+  }
+  
+  currentHeaderLogos.splice(index, 1);
+  renderAdminHeaderLogosList();
+  updateHeaderLogoPreview();
+  
+  if (typeof showToast === 'function') {
+    showToast(`"${name}" telah dihapus. Jangan lupa klik "Simpan Logo Header".`, 'info');
+  }
+};
+
+window.toggleHeaderLogoEnabled = function(index, isChecked) {
+  if (currentHeaderLogos[index]) {
+    currentHeaderLogos[index].enabled = !!isChecked;
+    renderAdminHeaderLogosList();
+    updateHeaderLogoPreview();
+  }
+};
+
+window.moveHeaderLogo = function(index, direction) {
+  const targetIndex = index + direction;
+  if (targetIndex < 0 || targetIndex >= currentHeaderLogos.length) return;
+  
+  const temp = currentHeaderLogos[index];
+  currentHeaderLogos[index] = currentHeaderLogos[targetIndex];
+  currentHeaderLogos[targetIndex] = temp;
+  
+  renderAdminHeaderLogosList();
+  updateHeaderLogoPreview();
+};
+
+window.updateHeaderLogoField = function(index, field, value) {
+  if (!currentHeaderLogos[index]) return;
+  currentHeaderLogos[index][field] = value;
+  
+  if (field === 'url') {
+    const thumb = document.getElementById(`logo_thumb_${index}`);
+    const emptySpan = document.getElementById(`logo_thumb_empty_${index}`);
+    if (thumb) {
+      thumb.src = value;
+      if (value) {
+        thumb.classList.remove('hidden');
+        if (emptySpan) emptySpan.classList.add('hidden');
+      } else {
+        thumb.classList.add('hidden');
+        if (emptySpan) emptySpan.classList.remove('hidden');
+      }
+    }
+  }
+  
+  updateHeaderLogoPreview();
+};
+
+window.handleUploadHeaderLogo = function(event, index) {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
 
-  if (file.size > 2 * 1024 * 1024) {
-    alert(`Ukuran file logo terlalu besar (${(file.size / (1024 * 1024)).toFixed(2)} MB). Maksimal 2 MB.`);
+  // 5MB limit
+  if (file.size > 5 * 1024 * 1024) {
+    alert(`Ukuran file logo terlalu besar (${(file.size / (1024 * 1024)).toFixed(2)} MB). Maksimal 5 MB.`);
     event.target.value = '';
     return;
   }
@@ -1421,68 +1608,97 @@ window.handleUploadHeaderLogo = function(event, logoNum) {
   const reader = new FileReader();
   reader.onload = function(e) {
     const dataUrl = e.target.result;
-    const input = document.getElementById(`cms_logo${logoNum}_url`);
-    if (input) {
-      input.value = dataUrl;
+    if (currentHeaderLogos[index]) {
+      currentHeaderLogos[index].url = dataUrl;
+      renderAdminHeaderLogosList();
       updateHeaderLogoPreview();
     }
   };
   reader.readAsDataURL(file);
 };
 
+window.updateHeaderLogoPreview = function() {
+  const previewContainer = document.getElementById('admin_preview_header_logos');
+  if (!previewContainer) return;
+
+  const showDivider = document.getElementById('cms_logo_show_divider') ? document.getElementById('cms_logo_show_divider').checked : true;
+  const activeLogos = currentHeaderLogos.filter(l => l && l.enabled !== false && l.url);
+
+  const badge = document.getElementById('cms_logo_count_badge');
+  if (badge) {
+    badge.textContent = `Total: ${currentHeaderLogos.length} Logo (${activeLogos.length} Aktif)`;
+  }
+
+  if (activeLogos.length === 0) {
+    previewContainer.innerHTML = `
+      <div class="text-xs text-amber-700 bg-amber-50 border border-amber-200 px-3 py-2 rounded-xl flex items-center gap-2">
+        <span>⚠️</span>
+        <span>Semua logo dinonaktifkan atau belum memiliki URL gambar. Header website tidak akan menampilkan logo apapun.</span>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '';
+  activeLogos.forEach((logo, idx) => {
+    if (idx > 0 && showDivider) {
+      html += `<div class="h-6 w-[1px] bg-slate-300 shrink-0"></div>`;
+    }
+    const alt = escapeHtmlAttr(logo.alt || `Logo ${idx + 1}`);
+    const url = escapeHtmlAttr(logo.url || '');
+    html += `<img src="${url}" alt="${alt}" class="h-10 w-auto max-w-[160px] object-contain transition-transform hover:scale-105" onerror="this.style.opacity='0.2'" />`;
+  });
+
+  previewContainer.innerHTML = html;
+};
+
 window.resetDefaultHeaderLogos = function() {
   if (!confirm('Kembalikan logo header ke pengaturan standar (Logo 1 NAT-TEST & Logo 2 CSGS UI aktif)?')) return;
 
-  const l1Check = document.getElementById('cms_logo1_enabled');
-  const l1Url = document.getElementById('cms_logo1_url');
-  const l1Alt = document.getElementById('cms_logo1_alt');
-  const l2Check = document.getElementById('cms_logo2_enabled');
-  const l2Url = document.getElementById('cms_logo2_url');
-  const l2Alt = document.getElementById('cms_logo2_alt');
+  currentHeaderLogos = [
+    {
+      id: 'logo_1',
+      title: 'Logo 1 (Utama - NAT-TEST)',
+      enabled: true,
+      url: '/images/logo-nat-test.svg',
+      alt: 'NAT-TEST Official Logo'
+    },
+    {
+      id: 'logo_2',
+      title: 'Logo 2 (Sekunder - CSGS UI)',
+      enabled: true,
+      url: '/images/logo-csgs-ui.svg',
+      alt: 'UKK CSGS UI Logo'
+    }
+  ];
 
-  if (l1Check) l1Check.checked = true;
-  if (l1Url) l1Url.value = '/images/logo-nat-test.svg';
-  if (l1Alt) l1Alt.value = 'NAT-TEST Official Logo';
+  const divCheck = document.getElementById('cms_logo_show_divider');
+  if (divCheck) divCheck.checked = true;
 
-  if (l2Check) l2Check.checked = true;
-  if (l2Url) l2Url.value = '/images/logo-csgs-ui.svg';
-  if (l2Alt) l2Alt.value = 'UKK CSGS UI Logo';
-
+  renderAdminHeaderLogosList();
   updateHeaderLogoPreview();
 };
 
 window.saveCmsHeaderLogo = async function() {
-  const l1Check = document.getElementById('cms_logo1_enabled');
-  const l1Url = document.getElementById('cms_logo1_url');
-  const l1Alt = document.getElementById('cms_logo1_alt');
-  const l2Check = document.getElementById('cms_logo2_enabled');
-  const l2Url = document.getElementById('cms_logo2_url');
-  const l2Alt = document.getElementById('cms_logo2_alt');
+  const showDivider = document.getElementById('cms_logo_show_divider') ? document.getElementById('cms_logo_show_divider').checked : true;
+  const activeLogos = currentHeaderLogos.filter(l => l && l.enabled !== false && l.url);
 
-  const show1 = l1Check ? l1Check.checked : true;
-  const show2 = l2Check ? l2Check.checked : true;
-
-  if (!show1 && !show2) {
-    if (!confirm('Peringatan: Anda menonaktifkan kedua logo. Header website tidak akan menampilkan logo apapun. Lanjutkan simpan?')) {
+  if (activeLogos.length === 0) {
+    if (!confirm('Peringatan: Anda menonaktifkan seluruh logo. Header website tidak akan menampilkan logo apapun. Lanjutkan simpan?')) {
       return;
     }
   }
 
   const payload = {
-    logo_1: {
-      enabled: show1,
-      url: l1Url?.value.trim() || '/images/logo-nat-test.svg',
-      alt: l1Alt?.value.trim() || 'NAT-TEST Official Logo'
-    },
-    logo_2: {
-      enabled: show2,
-      url: l2Url?.value.trim() || '/images/logo-csgs-ui.svg',
-      alt: l2Alt?.value.trim() || 'UKK CSGS UI Logo'
-    },
-    show_divider: show1 && show2
+    logos: currentHeaderLogos,
+    show_divider: showDivider,
+    // Backward compatibility for any consumers reading logo_1 / logo_2
+    logo_1: currentHeaderLogos[0] || { enabled: false, url: '', alt: '' },
+    logo_2: currentHeaderLogos[1] || { enabled: false, url: '', alt: '' }
   };
 
-  await saveCmsSection('header_logo', 'Pengaturan Logo Header Website', 'Konfigurasi branding logo 1 dan logo 2 di header', payload);
+  await saveCmsSection('header_logo', 'Pengaturan Logo Header Website', 'Konfigurasi branding logo header website (tambah, kurangi, urutan)', payload);
+  renderAdminTopBarLogos(currentHeaderLogos);
 };
 
 // -------------------------------------------------------------

@@ -95,55 +95,53 @@ async function loadLandingCmsContent() {
 }
 
 // -------------------------------------------------------------
-// 2B. HEADER LOGO RENDERER (UBAH & KURANGI LOGO)
+// 2B. HEADER LOGO RENDERER (TAMBAH, UBAH & KURANGI LOGO)
 // -------------------------------------------------------------
 function renderHeaderLogo(logoData) {
   const container = document.getElementById('header-logo-container');
-  const logo1El = document.getElementById('header-logo-1');
-  const dividerEl = document.getElementById('header-logo-divider');
-  const logo2El = document.getElementById('header-logo-2');
+  if (!container) return;
 
-  const logo1 = logoData?.logo_1 || { enabled: true, url: '/images/logo-nat-test.svg', alt: 'NAT-TEST Official Logo' };
-  const logo2 = logoData?.logo_2 || { enabled: true, url: '/images/logo-csgs-ui.svg', alt: 'UKK CSGS UI Logo' };
-
-  const isLogo1Active = logo1.enabled !== false;
-  const isLogo2Active = logo2.enabled !== false;
-
-  // Logo 1
-  if (logo1El) {
-    if (isLogo1Active) {
-      logo1El.src = logo1.url || '/images/logo-nat-test.svg';
-      logo1El.alt = logo1.alt || 'NAT-TEST Official Logo';
-      logo1El.classList.remove('hidden');
-    } else {
-      logo1El.classList.add('hidden');
-    }
-  }
-
-  // Logo 2
-  if (logo2El) {
-    if (isLogo2Active) {
-      logo2El.src = logo2.url || '/images/logo-csgs-ui.svg';
-      logo2El.alt = logo2.alt || 'UKK CSGS UI Logo';
-      logo2El.classList.remove('hidden');
-    } else {
-      logo2El.classList.add('hidden');
-    }
-  }
-
-  // Divider: Only visible when BOTH logos are displayed
-  if (dividerEl) {
-    if (isLogo1Active && isLogo2Active && logoData?.show_divider !== false) {
-      dividerEl.classList.remove('hidden');
-    } else {
-      dividerEl.classList.add('hidden');
-    }
-  }
-
-  // Custom link target
-  if (container && logoData?.link_target) {
+  // Custom link target if specified
+  if (logoData?.link_target) {
     container.href = logoData.link_target;
   }
+
+  // Normalize logos into an array
+  let logos = [];
+  if (logoData && Array.isArray(logoData.logos)) {
+    logos = logoData.logos;
+  } else if (logoData && (logoData.logo_1 || logoData.logo_2)) {
+    if (logoData.logo_1) logos.push(logoData.logo_1);
+    if (logoData.logo_2) logos.push(logoData.logo_2);
+  } else {
+    // Default fallback
+    logos = [
+      { enabled: true, url: '/images/logo-nat-test.svg', alt: 'NAT-TEST Official Logo' },
+      { enabled: true, url: '/images/logo-csgs-ui.svg', alt: 'UKK CSGS UI Logo' }
+    ];
+  }
+
+  // Filter only active logos with a URL
+  const activeLogos = logos.filter(l => l && l.enabled !== false && l.url);
+  const showDivider = logoData?.show_divider !== false;
+
+  if (activeLogos.length === 0) {
+    // When all logos are disabled or removed, show default NAT-TEST logo
+    container.innerHTML = `<img src="/images/logo-nat-test.svg" alt="NAT-TEST Official Logo" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105" />`;
+    return;
+  }
+
+  let html = '';
+  activeLogos.forEach((logo, idx) => {
+    if (idx > 0 && showDivider) {
+      html += `<div class="h-7 w-[1px] bg-slate-300 shrink-0"></div>`;
+    }
+    const safeAlt = (logo.alt || `Logo ${idx + 1}`).replace(/"/g, '&quot;');
+    const safeUrl = (logo.url || '').replace(/"/g, '&quot;');
+    html += `<img src="${safeUrl}" alt="${safeAlt}" class="h-10 sm:h-12 w-auto max-w-[140px] sm:max-w-[190px] object-contain transition-transform group-hover:scale-105" onerror="this.style.display='none'" />`;
+  });
+
+  container.innerHTML = html;
 }
 
 // -------------------------------------------------------------

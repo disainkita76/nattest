@@ -15,7 +15,7 @@
   <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-30 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <a href="/" class="flex items-center gap-2">
+        <a href="/" id="admin-top-logo-container" class="flex items-center gap-2">
           <img src="/images/logo-nat-test.svg" alt="NAT-TEST" class="h-8 w-auto bg-white p-1 rounded-md" />
           <img src="/images/logo-csgs-ui.svg" alt="CSGS UI" class="h-8 w-auto bg-white p-1 rounded-md hidden sm:block" />
         </a>
@@ -379,97 +379,58 @@
           </p>
         </div>
 
-        <!-- CMS: Manajemen Logo Header (Ubah & Kurangi Logo) -->
+        <!-- CMS: Manajemen Logo Header (Tambah, Ubah & Kurangi Logo) -->
         <div class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 shadow-xs lg:col-span-2">
           <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
             <div>
               <div class="flex items-center gap-2">
                 <span class="px-2 py-0.5 rounded-md bg-blue-100 text-blue-700 text-xs font-black">HEADER BRANDING</span>
-                <h3 class="font-extrabold text-base text-slate-900">Manajemen Logo Header (Ubah & Kurangi Logo)</h3>
+                <h3 class="font-extrabold text-base text-slate-900">Manajemen Logo Header (Tambah, Ubah & Kurangi Logo)</h3>
               </div>
-              <p class="text-xs text-slate-500 mt-0.5">Kelola logo yang tampil di header website: unggah logo baru, ganti gambar, atau kurangi jumlah logo (misal hanya tampilkan 1 logo).</p>
+              <p class="text-xs text-slate-500 mt-0.5">Kelola logo di header website: tambah logo baru (sponsor, mitra, lembaga), ubah gambar/upload (hingga 5MB), atur urutan, atau kurangi/hapus logo.</p>
             </div>
-            <div class="flex items-center gap-2">
-              <button onclick="resetDefaultHeaderLogos()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors">
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" onclick="addNewHeaderLogo()" class="px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-colors">
+                <span>➕ Tambah Logo Baru</span>
+              </button>
+              <button type="button" onclick="resetDefaultHeaderLogos()" class="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs flex items-center gap-1 shadow-2xs transition-colors">
                 <span>🔄 Pulihkan Standar</span>
               </button>
-              <button onclick="saveCmsHeaderLogo()" class="px-4 py-1.5 rounded-xl btn-japan font-bold text-xs shadow-sm flex items-center gap-1">
+              <button type="button" onclick="saveCmsHeaderLogo()" class="px-4 py-1.5 rounded-xl btn-japan font-bold text-xs shadow-sm flex items-center gap-1">
                 <span>💾 Simpan Logo Header</span>
               </button>
             </div>
           </div>
 
-          <!-- Live Preview Header Logo Strip -->
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-            <span class="font-extrabold text-xs text-slate-700 flex items-center gap-1.5">
-              <span>👁️</span> Pratinjau Tampilan Header Live:
-            </span>
-            <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-4 shadow-xs w-fit">
-              <img id="admin_preview_logo1" src="/images/logo-nat-test.svg" alt="Preview Logo 1" class="h-10 w-auto object-contain" />
-              <div id="admin_preview_logo_divider" class="h-6 w-[1px] bg-slate-300"></div>
-              <img id="admin_preview_logo2" src="/images/logo-csgs-ui.svg" alt="Preview Logo 2" class="h-10 w-auto object-contain" />
+          <!-- Divider Options & Info Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-xs">
+            <div class="flex items-center gap-3">
+              <label class="inline-flex items-center gap-2 cursor-pointer font-bold text-slate-700">
+                <input type="checkbox" id="cms_logo_show_divider" onchange="updateHeaderLogoPreview()" class="rounded text-red-600 focus:ring-red-500 w-4 h-4" checked />
+                <span>Tampilkan Garis Pemisah Antar Logo</span>
+              </label>
+              <span class="text-slate-300">|</span>
+              <span id="cms_logo_count_badge" class="font-bold text-slate-600">Total: 2 Logo</span>
             </div>
-            <span class="text-[11px] text-slate-400">Garis pemisah otomatis hilang jika salah satu logo dimatikan (fasilitas mengurangi logo).</span>
+            <span class="text-slate-500 text-[11px] font-medium">💡 Ukuran upload maks. 5MB per logo. Format: SVG, PNG, JPG, WEBP.</span>
           </div>
 
-          <!-- Configuration Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-            <!-- Logo 1 Config -->
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex items-center justify-between">
-                <h4 class="font-extrabold text-slate-900 text-sm">Logo 1 (Utama - NAT-TEST)</h4>
-                <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                  <input type="checkbox" id="cms_logo1_enabled" onchange="updateHeaderLogoPreview()" class="rounded text-red-600 focus:ring-red-500 w-4 h-4" checked />
-                  <span class="font-bold text-slate-700">Tampilkan</span>
-                </label>
-              </div>
-
-              <div>
-                <label class="block font-bold text-slate-700 mb-1">Path / URL Gambar Logo 1:</label>
-                <div class="flex gap-2">
-                  <input type="text" id="cms_logo1_url" oninput="updateHeaderLogoPreview()" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs" value="/images/logo-nat-test.svg" />
-                  <label class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer shrink-0 transition-colors">
-                    <span>📁 Upload</span>
-                    <input type="file" accept="image/*" onchange="handleUploadHeaderLogo(event, 1)" class="hidden" />
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                <label class="block font-bold text-slate-700 mb-1">Alt Teks / Deskripsi Logo 1:</label>
-                <input type="text" id="cms_logo1_alt" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" value="NAT-TEST Official Logo" />
-              </div>
+          <!-- Live Preview Header Logo Strip -->
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-extrabold text-xs text-slate-700 flex items-center gap-1.5">
+                <span>👁️</span> Pratinjau Tampilan Header Live:
+              </span>
+              <span class="text-[11px] text-slate-400">Pratinjau langsung logo aktif dengan pembatas</span>
             </div>
-
-            <!-- Logo 2 Config -->
-            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-1.5">
-                  <h4 class="font-extrabold text-slate-900 text-sm">Logo 2 (Sekunder - CSGS UI)</h4>
-                  <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">Opsi Kurangi</span>
-                </div>
-                <label class="inline-flex items-center gap-1.5 cursor-pointer">
-                  <input type="checkbox" id="cms_logo2_enabled" onchange="updateHeaderLogoPreview()" class="rounded text-red-600 focus:ring-red-500 w-4 h-4" checked />
-                  <span class="font-bold text-slate-700">Tampilkan</span>
-                </label>
-              </div>
-
-              <div>
-                <label class="block font-bold text-slate-700 mb-1">Path / URL Gambar Logo 2:</label>
-                <div class="flex gap-2">
-                  <input type="text" id="cms_logo2_url" oninput="updateHeaderLogoPreview()" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 font-mono text-xs" value="/images/logo-csgs-ui.svg" />
-                  <label class="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs cursor-pointer shrink-0 transition-colors">
-                    <span>📁 Upload</span>
-                    <input type="file" accept="image/*" onchange="handleUploadHeaderLogo(event, 2)" class="hidden" />
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                <label class="block font-bold text-slate-700 mb-1">Alt Teks / Deskripsi Logo 2:</label>
-                <input type="text" id="cms_logo2_alt" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs" value="UKK CSGS UI Logo" />
-              </div>
+            <div class="bg-white p-3.5 rounded-xl border border-slate-200 flex items-center gap-4 shadow-xs overflow-x-auto min-h-[58px]" id="admin_preview_header_logos">
+              <!-- Dynamically populated via updateHeaderLogoPreview() -->
             </div>
+          </div>
+
+          <!-- Dynamic Logo Cards Container -->
+          <div id="cms-header-logos-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <!-- Dynamically populated via renderAdminHeaderLogosList() -->
           </div>
         </div>
 
